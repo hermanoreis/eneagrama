@@ -7,6 +7,7 @@ App no espírito do 16Personalities: landing sobre os nove tipos, teste com cont
 - Landing com vida pessoal, vida profissional e os nove tipos
 - Login sem senha via **Better Auth** (código de 6 dígitos no e-mail)
 - Área logada (`/conta`) com último resultado e histórico
+- Mentor-coach (`/mentor`) via OpenRouter, com o tipo e o ranking da pessoa
 - Teste de 135 afirmativas da pasta de estudo
 - Biblioteca com os arquivos originais do Drive
 
@@ -39,6 +40,8 @@ BETTER_AUTH_SECRET
 BETTER_AUTH_URL=https://<domínio-de-produção>
 RESEND_API_KEY
 RESEND_FROM
+OPENROUTER_API_KEY
+OPENROUTER_MODEL
 ```
 
 Sem Resend, o código de login só aparece em desenvolvimento.
@@ -48,5 +51,6 @@ Sem Resend, o código de login só aparece em desenvolvimento.
 - `/` landing
 - `/entrar` código por e-mail
 - `/conta` resultados salvos
+- `/mentor` coach de Eneagrama (requer login; OpenRouter)
 - `/teste` questionário (requer login)
 - `/tipos` e `/tipos/1`–`9` perfis públicos

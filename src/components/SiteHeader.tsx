@@ -28,12 +28,20 @@ export async function SiteHeader() {
         </nav>
         <div className="flex items-center gap-2 text-sm">
           {session?.user ? (
-            <Link
-              href="/conta"
-              className="rounded-full px-3 py-1.5 text-[color:var(--ink-soft)] hover:bg-[color:var(--wash)]"
-            >
-              Conta
-            </Link>
+            <>
+              <Link
+                href="/mentor"
+                className="rounded-full px-3 py-1.5 text-[color:var(--ink-soft)] hover:bg-[color:var(--wash)]"
+              >
+                Mentor
+              </Link>
+              <Link
+                href="/conta"
+                className="rounded-full px-3 py-1.5 text-[color:var(--ink-soft)] hover:bg-[color:var(--wash)]"
+              >
+                Conta
+              </Link>
+            </>
           ) : (
             <Link
               href="/entrar"

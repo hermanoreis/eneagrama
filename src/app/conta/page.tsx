@@ -42,10 +42,13 @@ export default async function ContaPage() {
             </h2>
             <p className="mt-3 max-w-xl leading-relaxed text-[color:var(--ink-soft)]">{profile.summary}</p>
             <div className="mt-5 flex flex-wrap gap-3">
+              <Link href="/mentor" className="btn-primary !py-2">
+                Conversar com o mentor
+              </Link>
               <Link href={`/tipos/${profile.id}`} className="btn-dark !py-2">
                 Relêr o perfil
               </Link>
-              <Link href="/teste" className="btn-primary !py-2">
+              <Link href="/teste" className="rounded-full border border-[color:var(--line)] px-4 py-2 text-sm">
                 Fazer de novo
               </Link>
             </div>

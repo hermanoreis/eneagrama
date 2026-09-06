@@ -1,0 +1,36 @@
+# Eneagrama
+
+App no espírito do 16Personalities: landing sobre os nove tipos, teste com conta e resultado salvo.
+
+## O que tem
+
+- Landing com vida pessoal, vida profissional e os nove tipos
+- Login sem senha via **Better Auth** (código de 6 dígitos no e-mail)
+- Área logada (`/conta`) com último resultado e histórico
+- Teste de 135 afirmativas da pasta de estudo
+- Biblioteca com os arquivos originais do Drive
+
+## Desenvolvimento
+
+```bash
+cp .env.example .env.local
+# preencha DATABASE_URL, BETTER_AUTH_SECRET e BETTER_AUTH_URL
+npm install
+npx auth@latest migrate
+npm run dev
+```
+
+Sem `RESEND_API_KEY`, o código aparece na tela de login (modo desenvolvimento). Em produção, configure Resend:
+
+```
+RESEND_API_KEY=
+RESEND_FROM=Eneagrama <voce@seu-dominio>
+```
+
+## Rotas
+
+- `/` landing
+- `/entrar` código por e-mail
+- `/conta` resultados salvos
+- `/teste` questionário (requer login)
+- `/tipos` e `/tipos/1`–`9` perfis públicos

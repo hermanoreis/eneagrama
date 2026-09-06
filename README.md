@@ -27,6 +27,22 @@ RESEND_API_KEY=
 RESEND_FROM=Eneagrama <voce@seu-dominio>
 ```
 
+## Deploy
+
+Repositório previsto: `https://github.com/hermanoreis/eneagrama`. Depois do push, o projeto Vercel `eneagrama` no time `hermanoreis-projects` publica em cada commit da `main`.
+
+Variáveis no painel da Vercel:
+
+```
+DATABASE_URL
+BETTER_AUTH_SECRET
+BETTER_AUTH_URL=https://<domínio-de-produção>
+RESEND_API_KEY
+RESEND_FROM
+```
+
+Sem Resend, o código de login só aparece em desenvolvimento.
+
 ## Rotas
 
 - `/` landing

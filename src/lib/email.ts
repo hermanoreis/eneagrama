@@ -32,7 +32,7 @@ export async function sendOtpEmail(email: string, otp: string) {
   }
 
   const resend = new Resend(key);
-  const from = process.env.RESEND_FROM ?? "Eneagrama <beth.t@example.com>";
+  const from = process.env.RESEND_FROM ?? "Eneagrama <eneagrama@hermano.me>";
   const { error } = await resend.emails.send({
     from,
     to: email,

@@ -4,6 +4,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { authClient } from "../lib/auth-client";
 
+function humanAuthError(message: string | undefined, fallback: string) {
+  const text = message || "";
+  if (/não está configurado|RESEND|e-mail de acesso/i.test(text)) {
+    return "Ainda não dá para enviar o código por e-mail. Confira a caixa de entrada depois que o envio estiver ligado — ou fale com quem administra o site.";
+  }
+  return text || fallback;
+}
+
 export function LoginClient() {
   const router = useRouter();
   const search = useSearchParams();
@@ -26,17 +34,21 @@ export function LoginClient() {
       });
       setBusy(false);
       if (err) {
-        setError(err.message || "Não foi possível enviar o código.");
+        setError(humanAuthError(err.message, "Não foi possível enviar o código."));
         return;
       }
     } catch (e) {
       setBusy(false);
-      setError(e instanceof Error ? e.message : "Não foi possível enviar o código.");
+      setError(humanAuthError(e instanceof Error ? e.message : "", "Não foi possível enviar o código."));
       return;
     }
-    const res = await fetch(`/api/dev/otp?email=${encodeURIComponent(email)}`);
-    const data = (await res.json()) as { otp?: string | null };
-    setDevCode(data.otp ?? null);
+    if (process.env.NODE_ENV !== "production") {
+      const res = await fetch(`/api/dev/otp?email=${encodeURIComponent(email)}`);
+      if (res.ok) {
+        const data = (await res.json()) as { otp?: string | null };
+        setDevCode(data.otp ?? null);
+      }
+    }
     setStep("code");
   }
 

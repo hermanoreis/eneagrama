@@ -44,7 +44,7 @@ OPENROUTER_API_KEY
 OPENROUTER_MODEL
 ```
 
-Sem Resend, o código de login só aparece em desenvolvimento.
+Em produção o código só vai por e-mail. Sem `RESEND_API_KEY` o login público não envia. Sem `OPENROUTER_API_KEY` o mentor não conversa.
 
 ## Rotas
 

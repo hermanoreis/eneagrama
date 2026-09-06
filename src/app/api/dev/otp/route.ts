@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { peekDevOtp } from "../../../../lib/email";
+import { allowDevOtp, peekDevOtp } from "../../../../lib/email";
 
 export async function GET(request: Request) {
-  if (process.env.NODE_ENV === "production" && process.env.RESEND_API_KEY) {
-    return NextResponse.json({ otp: null });
+  if (!allowDevOtp()) {
+    return NextResponse.json({ otp: null }, { status: 404 });
   }
   const email = new URL(request.url).searchParams.get("email") ?? "";
   return NextResponse.json({ otp: email ? peekDevOtp(email) : null });

@@ -142,7 +142,11 @@ export function MentorClient({
           placeholder="O que está vivo em você agora?"
           className="min-h-[52px] flex-1 resize-none bg-transparent px-3 py-2 outline-none"
         />
-        <button disabled={busy || !input.trim()} className="btn-primary self-end !px-4 !py-2" type="submit">
+        <button
+          disabled={!configured || busy || !input.trim()}
+          className="btn-primary self-end !px-4 !py-2"
+          type="submit"
+        >
           Enviar
         </button>
       </form>

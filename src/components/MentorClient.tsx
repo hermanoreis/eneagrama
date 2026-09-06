@@ -41,7 +41,7 @@ export function MentorClient({
 
   function submit(text: string) {
     const trimmed = text.trim();
-    if (!trimmed || busy) return;
+    if (!configured || !trimmed || busy) return;
     sendMessage({ text: trimmed });
     setInput("");
   }

@@ -7,7 +7,7 @@ import { authClient } from "../lib/auth-client";
 function humanAuthError(message: string | undefined, fallback: string) {
   const text = message || "";
   if (/não está configurado|RESEND|e-mail de acesso/i.test(text)) {
-    return "Ainda não dá para enviar o código por e-mail. Confira a caixa de entrada depois que o envio estiver ligado — ou fale com quem administra o site.";
+    return "O envio de e-mail ainda não está ligado. Em produção o código só chega na caixa de entrada.";
   }
   return text || fallback;
 }

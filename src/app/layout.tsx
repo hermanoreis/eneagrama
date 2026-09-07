@@ -36,6 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SiteHeader />
         <main className="mx-auto w-full max-w-6xl flex-1 px-5 py-8 sm:py-12">{children}</main>
         <SiteFooter />
+        <Analytics />
       </body>
     </html>
   );

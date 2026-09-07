@@ -1,5 +1,7 @@
 import { publicMetadata } from "../../../lib/seo";
 import Link from "next/link";
+import { PaperMotion } from "../../../components/PaperMotion";
+import { TypeAvatar } from "../../../components/TypeAvatar";
 import { types } from "../../../data/types";
 import { whatIsAType } from "../../../data/map";
 
@@ -33,26 +35,31 @@ export default function ResumaoPage() {
         </ul>
       </section>
 
-      <section className="space-y-6">
+      <section>
         <h2 className="font-display text-3xl">Nove tipos em uma página</h2>
-        {types.map((t) => (
-          <article key={t.id} className="border-t border-[color:var(--line)] pt-5">
-            <h3 className="font-display text-2xl">
-              {t.id} · {t.name}
-            </h3>
-            <p className="mt-1 text-sm text-[color:var(--mute)]">{t.alias}</p>
-            <p className="mt-3 leading-relaxed">{t.summary}</p>
-            <p className="mt-2 text-sm text-[color:var(--ink-soft)]">
-              Medo: {t.fear} Desejo: {t.desire}
-            </p>
-            <p className="mt-2 text-sm">
-              Cura: {t.healing} Essência: {t.essence}.
-            </p>
-            <Link href={`/tipos/${t.id}`} className="mt-3 inline-block text-sm underline underline-offset-4">
-              Abrir perfil
-            </Link>
-          </article>
-        ))}
+        <PaperMotion className="mt-6">
+          {types.map((t) => (
+            <article key={t.id} className="type-resume paper-interactive">
+              <TypeAvatar id={t.id} size={160} />
+              <div className="min-w-0 flex-1">
+                <h3 className="font-display text-2xl">
+                  {t.id} · {t.name}
+                </h3>
+                <p className="mt-1 text-sm text-[color:var(--mute)]">{t.alias}</p>
+                <p className="mt-3 leading-relaxed">{t.summary}</p>
+                <p className="mt-2 text-sm text-[color:var(--ink-soft)]">
+                  Medo: {t.fear} Desejo: {t.desire}
+                </p>
+                <p className="mt-2 text-sm">
+                  Cura: {t.healing} Essência: {t.essence}.
+                </p>
+                <Link href={`/tipos/${t.id}`} className="mt-3 inline-block text-sm underline underline-offset-4">
+                  Abrir perfil
+                </Link>
+              </div>
+            </article>
+          ))}
+        </PaperMotion>
       </section>
     </article>
   );

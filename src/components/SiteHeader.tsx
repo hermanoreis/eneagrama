@@ -3,8 +3,8 @@ import { getSession } from "../lib/session";
 
 const links = [
   { href: "/tipos", label: "Tipos" },
-  { href: "/#como-ajuda", label: "Como ajuda" },
-  { href: "/sintese", label: "Síntese de liderança" },
+  { href: "/mapa", label: "Mapa" },
+  { href: "/sintese", label: "Síntese" },
 ];
 
 export async function SiteHeader() {
@@ -68,6 +68,7 @@ export async function SiteFooter() {
   const loggedIn = Boolean(session?.user);
   const foot = [
     { href: "/tipos", label: "Tipos" },
+    { href: "/mapa", label: "Mapa" },
     { href: "/sintese", label: "Síntese de liderança" },
     { href: "/biblioteca", label: "Biblioteca" },
     loggedIn

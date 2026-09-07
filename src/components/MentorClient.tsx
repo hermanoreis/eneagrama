@@ -7,9 +7,9 @@ import type { MentorUIMessage } from "../lib/mentor/agent";
 
 const SUGGESTIONS = [
   "Como o meu tipo aparece no trabalho esta semana?",
+  "Como a minha asa colora o tipo?",
   "O que cuidar nas relações próximas?",
-  "Uma prática espiritual simples para hoje",
-  "Como conversar com alguém do tipo 8 sem virar briga?",
+  "Uma prática simples para hoje",
 ];
 
 function textOf(message: MentorUIMessage) {

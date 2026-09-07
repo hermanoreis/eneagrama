@@ -1,4 +1,5 @@
 import { questions } from "../data/questions";
+import { neighborIds } from "../data/map";
 import { typeById, type TypeId } from "../data/types";
 
 export const STORAGE_KEY = "eneagrama-respostas-v1";
@@ -96,4 +97,34 @@ export function pageCount() {
 export function questionsForPage(page: number) {
   const start = page * PAGE_SIZE;
   return questions.slice(start, start + PAGE_SIZE);
+}
+
+export type WingResult = {
+  id: TypeId | null;
+  tied: boolean;
+  left: TypeId;
+  right: TypeId;
+  leftScore: number;
+  rightScore: number;
+};
+
+export function scoreById(scores: TypeScore[], id: TypeId) {
+  return scores.find((s) => s.id === id)?.score ?? 0;
+}
+
+export function wingOf(primary: TypeId, scores: TypeScore[]): WingResult {
+  const [left, right] = neighborIds(primary);
+  const leftScore = scoreById(scores, left);
+  const rightScore = scoreById(scores, right);
+  if (leftScore === rightScore) {
+    return { id: null, tied: true, left, right, leftScore, rightScore };
+  }
+  return {
+    id: leftScore > rightScore ? left : right,
+    tied: false,
+    left,
+    right,
+    leftScore,
+    rightScore,
+  };
 }

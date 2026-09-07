@@ -20,11 +20,11 @@ O retrato sai das 135 afirmativas da pasta de estudo, com ranking salvo na conta
 
 ## Operating Context
 
-Fluxo: entrar com e-mail (código de 6 dígitos, sem senha) → responder 135 frases (nove seções, quinze por tipo, escala nunca–sempre) → ler o tipo e o ranking → voltar em `/conta` → conversar com o mentor. Perfis públicos em `/tipos`, síntese de liderança em `/sintese`, arquivos originais na biblioteca (pasta Drive). Uso em tela de telefone ou computador, sozinho, entre reuniões ou à noite — não é sessão clínica.
+Fluxo: entrar com e-mail (código de 6 dígitos, sem senha) → responder 135 frases (nove seções, quinze por tipo, escala nunca–sempre) → ler o tipo, a asa e o ranking → voltar em `/conta` → conversar com o mentor. Perfis públicos em `/tipos`, o mapa em `/mapa`, síntese de liderança em `/sintese`, estudo na biblioteca (páginas nativas). Uso em tela de telefone ou computador, sozinho, entre reuniões ou à noite — não é sessão clínica.
 
 ## Capabilities and Constraints
 
-- Landing, tipos 1–9, síntese, teste, conta, mentor e biblioteca.
+- Landing, tipos 1–9, mapa (tríades, asas, flechas, variantes, níveis), síntese, teste, conta, mentor e biblioteca nativa.
 - Teste e mentor exigem login. Em produção o código só vai por e-mail (Resend). Sem `OPENROUTER_API_KEY` o mentor não conversa.
 - Idioma: apenas português do Brasil, até alguém pedir outro.
 - As 135 afirmativas em `src/data/questions.ts` são o instrumento; não reescrever nem resumir o enunciado.
@@ -43,7 +43,7 @@ Fluxo: entrar com e-mail (código de 6 dígitos, sem senha) → responder 135 fr
 
 - Perfis e máximas: `src/data/types.ts`
 - Instrumento: `src/data/questions.ts` (135 afirmativas)
-- Biblioteca e pasta Drive: `src/data/resources.ts` — https://drive.google.com/drive/folders/1Ngk8ATY1oZ06MNPf3Myiy6_2da4vZoGj (perfis, teste, síntese, workbook, slides, referências)
+- Biblioteca e pasta de ensino: `src/data/library.ts`, `src/data/map.ts`. A pasta Drive original permanece como fonte, sem redirecionar o visitante.
 - Não há depoimentos, cases, press ou fotos de pessoas reais no repositório. Trabalho futuro não inventa essas provas.
 
 ## Product Principles

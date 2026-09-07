@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { TypeAvatar } from "../../components/TypeAvatar";
-import { typeById } from "../../data/types";
+import { typeById, type TypeId } from "../../data/types";
 import { listResults } from "../../lib/results";
 import { getSession } from "../../lib/session";
+import { wingOf, type TypeScore } from "../../lib/quiz";
 
 export const metadata = { title: "Sua conta · Eneagrama" };
 
@@ -13,7 +14,11 @@ export default async function ContaPage() {
 
   const results = await listResults(session.user.id);
   const latest = results[0];
-  const profile = latest ? typeById[latest.primaryType as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9] : null;
+  const profile = latest ? typeById[latest.primaryType as TypeId] : null;
+  const wing =
+    profile && latest
+      ? wingOf(profile.id, latest.scores as TypeScore[])
+      : null;
 
   return (
     <div className="space-y-10">
@@ -40,6 +45,15 @@ export default async function ContaPage() {
             <h2 className="mt-1 font-display text-4xl">
               {profile.id} · {profile.name}
             </h2>
+            {wing ? (
+              <p className="mt-2 text-[color:var(--ink-soft)]">
+                {wing.tied
+                  ? `Asas equilibradas: ${wing.left} e ${wing.right}`
+                  : wing.id
+                    ? `Asa ${wing.id} · ${typeById[wing.id].name}`
+                    : null}
+              </p>
+            ) : null}
             <p className="mt-3 max-w-xl leading-relaxed text-[color:var(--ink-soft)]">{profile.summary}</p>
             <div className="mt-5 flex flex-wrap gap-3">
               <Link href="/mentor" className="btn-primary !py-2">

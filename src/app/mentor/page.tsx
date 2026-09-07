@@ -4,7 +4,8 @@ import type { MentorUIMessage } from "../../lib/mentor/agent";
 import { loadMentorMessages } from "../../lib/mentor/store";
 import { getLatestResult } from "../../lib/results";
 import { getSession } from "../../lib/session";
-import { typeById } from "../../data/types";
+import { typeById, type TypeId } from "../../data/types";
+import { wingOf, type TypeScore } from "../../lib/quiz";
 
 export const metadata = { title: "Mentor · Eneagrama" };
 
@@ -17,13 +18,24 @@ export default async function MentorPage() {
     getLatestResult(session.user.id),
   ]);
   const profile = latest
-    ? typeById[latest.primaryType as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9]
+    ? typeById[latest.primaryType as TypeId]
+    : null;
+  const wing =
+    profile && latest
+      ? wingOf(profile.id, latest.scores as TypeScore[])
+      : null;
+  const primaryLabel = profile
+    ? wing?.tied
+      ? `${profile.id} · ${profile.name}, asas equilibradas`
+      : wing?.id
+        ? `${profile.id}w${wing.id} · ${profile.name}`
+        : `${profile.id} · ${profile.name}`
     : null;
 
   return (
     <MentorClient
       initialMessages={messages as MentorUIMessage[]}
-      primaryLabel={profile ? `${profile.id} · ${profile.name}` : null}
+      primaryLabel={primaryLabel}
       configured={Boolean(process.env.OPENROUTER_API_KEY)}
     />
   );

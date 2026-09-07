@@ -27,7 +27,11 @@ export const metadata: Metadata = {
     "Um retrato de como você pensa, sente e age, na vida pessoal e no trabalho. Teste de 135 afirmativas, resultado salvo na sua conta.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="pt-BR"

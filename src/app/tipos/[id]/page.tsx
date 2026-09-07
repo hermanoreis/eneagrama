@@ -2,7 +2,8 @@ import Link from "next/link";
 import { typeIntroductions } from "../../../data/copy";
 import { publicMetadata } from "../../../lib/seo";
 import { notFound } from "next/navigation";
-import { EnneagramMark } from "../../../components/EnneagramMark";
+import { TypeAvatar } from "../../../components/TypeAvatar";
+import { PaperMotion } from "../../../components/PaperMotion";
 import { arrowsByType } from "../../../data/map";
 import { typeById, types, type TypeId } from "../../../data/types";
 
@@ -28,7 +29,7 @@ export default async function TipoPage({ params }: { params: Promise<{ id: strin
 
   return (
     <article className="space-y-12">
-      <header className="grid items-start gap-8 md:grid-cols-[1fr_200px]">
+      <header className="grid items-start gap-8 md:grid-cols-[1fr_280px]">
         <div>
           <p className="text-xs uppercase tracking-[0.22em] text-[color:var(--mute)]">
             Tipo {t.id} · {t.center}
@@ -37,7 +38,7 @@ export default async function TipoPage({ params }: { params: Promise<{ id: strin
           <p className="mt-2 text-lg text-[color:var(--ink-soft)]">{t.alias}</p>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed">{typeIntroductions[t.id]}</p>
         </div>
-        <EnneagramMark size={200} active={t.id} className="text-[color:var(--ink)]" />
+        <PaperMotion className="profile-character"><TypeAvatar id={t.id} size={280} eager /></PaperMotion>
       </header>
 
       <p className="max-w-3xl text-sm leading-relaxed text-[color:var(--mute)]">Por Hermano Reis. Esta descrição apresenta conceitos do Eneagrama para reflexão. Os nomes dos tipos não definem profissões. <Link href="/sobre-o-teste" className="underline underline-offset-4">Como interpretar o resultado e seus limites</Link>.</p>

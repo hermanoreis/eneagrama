@@ -1,8 +1,7 @@
+import { privateMetadata } from "../../../lib/seo";
 import { ResultClient } from "../../../components/ResultClient";
 
-export const metadata = {
-  title: "Resultado · Eneagrama",
-};
+export const metadata = privateMetadata("Seu resultado");
 
 export default function ResultadoPage() {
   return (

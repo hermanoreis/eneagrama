@@ -6,9 +6,9 @@ import { useMemo, useState } from "react";
 import type { MentorUIMessage } from "../lib/mentor/agent";
 
 const SUGGESTIONS = [
-  "Como o meu tipo aparece no trabalho esta semana?",
-  "Como a minha asa colora o tipo?",
-  "O que cuidar nas relações próximas?",
+  "Tenho dificuldade para dizer não. Por onde começo?",
+  "Me identifiquei com dois tipos. Como comparar?",
+  "Como posso receber uma crítica sem responder na hora?",
   "Uma prática simples para hoje",
 ];
 
@@ -50,17 +50,16 @@ export function MentorClient({
     <div className="mx-auto flex min-h-[70vh] max-w-3xl flex-col gap-6">
       <header>
         <p className="text-xs uppercase tracking-[0.22em] text-[color:var(--mute)]">Mentor</p>
-        <h1 className="mt-2 font-display text-5xl">Um coach para o seu mapa</h1>
+        <h1 className="mt-2 font-display text-5xl">Vamos olhar para uma situação da sua vida?</h1>
         <p className="mt-3 max-w-xl leading-relaxed text-[color:var(--ink-soft)]">
-          Conversa sobre espiritualidade, vida pessoal e trabalho a partir do
-          Eneagrama.
+          Converse com uma IA sobre o Eneagrama e seu resultado. Ela pode ajudar com perguntas e sugestões de prática.
           {primaryLabel ? (
             <>
               {" "}
-              Estou lendo o seu último resultado: <strong>{primaryLabel}</strong>.
+              A conversa pode usar seu último resultado: <strong>{primaryLabel}</strong>.
             </>
           ) : (
-            <> Ainda não há teste salvo. Posso orientar no geral, ou você faz o teste.</>
+            <> Você pode conversar sobre os tipos mesmo sem ter um resultado salvo.</>
           )}
         </p>
       </header>
@@ -113,15 +112,16 @@ export function MentorClient({
 
       {!configured ? (
         <p className="rounded-2xl bg-[color:var(--wash)] px-4 py-3 text-sm">
-          O mentor precisa da chave OpenRouter (`OPENROUTER_API_KEY`) no ambiente.
+          O mentor está indisponível no momento. Você pode continuar explorando os perfis e exercícios.
         </p>
       ) : null}
       {error ? (
         <p className="rounded-2xl bg-[color:var(--wash)] px-4 py-3 text-sm">
-          {error.message || "Não foi possível responder agora."}
+          Não consegui responder agora. Tente novamente em alguns instantes.
         </p>
       ) : null}
 
+      <p className="text-sm leading-relaxed text-[color:var(--mute)]">Você está conversando com uma IA. Ela pode errar e não substitui acompanhamento profissional.</p>
       <form
         className="sticky bottom-4 mt-auto flex gap-2 rounded-[28px] border border-[color:var(--line)] bg-[color:var(--paper)] p-2"
         onSubmit={(e) => {
@@ -139,7 +139,8 @@ export function MentorClient({
             }
           }}
           rows={2}
-          placeholder="O que está vivo em você agora?"
+          aria-label="Conte uma situação que você gostaria de entender melhor"
+          placeholder="Conte uma situação que você gostaria de entender melhor."
           className="min-h-[52px] flex-1 resize-none bg-transparent px-3 py-2 outline-none"
         />
         <button

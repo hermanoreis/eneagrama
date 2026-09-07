@@ -197,13 +197,13 @@ export function EnneagramMark({
               <p className="mt-1 text-sm text-[color:var(--ink-soft)]">{profile.alias}</p>
               {arrows ? (
                 <p className="mt-2 text-xs text-[color:var(--mute)]">
-                  Asas {wings[0]} e {wings[1]} · Integração {arrows.growth} · Stress {arrows.stress}
+                  Vizinhos: {wings[0]} e {wings[1]} · Relações no mapa: {arrows.growth} e {arrows.stress}
                 </p>
               ) : null}
             </div>
           ) : (
             <p className="text-sm text-[color:var(--mute)]">
-              Passe o mouse em um número. Cada tipo acende asas e flechas.
+              Explore os números para conhecer os tipos e suas relações.
             </p>
           )}
         </figcaption>

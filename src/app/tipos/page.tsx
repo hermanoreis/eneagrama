@@ -1,23 +1,21 @@
+import { publicMetadata } from "../../lib/seo";
 import Link from "next/link";
+import { typeIntroductions } from "../../data/copy";
 import { centers, types } from "../../data/types";
 
-export const metadata = {
-  title: "Os nove tipos · Eneagrama",
-};
+export const metadata = publicMetadata("Os 9 tipos do Eneagrama: características e diferenças", "Compare os nove tipos do Eneagrama: motivações, hábitos e sugestões de reflexão. Observe o que faz sentido na sua vida.", "/tipos");
 
 export default function TiposPage() {
   return (
     <div className="space-y-12">
       <header className="max-w-2xl">
         <p className="text-xs uppercase tracking-[0.22em] text-[color:var(--mute)]">Galeria</p>
-        <h1 className="mt-2 font-display text-5xl">Os nove tipos</h1>
+        <h1 className="mt-2 font-display text-5xl">Os nove tipos do Eneagrama</h1>
         <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">
-          Cada perfil traz medo e desejo, asas, flechas, pontos fortes e o
-          paradigma de liderança.{" "}
+          Conheça as motivações de cada tipo e compare as descrições com situações da sua vida. Você pode começar pelo que chamou sua atenção.{" "}
           <Link href="/mapa" className="underline underline-offset-4">
-            O mapa
-          </Link>{" "}
-          explica tríades, variantes e níveis.
+            Entenda os conceitos do Eneagrama
+          </Link>.
         </p>
       </header>
 
@@ -49,9 +47,9 @@ export default function TiposPage() {
             <h2 className="font-display text-2xl">{t.name}</h2>
             <p className="text-sm text-[color:var(--mute)]">{t.alias}</p>
             <p className="mt-3 flex-1 text-sm leading-relaxed text-[color:var(--ink-soft)]">
-              {t.summary}
+              {typeIntroductions[t.id]}
             </p>
-            <p className="mt-4 text-sm underline underline-offset-4">Abrir perfil</p>
+            <p className="mt-4 text-sm underline underline-offset-4">Conhecer o tipo</p>
           </Link>
         ))}
       </div>

@@ -16,11 +16,11 @@ Dar um retrato claro de como a pessoa pensa, sente e age, nos nove tipos do Enea
 
 ## Positioning
 
-O retrato sai das 135 afirmativas da pasta de estudo, com ranking salvo na conta, e um mentor-coach que conversa a partir desse ranking. Um quiz genérico de Eneagrama, ou um 16Personalities, não pode afirmar esse instrumento, esse arquivo pessoal, nem esse mentor ligado ao resultado.
+Um espaço gratuito, em português, para explorar o Eneagrama, comparar suas respostas com os nove tipos e levar essa reflexão para situações do dia a dia. Apresentar o que a pessoa consegue fazer: comparar descrições, observar hábitos e experimentar práticas. Detalhes de autenticação e pontuação entram quando ajudam a executar uma tarefa.
 
 ## Operating Context
 
-Fluxo: entrar com e-mail (código de 6 dígitos, sem senha) → responder 135 frases (nove seções, quinze por tipo, escala nunca–sempre) → ler o tipo, a asa e o ranking → voltar em `/conta` → conversar com o mentor. Perfis públicos em `/tipos`, o mapa em `/mapa`, síntese de liderança em `/sintese`, estudo na biblioteca (páginas nativas). Uso em tela de telefone ou computador, sozinho, entre reuniões ou à noite — não é sessão clínica.
+Fluxo: entrar com e-mail (código de 6 dígitos, sem senha) → responder 135 frases (nove páginas, com quinze afirmativas por tipo distribuídas pelo questionário, escala nunca–sempre) → ler o tipo, a asa e o ranking → voltar em `/conta` → conversar com o mentor. Perfis públicos em `/tipos`, o mapa em `/mapa`, síntese de liderança em `/sintese`, estudo na biblioteca (páginas nativas). Uso em tela de telefone ou computador, sozinho, entre reuniões ou à noite — não é sessão clínica.
 
 ## Capabilities and Constraints
 
@@ -48,8 +48,8 @@ Fluxo: entrar com e-mail (código de 6 dígitos, sem senha) → responder 135 fr
 
 ## Product Principles
 
-- O instrumento da pasta é a autoridade do retrato, não um quiz genérico da internet.
+- Explicar o cálculo e os limites do questionário. Não sugerir validação científica nem superioridade sobre outros testes sem evidência.
 - Entender-se é o trabalho; o tipo é mapa e defesa, não identidade fechada.
 - Conservar o texto de ensino; não suavizar, clinicar nem virar entretenimento vazio.
-- Voltar depois importa tanto quanto terminar o teste: conta, ranking e mentor são o mesmo retrato.
+- As respostas em andamento ficam no navegador. Resultados completos são salvos na conta; empates são preservados na apresentação e no mentor. O mentor é uma IA, identificada como tal.
 - Falar como conversa, em português, específico para o tipo e para o que a pessoa trouxe.

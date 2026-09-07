@@ -1,8 +1,8 @@
+import { publicMetadata } from "../../lib/seo";
 import Link from "next/link";
 import { EnneagramMark } from "../../components/EnneagramMark";
 import {
   arrowsByType,
-  essencePersonality,
   healthLevels,
   otherTriads,
   triads,
@@ -11,29 +11,25 @@ import {
 } from "../../data/map";
 import { typeById, types, type TypeId } from "../../data/types";
 
-export const metadata = {
-  title: "O mapa · Eneagrama",
-};
+export const metadata = publicMetadata("O que é Eneagrama? Tipos, asas e conceitos", "Entenda o que é o Eneagrama e conheça tipos, centros, asas e flechas, com explicações para quem está começando.", "/mapa");
 
 export default function MapaPage() {
   return (
     <article className="space-y-20">
       <header className="max-w-2xl">
-        <h1 className="font-display text-5xl sm:text-6xl">O mapa</h1>
+        <h1 className="font-display text-5xl sm:text-6xl">O que é o Eneagrama e como ele funciona</h1>
         <p className="mt-5 text-lg leading-relaxed text-[color:var(--ink-soft)]">
-          Tipo, asa, variante, nível e flechas. A trilha UFRGS/NEH, com o
-          vocabulário de Palmer e de Riso e Hudson reescrito para este site.
-          Nenhum número é ranking.
+          Entenda os nove tipos e os conceitos que aparecem nas descrições. Comece pela visão geral e aprofunde o que fizer sentido para você.
         </p>
       </header>
 
       <section className="grid items-center gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,18rem)]">
         <div className="max-w-xl space-y-4">
-          <h2 className="font-display text-4xl">O que é um tipo</h2>
-          <p className="text-lg leading-relaxed">{whatIsAType.formula}</p>
+          <h2 className="font-display text-4xl">O que é um tipo?</h2>
+          <p className="text-lg leading-relaxed">O Eneagrama descreve nove padrões de personalidade. Cada tipo reúne motivações, hábitos de atenção e formas de reagir. As descrições podem ajudar você a comparar esses padrões com a sua experiência.</p>
           <p className="leading-relaxed text-[color:var(--ink-soft)]">{whatIsAType.note}</p>
           <p className="leading-relaxed text-[color:var(--ink-soft)]">
-            {essencePersonality.bridge}
+            Essência e personalidade são conceitos usados nessa abordagem para refletir sobre o que valorizamos e os hábitos que desenvolvemos. O teste não mede esses conceitos nem oferece um diagnóstico.
           </p>
         </div>
         <EnneagramMark interactive size={280} className="text-[color:var(--ink)]" />
@@ -42,9 +38,7 @@ export default function MapaPage() {
       <section id="triades" className="scroll-mt-24">
         <h2 className="font-display text-4xl">Tríades</h2>
         <p className="mt-4 max-w-2xl leading-relaxed text-[color:var(--ink-soft)]">
-          Nove tipos em três centros. Palmer lê isso como inteligências do
-          corpo, do coração e da mente. A trilha da UFRGS acrescenta o tempo
-          (presente, passado, futuro) e o sentimento que fica por baixo.
+          Os nove tipos são organizados em três grupos, também chamados de centros: instinto, sentimento e pensamento. Esses grupos ajudam a estudar as motivações descritas no Eneagrama.
         </p>
         <div className="mt-8 grid gap-5 md:grid-cols-3">
           {Object.values(triads).map((t) => (
@@ -85,10 +79,7 @@ export default function MapaPage() {
       <section id="variantes" className="scroll-mt-24">
         <h2 className="font-display text-4xl">Variantes instintivas</h2>
         <p className="mt-4 max-w-2xl leading-relaxed text-[color:var(--ink-soft)]">
-          Indicam qual dos três instintos básicos foi mais distorcido na
-          infância. Pessoas do mesmo tipo diferem no comportamento. Na essência,
-          a motivação continua a mesma. O teste de 135 frases não mede o
-          subtipo. Serve para conversar, não para carimbar.
+          Na abordagem do Eneagrama, as variantes descrevem diferentes prioridades ligadas à preservação, aos vínculos e à vida em grupo. São uma forma de explorar diferenças entre pessoas que se reconhecem no mesmo tipo. Este questionário não mede variantes instintivas.
         </p>
         <div className="mt-8 grid gap-5 md:grid-cols-3">
           {variants.map((v) => (
@@ -139,10 +130,7 @@ export default function MapaPage() {
       <section id="asas" className="scroll-mt-24">
         <h2 className="font-display text-4xl">Asas</h2>
         <p className="mt-4 max-w-2xl leading-relaxed text-[color:var(--ink-soft)]">
-          Asas são os vizinhos no círculo. Elas coloram o tipo, não o
-          substituem. No resultado do teste, a asa é o vizinho com a pontuação
-          mais alta. Empate: as duas asas equilibradas. O segundo tipo mais alto
-          do ranking só é asa se for vizinho.
+          Asas são os dois tipos vizinhos no círculo. Dentro dessa abordagem, suas características podem complementar a descrição de um tipo. Quando há um único tipo com mais pontos, o resultado compara as pontuações dos vizinhos. Um empate entre eles não comprova equilíbrio entre essas influências.
         </p>
         <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {types.map((t) => (
@@ -192,9 +180,7 @@ export default function MapaPage() {
       </section>
 
       <p className="max-w-2xl text-sm leading-relaxed text-[color:var(--mute)]">
-        Fonte de ensino: trilha UFRGS / Escola de Administração / NEH (2004).
-        Vocabulário de níveis e movimento: Riso e Hudson. Olhar de atenção e
-        centros: Helen Palmer. Texto deste site é síntese original, não o livro.
+        Por Hermano Reis. Conheça as <Link href="/biblioteca/leituras" className="underline underline-offset-4">referências de leitura</Link> e os <Link href="/sobre-o-teste" className="underline underline-offset-4">limites do questionário</Link>.
       </p>
     </article>
   );

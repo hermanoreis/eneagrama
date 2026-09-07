@@ -23,12 +23,36 @@ export function loadAnswers(): Answers {
   if (typeof window === "undefined") return {};
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return {};
-    const parsed = JSON.parse(raw) as Answers;
-    return parsed && typeof parsed === "object" ? parsed : {};
+    if (raw !== cachedRaw) {
+      let parsed: unknown = {};
+      try { parsed = raw ? JSON.parse(raw) : {}; } catch { /* Ignore malformed local data. */ }
+      cachedAnswers = {};
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+        for (const q of questions) {
+          const value = (parsed as Record<string, unknown>)[q.id];
+          if (typeof value === "number" && Number.isInteger(value) && value >= 1 && value <= 5) {
+            cachedAnswers[q.id] = value;
+          }
+        }
+      }
+      cachedRaw = raw;
+    }
+    return cachedAnswers;
   } catch {
-    return {};
+    return cachedAnswers;
   }
+}
+
+let cachedRaw: string | null | undefined;
+let cachedAnswers: Answers = {};
+
+export function subscribeAnswers(listener: () => void) {
+  window.addEventListener("storage", listener);
+  return () => window.removeEventListener("storage", listener);
+}
+
+export function serverAnswersSnapshot(): null {
+  return null;
 }
 
 export function saveAnswers(answers: Answers) {
@@ -40,7 +64,28 @@ export function clearAnswers() {
 }
 
 export function answeredCount(answers: Answers) {
-  return questions.filter((q) => answers[q.id] >= 1 && answers[q.id] <= 5).length;
+  return questions.filter((q) => Number.isInteger(answers[q.id]) && answers[q.id] >= 1 && answers[q.id] <= 5).length;
+}
+
+export function completeAnswers(value: unknown): Answers | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const answers: Answers = {};
+  for (const q of questions) {
+    const v = (value as Record<string, unknown>)[q.id];
+    if (typeof v !== "number" || !Number.isInteger(v) || v < 1 || v > 5) return null;
+    answers[q.id] = v;
+  }
+  return answers;
+}
+
+// Older records may contain a partially answered questionnaire. They must not
+// become a complete personality result in the account or mentor.
+export function resultLeaders(scores: TypeScore[]): TypeScore[] {
+  if (scores.length !== 9 || new Set(scores.map((s) => s.id)).size !== 9 ||
+      scores.some((s) => !Number.isInteger(s.id) || s.id < 1 || s.id > 9 || s.max !== 75 ||
+        !Number.isInteger(s.score) || s.score < 15 || s.score > 75)) return [];
+  const highest = Math.max(...scores.map((s) => s.score));
+  return scores.filter((s) => s.score === highest).sort((a, b) => a.id - b.id);
 }
 
 export function scoreTypes(answers: Answers): TypeScore[] {
@@ -69,7 +114,7 @@ export function scoreTypes(answers: Answers): TypeScore[] {
 
   for (const q of questions) {
     const v = answers[q.id];
-    if (v >= 1 && v <= 5) {
+    if (Number.isInteger(v) && v >= 1 && v <= 5) {
       sums[q.type] += v;
       counts[q.type] += 1;
     }

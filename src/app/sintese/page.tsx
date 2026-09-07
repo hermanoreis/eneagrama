@@ -1,21 +1,19 @@
+import { publicMetadata } from "../../lib/seo";
 import Link from "next/link";
 import { types } from "../../data/types";
 
-export const metadata = {
-  title: "Síntese · Eneagrama",
-};
+export const metadata = publicMetadata("Eneagrama no trabalho: comunicação e colaboração", "Compare os tipos do Eneagrama em situações de cobrança, comunicação e colaboração. Reflita sobre sua participação no time.", "/sintese");
 
 export default function SintesePage() {
   return (
     <div className="space-y-12">
       <header className="max-w-2xl">
         <p className="text-xs uppercase tracking-[0.22em] text-[color:var(--mute)]">
-          Matriz de liderança
+          Comunicação e colaboração
         </p>
-        <h1 className="mt-2 font-display text-5xl">Síntese de perfis</h1>
+        <h1 className="mt-2 font-display text-5xl">O Eneagrama no trabalho</h1>
         <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">
-          Pontos fortes, aspectos a desenvolver e o paradigma de cada tipo. A
-          mesma estrutura da síntese da pasta, para você e para o time.
+          Compare como cada tipo é descrito em situações de cobrança, comunicação e colaboração. Use o conteúdo para observar sua participação no time. As descrições não determinam a profissão ou o papel de alguém na equipe.
         </p>
       </header>
 

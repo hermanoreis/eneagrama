@@ -5,7 +5,7 @@ import { typeById } from "../../data/types";
 import { listResults } from "../../lib/results";
 import { getSession } from "../../lib/session";
 
-export const metadata = { title: "Sua conta — Eneagrama" };
+export const metadata = { title: "Sua conta · Eneagrama" };
 
 export default async function ContaPage() {
   const session = await getSession();
@@ -45,7 +45,7 @@ export default async function ContaPage() {
               <Link href="/mentor" className="btn-primary !py-2">
                 Conversar com o mentor
               </Link>
-              <Link href={`/tipos/${profile.id}`} className="btn-dark !py-2">
+              <Link href={`/tipos/${profile.id}`} className="btn-ghost !py-2">
                 Relêr o perfil
               </Link>
               <Link href="/teste" className="rounded-full border border-[color:var(--line)] px-4 py-2 text-sm">

@@ -83,7 +83,7 @@ export function otpEmailHtml(otp: string) {
           <tr>
             <td style="padding:22px 12px 0;font-family:'Avenir Next','Plus Jakarta Sans','Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;line-height:1.55;color:#6d7a8a;text-align:center;">
               Se você não pediu este código, pode ignorar o e-mail.<br />
-              Nove tipos. Um mapa para se entender — e entender os outros.
+              Nove tipos. Um mapa para se entender, e para entender os outros.
             </td>
           </tr>
         </table>
@@ -103,5 +103,5 @@ Enviamos um código de 6 dígitos. Sem senha. Ele vale por 10 minutos.
 Abrir: ${SITE_URL}/entrar
 
 Se você não pediu este código, ignore este e-mail.
-Nove tipos. Um mapa para se entender — e entender os outros.`;
+Nove tipos. Um mapa para se entender, e para entender os outros.`;
 }

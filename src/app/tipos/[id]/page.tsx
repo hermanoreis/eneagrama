@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   const t = typeById[Number(id) as TypeId];
   if (!t) return { title: "Tipo" };
-  return { title: `Tipo ${t.id} · ${t.name} — Eneagrama` };
+  return { title: `Tipo ${t.id} · ${t.name}` };
 }
 
 export default async function TipoPage({ params }: { params: Promise<{ id: string }> }) {

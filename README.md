@@ -30,14 +30,14 @@ RESEND_FROM=Eneagrama <voce@seu-dominio>
 
 ## Deploy
 
-Repositório previsto: `https://github.com/hermanoreis/eneagrama`. Depois do push, o projeto Vercel `eneagrama` no time `hermanoreis-projects` publica em cada commit da `main`.
+Repositório: `https://github.com/hermanoreis/eneagrama`. URL de produção prevista: `https://eneagrama.hermano.me`.
 
 Variáveis no painel da Vercel:
 
 ```
 DATABASE_URL
 BETTER_AUTH_SECRET
-BETTER_AUTH_URL=https://<domínio-de-produção>
+BETTER_AUTH_URL=https://eneagrama.hermano.me
 RESEND_API_KEY
 RESEND_FROM
 OPENROUTER_API_KEY

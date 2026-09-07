@@ -60,7 +60,7 @@ export function MentorClient({
               Estou lendo o seu último resultado: <strong>{primaryLabel}</strong>.
             </>
           ) : (
-            <> Ainda não há teste salvo — posso orientar no geral, ou você faz o teste.</>
+            <> Ainda não há teste salvo. Posso orientar no geral, ou você faz o teste.</>
           )}
         </p>
       </header>

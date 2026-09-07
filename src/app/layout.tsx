@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Fraunces, Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { Geist_Mono, Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
 import { SiteFooter, SiteHeader } from "../components/SiteHeader";
 import "./globals.css";
 
-const display = Fraunces({
+const display = Playfair_Display({
   variable: "--font-display",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const sans = Plus_Jakarta_Sans({
@@ -19,6 +20,7 @@ const mono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://eneagrama.hermano.me"),
   title: "Eneagrama — descubra o seu tipo",
   description:
     "Um retrato claro de como você pensa, sente e age — na vida pessoal e no trabalho. Teste de 135 afirmativas, resultado salvo na sua conta.",

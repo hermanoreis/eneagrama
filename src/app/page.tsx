@@ -130,6 +130,25 @@ export default async function Home() {
         </div>
       </section>
 
+      <section id="sobre" className="scroll-mt-24 grid gap-8 md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] md:items-end">
+        <div>
+          <h2 className="font-display text-4xl leading-[1.05] sm:text-5xl">
+            Eu construí isto para retribuir
+          </h2>
+          <p className="mt-5 max-w-xl text-lg leading-relaxed text-[color:var(--ink-soft)]">
+            O Eneagrama me ajudou bastante no autoconhecimento e nas dinâmicas
+            de trabalho — inclusive quando liderei equipes. Como forma de
+            retribuir, construí esta solução para que outras pessoas tenham
+            acesso ao Eneagrama, se conheçam melhor e usem o mapa com mais
+            clareza.
+          </p>
+        </div>
+        <p className="max-w-md text-sm leading-relaxed text-[color:var(--mute)] md:text-right">
+          Sou o Hermano. O teste, os perfis e o mentor estão aqui para você
+          usar — um ponto de partida, não um diagnóstico.
+        </p>
+      </section>
+
       <section className="rounded-[32px] bg-[color:var(--ink)] px-8 py-12 text-white">
         <h2 className="font-display text-4xl">Pronto para o retrato?</h2>
         <p className="mt-3 max-w-xl text-white/75">

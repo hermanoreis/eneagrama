@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { SiteFooter, SiteHeader } from "../components/SiteHeader";
 import "./globals.css";
 

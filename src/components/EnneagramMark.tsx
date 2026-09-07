@@ -68,7 +68,7 @@ export function EnneagramMark({
     const growth =
       (a === focus && b === arrows.growth) || (b === focus && a === arrows.growth);
     return {
-      stroke: growth ? "var(--cta)" : "var(--accent)",
+      stroke: growth ? "var(--enneagram-growth, var(--cta))" : "var(--enneagram-relation, var(--accent))",
       opacity: 1,
       width: 1.35,
     };
@@ -108,9 +108,9 @@ export function EnneagramMark({
     const fill = on
       ? "var(--accent)"
       : growth
-        ? "var(--cta)"
+        ? "var(--enneagram-growth, var(--cta))"
         : stress
-          ? "var(--gold)"
+          ? "var(--enneagram-relation, var(--gold))"
           : "var(--paper)";
     const inner = (
       <>
@@ -161,7 +161,7 @@ export function EnneagramMark({
   };
 
   return (
-    <figure className={className}>
+    <figure className={["enneagram-mark", className].filter(Boolean).join(" ")}>
       <svg
         viewBox="0 0 100 100"
         width={size}
@@ -188,21 +188,21 @@ export function EnneagramMark({
         {pos.map(([x, y], i) => node(SEAT_TO_TYPE[i], x, y, i))}
       </svg>
       {interactive ? (
-        <figcaption className="mt-4 min-h-[4.75rem] text-center" aria-live="polite">
+        <figcaption className="enneagram-mark-caption" aria-live="polite">
           {profile && focus ? (
             <div>
               <p className="font-display text-2xl leading-none">
                 {focus} · {profile.name}
               </p>
-              <p className="mt-1 text-sm text-[color:var(--ink-soft)]">{profile.alias}</p>
+              <p className="enneagram-mark-alias">{profile.alias}</p>
               {arrows ? (
-                <p className="mt-2 text-xs text-[color:var(--mute)]">
+                <p className="enneagram-mark-hint">
                   Vizinhos: {wings[0]} e {wings[1]} · Relações no mapa: {arrows.growth} e {arrows.stress}
                 </p>
               ) : null}
             </div>
           ) : (
-            <p className="text-sm text-[color:var(--mute)]">
+            <p className="enneagram-mark-hint">
               Explore os números para conhecer os tipos e suas relações.
             </p>
           )}

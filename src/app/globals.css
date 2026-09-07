@@ -153,8 +153,20 @@ svg a:focus-visible circle:nth-of-type(2) {
 .section-heading { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1.5rem; align-items: end; margin-bottom: 2rem; }
 .home-section { border-top: 1px solid var(--ink); padding-top: 2.5rem; }
 .editorial-column { padding: 1.5rem 1.5rem 1.5rem 0; border-top: 1px solid var(--line); }
-.home-final-cta { border-radius: 6px; }
+.home-final-cta {
+  --enneagram-growth: #cfe3cc;
+  --enneagram-relation: var(--gold);
+  border-radius: 6px;
+}
 .home-final-cta .btn-primary { border: 1px solid var(--ink-on-dark); }
+.home-final-cta-grid { display: grid; align-items: center; gap: 2rem; }
+.home-final-cta-mark { width: min(100%, 16.5rem); margin-inline: auto; color: var(--ink-on-dark); }
+.enneagram-mark-caption { margin-top: 1rem; min-height: 4.75rem; text-align: center; }
+.enneagram-mark-alias { margin-top: .25rem; font-size: .875rem; color: var(--ink-soft); }
+.enneagram-mark-hint { margin-top: .5rem; font-size: .75rem; color: var(--mute); }
+.enneagram-mark-caption > .enneagram-mark-hint { margin-top: 0; font-size: .875rem; }
+.on-ink .enneagram-mark-alias,
+.on-ink .enneagram-mark-hint { color: var(--ink-on-dark); }
 
 .author-portrait {
   position: relative;
@@ -224,6 +236,8 @@ svg a:focus-visible circle:nth-of-type(2) {
   .home-hero-grid { grid-template-columns: minmax(0,.9fr) minmax(0,1.1fr); gap: .5rem; }
   .home-hero { padding: 0; }
   .paper-family { width: 100%; max-width: none; }
+  .home-final-cta-grid { grid-template-columns: minmax(0,1.15fr) minmax(0,.85fr); gap: 1.5rem 2.5rem; }
+  .home-final-cta-mark { width: min(100%, 20rem); margin-inline: auto 0; }
 }
 @media (min-width: 1024px) {
   .type-gallery { grid-template-columns: repeat(3,minmax(0,1fr)); column-gap: 1.5rem; }

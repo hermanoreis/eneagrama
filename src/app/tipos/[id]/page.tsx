@@ -15,7 +15,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   const t = typeById[Number(id) as TypeId];
   if (!t || id !== String(t.id)) notFound();
-  return publicMetadata(`Tipo ${t.id} do Eneagrama: ${t.name}`, typeIntroductions[t.id], `/tipos/${t.id}`);
+  return publicMetadata(`Tipo ${t.id} do Eneagrama: ${t.name}`, typeIntroductions[t.id], `/tipos/${t.id}`, {
+    url: `/tipos/${t.id}/opengraph-image`,
+    width: 1200,
+    height: 630,
+    alt: `Tipo ${t.id}: ${t.name}. Personagem papercraft do Eneagrama por Hermano Reis.`,
+  });
 }
 
 export default async function TipoPage({ params }: { params: Promise<{ id: string }> }) {

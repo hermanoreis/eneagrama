@@ -77,7 +77,7 @@ export default async function Home() {
         <Link href="/mentor" className="btn-ghost">Conhecer o mentor</Link>
       </section>
       <section id="sobre" className="grid items-center gap-10 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
-        <Image src="/images/hermano-papercraft.png" alt="Retrato em papel de Hermano Reis, criador do site." width={800} height={800} sizes="(max-width: 768px) 80vw, 320px" className="mx-auto h-auto w-full max-w-xs rounded-[32px]" />
+        <Image src="/images/hermano-papercraft-editorial.webp" alt="Ilustração papercraft de Hermano Reis, criador do site." width={1200} height={1200} sizes="(max-width: 768px) 80vw, 320px" className="mx-auto h-auto w-full max-w-xs rounded-[32px]" />
         <div>
           <h2 className="font-display text-4xl">O Eneagrama me ajudou. Quis compartilhar.</h2>
           <p className="mt-5 text-lg leading-relaxed text-[color:var(--ink-soft)]">O Eneagrama me ajudou a me conhecer melhor e mudou a forma como eu lidava com situações no trabalho, inclusive quando liderei equipes.</p>

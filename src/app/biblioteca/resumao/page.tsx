@@ -1,10 +1,9 @@
+import { publicMetadata } from "../../../lib/seo";
 import Link from "next/link";
 import { types } from "../../../data/types";
 import { whatIsAType } from "../../../data/map";
 
-export const metadata = {
-  title: "Resumão · Eneagrama",
-};
+export const metadata = publicMetadata("Resumo do Eneagrama: os nove tipos e seus conceitos", "Relembre os nove tipos do Eneagrama e encontre os perfis completos para aprofundar sua reflexão.", "/biblioteca/resumao");
 
 export default function ResumaoPage() {
   return (
@@ -15,10 +14,9 @@ export default function ResumaoPage() {
             Biblioteca
           </Link>
         </p>
-        <h1 className="mt-3 font-display text-5xl">Resumão</h1>
+        <h1 className="mt-3 font-display text-5xl">Um resumo dos nove tipos</h1>
         <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">
-          O essencial da trilha de ensino, para reler rápido. O detalhe mora no
-          perfil de cada tipo e no mapa.
+          Relembre as principais ideias do Eneagrama. Para entender cada descrição com mais contexto, siga os links dos perfis e do mapa.
         </p>
       </header>
 

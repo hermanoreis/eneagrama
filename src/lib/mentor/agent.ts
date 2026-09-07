@@ -4,7 +4,7 @@ import { serializeMap, type MapTopic } from "../../data/map";
 import { typeById } from "../../data/types";
 import { getLatestResult } from "../results";
 import { getOpenRouter, MENTOR_MODEL } from "../openrouter";
-import { wingOf, type TypeScore } from "../quiz";
+import { resultLeaders, wingOf, type TypeScore } from "../quiz";
 import { isTypeId, listTypeNames, serializeType } from "./profile";
 
 export type MentorWing = {
@@ -20,6 +20,7 @@ export type MentorPortrait = {
   email: string;
   hasResult: boolean;
   primaryType: number | null;
+  leadingTypes: number[];
   wing: MentorWing | null;
   scores: { id: number; name: string; score: number; max: number; percent: number }[];
 };
@@ -33,17 +34,19 @@ function mentorInstructions(portrait: MentorPortrait) {
         .join("\n")
     : "Ainda não há resultado de teste salvo.";
 
-  const typeLine = portrait.primaryType
+  const typeLine = portrait.leadingTypes.length > 1
+    ? `Empate na maior pontuação entre os tipos ${portrait.leadingTypes.join(", ")}. Compare as descrições; não escolha um tipo principal nem calcule uma asa para esse empate.`
+    : portrait.primaryType
     ? `Tipo mais alto: ${portrait.primaryType}.`
     : "A pessoa ainda não fez o teste. Convide com leveza a fazê-lo em /teste, mas já converse.";
 
   const wingLine = !portrait.wing
     ? "Asa ainda não calculada."
     : portrait.wing.tied
-      ? `Asas equilibradas entre os vizinhos ${portrait.wing.left} e ${portrait.wing.right}.`
+      ? `Os vizinhos empataram na pontuação: ${portrait.wing.left} e ${portrait.wing.right}.`
       : `Asa mais alta: ${portrait.wing.id} ${portrait.wing.name}.`;
 
-  return `Você é um mentor-coach de Eneagrama. Fala em português do Brasil, com calor, clareza e sem jargão vazio.
+  return `Você é um assistente de IA para refletir sobre o Eneagrama. Fala em português do Brasil de forma conversacional, concreta e sem jargão vazio. Seja transparente sobre ser uma IA. Não use travessões nem frases de coach. Explique termos especializados antes de usá-los.
 
 Quem conversa: ${portrait.name} (${portrait.email}).
 ${typeLine}
@@ -54,7 +57,7 @@ ${ranking}
 
 Como atuar:
 - Ajude a pessoa a se entender no espiritual (essência, cura, mensagem interior), no pessoal (relações, medo, desejo, práticas) e no trabalho (liderança, vocação, pontos fortes e a desenvolver).
-- Use o Eneagrama como mapa, não como sentença. Ninguém é um tipo: a pessoa está um tipo.
+- Trate o resultado como respostas a um questionário, não como uma certeza sobre a pessoa. Uma pontuação não é probabilidade ou diagnóstico. Em empates, preserve todos os tipos com maior pontuação. Não infira tipos, níveis ou subtipos de terceiros.
 - Nenhum tipo é melhor que outro. Não estereotipe, não diagnostique patologia, não substitua terapia.
 - Ofereça uma pergunta ou um exercício concreto quando couber. Seja específico para o tipo, para a asa e para o que a pessoa trouxe.
 - Se ela falar de outro tipo (chefe, par, filho), use consultarTipo e ensine a conversar com aquele mapa.
@@ -118,13 +121,17 @@ function wingFromScores(primaryType: number | null, scores: TypeScore[]): Mentor
 
 export async function portraitForUser(user: { id: string; name?: string | null; email: string }) {
   const latest = await getLatestResult(user.id);
-  const scores = (latest?.scores ?? []) as TypeScore[];
+  const storedScores = (latest?.scores ?? []) as TypeScore[];
+  const leaders = resultLeaders(storedScores);
+  const scores = leaders.length ? storedScores : [];
+  const primaryType = leaders.length === 1 ? leaders[0].id : null;
   return {
     name: user.name || "você",
     email: user.email,
-    hasResult: Boolean(latest),
-    primaryType: latest?.primaryType ?? null,
-    wing: wingFromScores(latest?.primaryType ?? null, scores),
+    hasResult: leaders.length > 0,
+    primaryType,
+    leadingTypes: leaders.map((type) => type.id),
+    wing: wingFromScores(primaryType, scores),
     scores,
   } satisfies MentorPortrait;
 }

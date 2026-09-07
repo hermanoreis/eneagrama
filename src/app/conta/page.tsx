@@ -1,106 +1,63 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { TypeAvatar } from "../../components/TypeAvatar";
-import { typeById, type TypeId } from "../../data/types";
+import { typeById } from "../../data/types";
+import { typeIntroductions } from "../../data/copy";
 import { listResults } from "../../lib/results";
 import { getSession } from "../../lib/session";
-import { wingOf, type TypeScore } from "../../lib/quiz";
+import { resultLeaders } from "../../lib/quiz";
+import { privateMetadata } from "../../lib/seo";
 
-export const metadata = { title: "Sua conta · Eneagrama" };
+export const metadata = privateMetadata("Sua conta");
 
 export default async function ContaPage() {
   const session = await getSession();
   if (!session?.user) redirect("/entrar?next=/conta");
-
   const results = await listResults(session.user.id);
   const latest = results[0];
-  const profile = latest ? typeById[latest.primaryType as TypeId] : null;
-  const wing =
-    profile && latest
-      ? wingOf(profile.id, latest.scores as TypeScore[])
-      : null;
+  const leaders = latest ? resultLeaders(latest.scores) : [];
 
   return (
     <div className="space-y-10">
       <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-[color:var(--mute)]">Conta</p>
-          <h1 className="mt-2 font-display text-5xl">Olá, {session.user.name || "você"}</h1>
-          <p className="mt-2 text-[color:var(--ink-soft)]">{session.user.email}</p>
-        </div>
-        <form action="/api/auth/logout" method="post">
-          <button className="rounded-full border border-[color:var(--line)] px-4 py-2 text-sm" type="submit">
-            Sair
-          </button>
-        </form>
+        <div><p className="text-sm text-[color:var(--mute)]">Sua conta</p><h1 className="mt-2 font-display text-5xl">Olá, {session.user.name || "você"}</h1><p className="mt-3 break-all text-[color:var(--ink-soft)]">{session.user.email}</p></div>
+        <form action="/api/auth/logout" method="post"><button className="btn-ghost" type="submit">Sair</button></form>
       </header>
-
-      {profile && latest ? (
-        <section className="grid items-center gap-6 rounded-[32px] bg-white p-7 shadow-[0_16px_40px_rgba(27,36,48,0.06)] md:grid-cols-[auto_1fr]">
-          <TypeAvatar id={profile.id} color={profile.color} size={110} />
-          <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-[color:var(--mute)]">
-              Último resultado · {new Date(latest.createdAt).toLocaleDateString("pt-BR")}
-            </p>
-            <h2 className="mt-1 font-display text-4xl">
-              {profile.id} · {profile.name}
-            </h2>
-            {wing ? (
-              <p className="mt-2 text-[color:var(--ink-soft)]">
-                {wing.tied
-                  ? `Asas equilibradas: ${wing.left} e ${wing.right}`
-                  : wing.id
-                    ? `Asa ${wing.id} · ${typeById[wing.id].name}`
-                    : null}
-              </p>
-            ) : null}
-            <p className="mt-3 max-w-xl leading-relaxed text-[color:var(--ink-soft)]">{profile.summary}</p>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <Link href="/mentor" className="btn-primary !py-2">
-                Conversar com o mentor
-              </Link>
-              <Link href={`/tipos/${profile.id}`} className="btn-ghost !py-2">
-                Relêr o perfil
-              </Link>
-              <Link href="/teste" className="rounded-full border border-[color:var(--line)] px-4 py-2 text-sm">
-                Fazer de novo
-              </Link>
-            </div>
+      {leaders.length > 0 && latest ? (
+        <section className="space-y-5">
+          <p className="text-sm text-[color:var(--mute)]">Último resultado · {new Date(latest.createdAt).toLocaleDateString("pt-BR")}</p>
+          <h2 className="font-display text-3xl">{leaders.length > 1 ? "Seu resultado tem um empate" : "O tipo com mais pontos nas suas respostas"}</h2>
+          {leaders.length > 1 ? <p>Os tipos abaixo tiveram a mesma pontuação. Compare as descrições e suas motivações.</p> : null}
+          <div className="grid gap-4 md:grid-cols-2">
+            {leaders.map((leader) => (
+              <article key={leader.id} className="rounded-3xl bg-white p-6">
+                <TypeAvatar id={leader.id} color={typeById[leader.id].color} size={88} />
+                <h3 className="mt-4 font-display text-3xl">{leader.id} · {typeById[leader.id].name}</h3>
+                <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">{typeIntroductions[leader.id]}</p>
+                <Link href={`/tipos/${leader.id}`} className="mt-5 inline-block underline underline-offset-4">Reler o perfil do tipo {leader.id}</Link>
+              </article>
+            ))}
           </div>
+          <p className="text-sm text-[color:var(--mute)]">Este resultado é um ponto de partida para reflexão. Não é um diagnóstico.</p>
+          <div className="flex flex-wrap gap-3"><Link href="/mentor" className="btn-primary">Conversar com o mentor</Link><Link href="/teste" className="btn-ghost">Voltar ao teste</Link></div>
         </section>
       ) : (
-        <section className="rounded-[32px] bg-white p-8 text-center shadow-[0_16px_40px_rgba(27,36,48,0.06)]">
-          <h2 className="font-display text-3xl">Você ainda não fez o teste</h2>
-          <p className="mt-2 text-[color:var(--ink-soft)]">
-            135 afirmativas. O resultado fica salvo aqui para você voltar depois.
-          </p>
-          <Link href="/teste" className="btn-primary mt-6">
-            Começar o teste
-          </Link>
+        <section className="rounded-3xl bg-white p-8">
+          <h2 className="font-display text-3xl">{latest ? "Seu registro anterior está incompleto" : "Seu primeiro resultado começa aqui"}</h2>
+          <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">{latest ? "Esse registro não reúne todas as respostas necessárias para comparar os tipos. Volte ao teste para completar as 135 afirmativas." : "Responda às 135 afirmativas para explorar os nove tipos. Você pode continuar depois neste mesmo navegador."}</p>
+          <Link href="/teste" className="btn-primary mt-6">{latest ? "Continuar o teste" : "Fazer o teste gratuito"}</Link>
         </section>
       )}
-
       {results.length > 1 ? (
-        <section>
-          <h2 className="font-display text-3xl">Histórico</h2>
-          <ul className="mt-4 divide-y divide-[color:var(--line)] rounded-[28px] border border-[color:var(--line)] bg-white">
-            {results.map((r) => {
-              const t = typeById[r.primaryType as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9];
-              return (
-                <li key={r.id} className="flex items-center justify-between gap-4 px-5 py-4">
-                  <div>
-                    <p className="font-medium">
-                      {t.id} · {t.name}
-                    </p>
-                    <p className="text-sm text-[color:var(--mute)]">
-                      {new Date(r.createdAt).toLocaleString("pt-BR")}
-                    </p>
-                  </div>
-                  <Link href={`/tipos/${t.id}`} className="text-sm underline underline-offset-4">
-                    Ver tipo
-                  </Link>
-                </li>
-              );
+        <section><h2 className="font-display text-3xl">Histórico</h2>
+          <ul className="mt-5 divide-y divide-[color:var(--line)]">
+            {results.map((result) => {
+              const group = resultLeaders(result.scores);
+              return <li key={result.id} className="space-y-3 py-5">
+                <p className="text-sm text-[color:var(--mute)]">{new Date(result.createdAt).toLocaleString("pt-BR")}</p>
+                <p>{group.length > 1 ? "Empate entre os tipos" : group.length === 1 ? "Tipo com mais pontos" : "Registro incompleto"}</p>
+                <div className="flex flex-wrap gap-4">{group.map((type) => <Link key={type.id} href={`/tipos/${type.id}`} className="underline underline-offset-4">{type.id} · {typeById[type.id].name}</Link>)}</div>
+              </li>;
             })}
           </ul>
         </section>

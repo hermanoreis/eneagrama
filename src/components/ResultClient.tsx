@@ -1,263 +1,121 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useSyncExternalStore } from "react";
-import { arrowsByType } from "../data/map";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { typeById } from "../data/types";
+import { typeIntroductions } from "../data/copy";
 import { EnneagramMark } from "./EnneagramMark";
 import {
-  answeredCount,
-  loadAnswers,
-  scoreTypes,
-  wingOf,
-  type TypeScore,
+  completeAnswers, loadAnswers, answeredCount, scoreTypes, resultLeaders,
+  wingOf, subscribeAnswers, serverAnswersSnapshot, type Answers,
 } from "../lib/quiz";
 import { questions } from "../data/questions";
 
+type SaveState = { answers: Answers; status: "saved" | "error" } | null;
+
 export function ResultClient() {
-  const answers = useSyncExternalStore(
-    () => () => undefined,
-    loadAnswers,
-    () => null,
-  );
-  const [saved, setSaved] = useState(false);
+  const answers = useSyncExternalStore(subscribeAnswers, loadAnswers, serverAnswersSnapshot);
+  const [saveState, setSaveState] = useState<SaveState>(null);
+  const [attempt, setAttempt] = useState(0);
+  const pending = useRef<{ answers: Answers; attempt: number; request: Promise<boolean> } | null>(null);
 
   useEffect(() => {
-    if (!answers || saved) return;
-    const done = answeredCount(answers);
-    if (done === 0) return;
-    const scores = scoreTypes(answers);
-    fetch("/api/results", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        scores,
-        answers,
-        primaryType: scores[0].id,
-      }),
-    })
-      .then((res) => {
-        if (res.ok) setSaved(true);
-      })
-      .catch(() => undefined);
-  }, [answers, saved]);
+    if (!answers || !completeAnswers(answers)) return;
+    let active = true;
+    // Reuse the in-flight request during Strict Mode effect replay.
+    if (!pending.current || pending.current.answers !== answers || pending.current.attempt !== attempt) {
+      pending.current = {
+        answers, attempt,
+        request: fetch("/api/results", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ answers }),
+        }).then((res) => res.ok).catch(() => false),
+      };
+    }
+    pending.current.request.then((ok) => {
+      if (active) setSaveState({ answers, status: ok ? "saved" : "error" });
+    });
+    return () => { active = false; };
+  }, [answers, attempt]);
 
-  if (!answers) {
-    return <p className="text-[color:var(--mute)]">Lendo suas respostas…</p>;
-  }
-
+  if (!answers) return <p role="status">Lendo suas respostas…</p>;
   const done = answeredCount(answers);
-  if (done === 0) {
+  if (done < questions.length) {
     return (
-      <div className="space-y-4">
-        <p>Ainda não há respostas neste aparelho.</p>
-        <Link href="/teste" className="underline underline-offset-4">
-          Começar o teste
-        </Link>
-      </div>
+      <section className="max-w-2xl space-y-5">
+        <h1 className="font-display text-4xl">{done ? "Vamos completar o teste?" : "Seu resultado começa com suas respostas"}</h1>
+        <p className="leading-relaxed text-[color:var(--ink-soft)]">{done ? `Você respondeu ${done} de 135 afirmativas. Termine o questionário para comparar os tipos com todas as respostas.` : "Ainda não há respostas neste navegador. Comece pelo teste para explorar os nove tipos."}</p>
+        <Link href="/teste" className="btn-primary">{done ? "Continuar o teste" : "Fazer o teste gratuito"}</Link>
+      </section>
     );
   }
 
   const scores = scoreTypes(answers);
-  const top = scores[0];
-  const second = scores[1];
-  const profile = typeById[top.id];
-  const wing = wingOf(top.id, scores);
-  const wingProfile = wing.id ? typeById[wing.id] : null;
-  const wingCopy = wingProfile
-    ? profile.wings.find((w) => w.id === wingProfile.id)
-    : null;
-  const secondIsWing = second.id === wing.id;
-  const arrows = arrowsByType[top.id];
+  const leaders = resultLeaders(scores);
+  const tied = leaders.length > 1;
+  const profile = typeById[leaders[0].id];
+  const wing = tied ? null : wingOf(profile.id, scores);
+  const status = saveState?.answers === answers ? saveState.status : "saving";
 
   return (
-    <div className="space-y-12">
-      {saved ? (
-        <p className="rounded-2xl bg-[color:var(--wash)] px-4 py-3 text-sm">
-          Resultado salvo na sua conta. Você pode relê-lo depois em{" "}
-          <Link href="/conta" className="underline underline-offset-4">
-            Conta
-          </Link>
-          .
-        </p>
-      ) : null}
-
-      {done < questions.length ? (
-        <p className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--wash)] px-4 py-3 text-sm">
-          Você respondeu {done} de {questions.length}. O ranking já aparece; complete o teste
-          para um recorte mais fiel.{" "}
-          <Link href="/teste" className="underline underline-offset-4">
-            Voltar às afirmativas
-          </Link>
-        </p>
-      ) : null}
-
-      <div className="grid items-center gap-10 md:grid-cols-[1fr_220px]">
-        <div>
-          <h1 className="font-display text-5xl leading-none text-[color:var(--ink)]">
-            {top.id} · {profile.name}
-          </h1>
-          <p className="mt-3 text-lg text-[color:var(--ink-soft)]">{profile.alias}</p>
-          <p className="mt-5 max-w-xl leading-relaxed">{profile.summary}</p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link
-              href={`/tipos/${profile.id}`}
-              className="rounded-full bg-[color:var(--ink)] px-5 py-2 text-sm text-[color:var(--paper)]"
-            >
-              Abrir perfil completo
-            </Link>
-            <Link href="/mapa" className="rounded-full border border-[color:var(--line)] px-5 py-2 text-sm">
-              Ler o mapa
-            </Link>
-          </div>
-        </div>
-        <EnneagramMark size={220} active={top.id} className="mx-auto text-[color:var(--ink)]" />
+    <div className="space-y-10">
+      <div role="status" className="rounded-2xl bg-[color:var(--wash)] px-5 py-4 text-sm">
+        {status === "saved" ? <>Resultado salvo na sua conta. <Link href="/conta" className="underline underline-offset-4">Ir para minha conta</Link></> : status === "error" ? (
+          <><p>Não conseguimos guardar este resultado na sua conta. Suas respostas continuam neste navegador.</p><button type="button" className="mt-3 underline underline-offset-4" onClick={() => { setSaveState(null); setAttempt((value) => value + 1); }}>Tentar salvar novamente</button></>
+        ) : "Guardando seu resultado na conta…"}
       </div>
-
-      <section className="rounded-[28px] border border-[color:var(--line)] bg-white p-7 shadow-[0_12px_32px_rgba(27,36,48,0.05)]">
-        <h2 className="font-display text-3xl">Sua asa</h2>
-        {wing.tied ? (
-          <div className="mt-4 space-y-3">
-            <p className="leading-relaxed">
-              Os dois vizinhos empataram. Asas equilibradas: {wing.left}{" "}
-              {typeById[wing.left].name} e {wing.right} {typeById[wing.right].name},
-              ambos com {wing.leftScore}.
-            </p>
-            <div className="grid gap-4 md:grid-cols-2">
-              {profile.wings.map((w) => (
-                <Link
-                  key={w.id}
-                  href={`/tipos/${w.id}`}
-                  className="rounded-2xl bg-[color:var(--wash)] p-4"
-                >
-                  <p className="font-display text-xl">
-                    {w.id} · {w.name}
-                  </p>
-                  <p className="mt-2 text-sm leading-relaxed text-[color:var(--ink-soft)]">{w.text}</p>
-                </Link>
-              ))}
-            </div>
-          </div>
-        ) : wingProfile && wingCopy ? (
-          <div className="mt-4">
-            <p className="font-display text-3xl">
-              {top.id}w{wingProfile.id} · {wingCopy.name}
-            </p>
-            <p className="mt-3 max-w-2xl leading-relaxed">{wingCopy.text}</p>
-            <p className="mt-3 text-sm text-[color:var(--mute)]">
-              Entre os vizinhos {wing.left} ({wing.leftScore}) e {wing.right} ({wing.rightScore}),
-              a pontuação mais alta foi a do tipo {wingProfile.id}.{" "}
-              <Link href="/mapa#asas" className="underline underline-offset-4">
-                Como a asa é lida
-              </Link>
-            </p>
-            <Link
-              href={`/tipos/${wingProfile.id}`}
-              className="mt-4 inline-block text-sm underline underline-offset-4"
-            >
-              Ver tipo {wingProfile.id}
-            </Link>
-          </div>
-        ) : null}
-      </section>
-
-      <section className="grid gap-6 md:grid-cols-2">
-        <article className="rounded-3xl border border-[color:var(--line)] p-6">
-          <h3 className="font-display text-xl">Medo e desejo</h3>
-          <p className="mt-3">
-            <strong>Medo:</strong> {profile.fear}
-          </p>
-          <p className="mt-2">
-            <strong>Desejo:</strong> {profile.desire}
-          </p>
-        </article>
-        <article className="rounded-3xl border border-[color:var(--line)] p-6">
-          <h3 className="font-display text-xl">Flechas deste tipo</h3>
-          <p className="mt-3 text-sm leading-relaxed">
-            <span className="font-medium">Integração {arrows.growth}.</span> {arrows.growthText}
-          </p>
-          <p className="mt-2 text-sm leading-relaxed">
-            <span className="font-medium">Stress {arrows.stress}.</span> {arrows.stressText}
-          </p>
-          <Link href="/mapa#flechas" className="mt-4 inline-block text-sm underline underline-offset-4">
-            O mapa das flechas
-          </Link>
-        </article>
-      </section>
-
-      {!secondIsWing ? (
+      <header className="max-w-3xl space-y-4">
+        <p className="text-sm text-[color:var(--mute)]">{tied ? "Mais de um tipo teve a maior pontuação" : "O tipo com mais pontos nas suas respostas"}</p>
+        <h1 className="font-display text-5xl">{tied ? "Seu resultado tem um empate" : `${profile.id} · ${profile.name}`}</h1>
+        <p className="text-lg leading-relaxed text-[color:var(--ink-soft)]">{tied ? `Os tipos ${leaders.map((type) => type.id).join(", ")} tiveram a mesma pontuação. Leia as descrições e compare suas motivações.` : "Comece por esta descrição e compare com situações da sua vida. Você também pode explorar os outros tipos que pontuaram mais."}</p>
+        <p className="text-sm text-[color:var(--mute)]">O resultado é um ponto de partida para reflexão. Não é um diagnóstico nem descreve tudo sobre você.</p>
+      </header>
+      <div className={`grid gap-5 ${tied ? "sm:grid-cols-2" : "md:grid-cols-[1fr_220px]"}`}>
+        {leaders.map((leader) => (
+          <article key={leader.id} className="rounded-3xl border border-[color:var(--line)] p-6">
+            <h2 className="font-display text-3xl">{leader.id} · {typeById[leader.id].name}</h2>
+            <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">{typeIntroductions[leader.id]}</p>
+            <Link href={`/tipos/${leader.id}`} className="mt-5 inline-block underline underline-offset-4">Conhecer o tipo {leader.id}</Link>
+          </article>
+        ))}
+        {!tied ? <EnneagramMark active={profile.id} size={220} /> : null}
+      </div>
+      {wing ? (
         <section className="rounded-3xl border border-[color:var(--line)] p-6">
-          <h2 className="font-display text-2xl">Outro traço alto</h2>
-          <p className="mt-2 text-sm text-[color:var(--mute)]">
-            Segundo no ranking, e não é vizinho. Não é a asa.
-          </p>
-          <p className="mt-3 font-display text-2xl">
-            {second.id} · {second.name}
-          </p>
-          <p className="mt-2 max-w-xl text-sm leading-relaxed text-[color:var(--ink-soft)]">
-            {typeById[second.id].summary}
-          </p>
-          <Link
-            href={`/tipos/${second.id}`}
-            className="mt-4 inline-block text-sm underline underline-offset-4"
-          >
-            Ver tipo {second.id}
-          </Link>
+          <h2 className="font-display text-3xl">Compare também os tipos vizinhos</h2>
+          <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">No Eneagrama, os dois tipos vizinhos são chamados de asas. Suas características podem complementar a descrição que você leu.</p>
+          <p className="mt-3 text-sm">{wing.tied ? `Os vizinhos ${wing.left} e ${wing.right} tiveram a mesma pontuação. Isso não comprova que essas influências sejam equilibradas na sua vida.` : `Entre os vizinhos ${wing.left} e ${wing.right}, o tipo ${wing.id} teve mais pontos nas suas respostas.`}</p>
+          <div className="mt-4 flex flex-wrap gap-5">
+            {[wing.left, wing.right].map((id) => <Link key={id} href={`/tipos/${id}`} className="underline underline-offset-4">{id} · {typeById[id].name}</Link>)}
+            <Link href="/mapa#asas" className="underline underline-offset-4">Entender as asas</Link>
+          </div>
         </section>
       ) : null}
-
       <section>
-        <h2 className="font-display text-2xl">Pontuação por tipo</h2>
-        <p className="mt-1 text-sm text-[color:var(--mute)]">
-          Soma das 15 afirmativas de cada tipo (1 a 5). Máximo 75.
-        </p>
-        <ol className="mt-6 space-y-3">
-          {scores.map((s) => (
-            <ScoreRow
-              key={s.id}
-              score={s}
-              lead={s.id === top.id}
-              wing={s.id === wing.id}
-            />
-          ))}
+        <h2 className="font-display text-3xl">Como suas respostas se distribuíram</h2>
+        <p className="mt-4 max-w-3xl leading-relaxed text-[color:var(--ink-soft)]">A pontuação reúne suas respostas às afirmativas de cada tipo. Uma pontuação mais alta indica maior concordância com essas frases. Não é uma porcentagem de quem você é.</p>
+        <p className="mt-2 text-sm text-[color:var(--mute)]">Cada tipo tem 15 afirmativas. A pontuação vai de 15 a 75.</p>
+        <ol className="mt-6 space-y-4">
+          {scores.map((score) => {
+            const lead = leaders.some((type) => type.id === score.id);
+            return (
+              <li key={score.id}>
+                <Link href={`/tipos/${score.id}`} className="block rounded-sm">
+                  <div className="mb-2 flex justify-between gap-4 text-sm"><span className={lead ? "font-semibold" : ""}>{score.id} · {score.name}{lead ? " · maior pontuação" : ""}</span><span className="shrink-0 tabular-nums">{score.score}/75</span></div>
+                  <div aria-hidden className="h-2 rounded-full bg-[color:var(--wash)]"><div className="h-full rounded-full" style={{ width: `${score.percent}%`, background: lead ? "var(--accent)" : "var(--ink)", opacity: lead ? 1 : 0.45 }} /></div>
+                </Link>
+              </li>
+            );
+          })}
         </ol>
+        <Link href="/sobre-o-teste" className="mt-5 inline-block text-sm underline underline-offset-4">Como interpretar a pontuação e seus limites</Link>
       </section>
+      <div className="flex flex-wrap gap-3">
+        <Link href="/tipos" className="btn-ghost">Comparar os nove tipos</Link>
+        {status === "saved" ? <Link href="/mentor" className="btn-primary">Conversar com o mentor</Link> : null}
+        <Link href="/biblioteca/workbook" className="btn-ghost">Escolher um exercício</Link>
+      </div>
     </div>
-  );
-}
-
-function ScoreRow({
-  score,
-  lead,
-  wing,
-}: {
-  score: TypeScore;
-  lead: boolean;
-  wing: boolean;
-}) {
-  return (
-    <li>
-      <Link href={`/tipos/${score.id}`} className="block">
-        <div className="mb-1 flex items-baseline justify-between gap-3 text-sm">
-          <span className={lead || wing ? "font-medium" : ""}>
-            {score.id} · {score.name}
-            {lead ? " · tipo" : wing ? " · asa" : ""}
-          </span>
-          <span className="tabular-nums text-[color:var(--mute)]">
-            {score.score}/{score.max}
-          </span>
-        </div>
-        <div className="h-2 overflow-hidden rounded-full bg-[color:var(--wash)]">
-          <div
-            className="h-full rounded-full"
-            style={{
-              width: `${score.percent}%`,
-              background: lead ? "var(--accent)" : wing ? "var(--cta)" : "var(--ink)",
-              opacity: lead || wing ? 1 : 0.45,
-            }}
-          />
-        </div>
-      </Link>
-    </li>
   );
 }

@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { typeIntroductions } from "../../../data/copy";
+import { publicMetadata } from "../../../lib/seo";
 import { notFound } from "next/navigation";
 import { EnneagramMark } from "../../../components/EnneagramMark";
 import { arrowsByType } from "../../../data/map";
@@ -11,15 +13,15 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const t = typeById[Number(id) as TypeId];
-  if (!t) return { title: "Tipo" };
-  return { title: `Tipo ${t.id} · ${t.name}` };
+  if (!t || id !== String(t.id)) notFound();
+  return publicMetadata(`Tipo ${t.id} do Eneagrama: ${t.name}`, typeIntroductions[t.id], `/tipos/${t.id}`);
 }
 
 export default async function TipoPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const n = Number(id) as TypeId;
   const t = typeById[n];
-  if (!t) notFound();
+  if (!t || id !== String(t.id)) notFound();
 
   const prev = typeById[(((t.id + 7) % 9) + 1) as TypeId];
   const next = typeById[(((t.id) % 9) + 1) as TypeId];
@@ -31,18 +33,20 @@ export default async function TipoPage({ params }: { params: Promise<{ id: strin
           <p className="text-xs uppercase tracking-[0.22em] text-[color:var(--mute)]">
             Tipo {t.id} · {t.center}
           </p>
-          <h1 className="mt-2 font-display text-5xl leading-none sm:text-6xl">{t.name}</h1>
+          <h1 className="mt-2 font-display text-5xl leading-none sm:text-6xl">Tipo {t.id}: {t.name}</h1>
           <p className="mt-2 text-lg text-[color:var(--ink-soft)]">{t.alias}</p>
-          <p className="mt-5 max-w-2xl text-lg leading-relaxed">{t.summary}</p>
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed">{typeIntroductions[t.id]}</p>
         </div>
         <EnneagramMark size={200} active={t.id} className="text-[color:var(--ink)]" />
       </header>
+
+      <p className="max-w-3xl text-sm leading-relaxed text-[color:var(--mute)]">Por Hermano Reis. Esta descrição apresenta conceitos do Eneagrama para reflexão. Os nomes dos tipos não definem profissões. <Link href="/sobre-o-teste" className="underline underline-offset-4">Como interpretar o resultado e seus limites</Link>.</p>
 
       <section className="grid gap-4 md:grid-cols-2">
         <Card title="Medo fundamental" body={t.fear} />
         <Card title="Desejo fundamental" body={t.desire} />
         <Card title="Mensagem interior" body={t.innerMessage} />
-        <Card title="Essência · cura" body={`${t.essence}. ${t.healing}`} />
+        <Card title="Uma proposta de reflexão" body={`${t.essence}. ${t.healing}`} />
       </section>
 
       <section className="max-w-3xl space-y-4">
@@ -67,7 +71,8 @@ export default async function TipoPage({ params }: { params: Promise<{ id: strin
       </section>
 
       <section>
-        <h2 className="font-display text-3xl">Asas</h2>
+        <h2 className="font-display text-3xl">Os tipos vizinhos: as asas</h2>
+        <p className="mt-3 max-w-2xl leading-relaxed text-[color:var(--ink-soft)]">No Eneagrama, as características dos tipos vizinhos podem complementar essa descrição. Compare o que você reconhece em cada um.</p>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           {t.wings.map((w) => (
             <Link
@@ -88,8 +93,7 @@ export default async function TipoPage({ params }: { params: Promise<{ id: strin
       <section>
         <h2 className="font-display text-3xl">Flechas</h2>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[color:var(--ink-soft)]">
-          Integração é o movimento de crescimento. Stress é o puxão quando a
-          defesa aperta.{" "}
+          As flechas representam relações entre tipos descritas nessa abordagem. São usadas para explorar reações em situações de crescimento e de estresse.{" "}
           <Link href="/mapa#flechas" className="underline underline-offset-4">
             Ver o mapa
           </Link>
@@ -119,7 +123,7 @@ export default async function TipoPage({ params }: { params: Promise<{ id: strin
       </section>
 
       <section>
-        <h2 className="font-display text-3xl">Como desenvolver-se</h2>
+        <h2 className="font-display text-3xl">Sugestões para experimentar</h2>
         <ol className="mt-4 space-y-2">
           {t.practices.map((p) => (
             <li key={p} className="rounded-2xl bg-[color:var(--wash)] px-4 py-3 leading-relaxed">
@@ -130,7 +134,7 @@ export default async function TipoPage({ params }: { params: Promise<{ id: strin
       </section>
 
       <section className="rounded-3xl bg-[color:var(--ink)] px-6 py-8 text-[color:var(--paper)]">
-        <p className="text-xs uppercase tracking-[0.2em] opacity-70">Paradigma de liderança</p>
+        <p className="text-xs uppercase tracking-[0.2em] opacity-70">Reflexões sobre liderança</p>
         <p className="mt-3 font-display text-2xl leading-snug">{t.leadership}</p>
         <p className="mt-4 max-w-2xl text-sm opacity-80">{t.excelBlurb}</p>
       </section>

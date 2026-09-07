@@ -1,19 +1,16 @@
+import { publicMetadata } from "../../lib/seo";
 import Link from "next/link";
 import { kindLabel, library } from "../../data/library";
 
-export const metadata = {
-  title: "Biblioteca · Eneagrama",
-};
+export const metadata = publicMetadata("Eneagrama: exercícios e materiais para estudar", "Encontre explicações, exercícios e referências sobre Eneagrama para continuar estudando no seu ritmo.", "/biblioteca");
 
 export default function BibliotecaPage() {
   return (
     <div className="space-y-10">
       <header className="max-w-2xl">
-        <h1 className="font-display text-5xl">Biblioteca</h1>
+        <h1 className="font-display text-5xl">Materiais para continuar estudando</h1>
         <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">
-          O material de ensino vive aqui, no próprio site. Perfis, teste,
-          síntese, workbook, resumão e o mapa. Os livros da pasta entram como
-          guia de leitura, não como PDF.
+          Encontre explicações, exercícios e referências sobre Eneagrama. Escolha um assunto para começar e avance no seu ritmo.
         </p>
       </header>
 

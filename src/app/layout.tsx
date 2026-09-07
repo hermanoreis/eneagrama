@@ -23,9 +23,10 @@ const mono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://eneagrama.hermano.me"),
-  title: "Eneagrama, descubra o seu tipo",
+  title: { default: "Eneagrama por Hermano Reis", template: "%s | Eneagrama" },
+  authors: [{ name: "Hermano Reis", url: "https://hermano.me" }],
   description:
-    "Um retrato de como você pensa, sente e age, na vida pessoal e no trabalho. Teste de 135 afirmativas, resultado salvo na sua conta.",
+    "Teste gratuito e materiais em português para explorar os nove tipos do Eneagrama.",
 };
 
 export default function RootLayout({
@@ -39,8 +40,9 @@ export default function RootLayout({
       className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
+        <a href="#conteudo" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-xl focus:bg-white focus:p-4">Pular para o conteúdo</a>
         <SiteHeader />
-        <main className="mx-auto w-full max-w-6xl flex-1 px-5 py-8 sm:py-12">{children}</main>
+        <main id="conteudo" tabIndex={-1} className="mx-auto w-full max-w-6xl flex-1 px-5 py-8 sm:py-12">{children}</main>
         <SiteFooter />
         <Analytics />
       </body>

@@ -1,9 +1,10 @@
+import { privateMetadata } from "../../lib/seo";
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { LoginClient } from "../../components/LoginClient";
 import { getSession } from "../../lib/session";
 
-export const metadata = { title: "Entrar · Eneagrama" };
+export const metadata = privateMetadata("Entrar na sua conta");
 
 export default async function EntrarPage({
   searchParams,

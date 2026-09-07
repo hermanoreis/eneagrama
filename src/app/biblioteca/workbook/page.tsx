@@ -1,8 +1,7 @@
+import { publicMetadata } from "../../../lib/seo";
 import Link from "next/link";
 
-export const metadata = {
-  title: "Workbook · Eneagrama",
-};
+export const metadata = publicMetadata("Exercícios de Eneagrama para observar seus padrões", "Escolha um exercício de Eneagrama, anote o que percebeu e experimente uma prática no seu dia a dia.", "/biblioteca/workbook");
 
 const nines = [
   { id: 1, p: "Perfeição", q: "Onde o padrão me protege, e onde ele me trava?" },
@@ -25,10 +24,9 @@ export default function WorkbookPage() {
             Biblioteca
           </Link>
         </p>
-        <h1 className="mt-3 font-display text-5xl">Workbook</h1>
+        <h1 className="mt-3 font-display text-5xl">Exercícios para se observar no dia a dia</h1>
         <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">
-          Um caderno curto, no espírito da pasta de estudo. Papel e honestidade.
-          Ninguém precisa acertar. O trabalho é notar.
+          Escolha uma proposta, anote o que percebeu e volte a ela depois de experimentar.
         </p>
       </header>
 
@@ -50,8 +48,7 @@ export default function WorkbookPage() {
       <section className="space-y-4">
         <h2 className="font-display text-3xl">Os nove P</h2>
         <p className="leading-relaxed text-[color:var(--ink-soft)]">
-          Cada tipo carrega uma palavra de trabalho. Escolha a que aperta hoje,
-          não a que soa melhor no currículo.
+          Cada palavra se relaciona a um dos tipos. Escolha uma pergunta que tenha a ver com uma situação que você está vivendo.
         </p>
         <ul className="space-y-3">
           {nines.map((n) => (

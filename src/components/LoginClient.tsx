@@ -4,18 +4,18 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { authClient } from "../lib/auth-client";
 
-function humanAuthError(message: string | undefined, fallback: string) {
-  const text = message || "";
-  if (/não está configurado|RESEND|e-mail de acesso/i.test(text)) {
-    return "O envio de e-mail ainda não está ligado. Em produção o código só chega na caixa de entrada.";
-  }
-  return text || fallback;
+const SEND_ERROR = "Não conseguimos enviar o código agora. Tente novamente em alguns instantes.";
+const VERIFY_ERROR = "Não foi possível confirmar esse código. Confira os números ou peça outro.";
+
+function safeDestination(value: string | null) {
+  if (!value || !value.startsWith("/") || value.startsWith("//") || value.includes("\\")) return "/conta";
+  return value;
 }
 
 export function LoginClient({ goingToTest = false }: { goingToTest?: boolean }) {
   const router = useRouter();
   const search = useSearchParams();
-  const next = search.get("next") || "/conta";
+  const next = safeDestination(search.get("next"));
   const testNext = goingToTest || next.startsWith("/teste");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
@@ -34,12 +34,12 @@ export function LoginClient({ goingToTest = false }: { goingToTest?: boolean }) 
       });
       setBusy(false);
       if (err) {
-        setError(humanAuthError(err.message, "Não foi possível enviar o código."));
+        setError(SEND_ERROR);
         return false;
       }
-    } catch (e) {
+    } catch {
       setBusy(false);
-      setError(humanAuthError(e instanceof Error ? e.message : "", "Não foi possível enviar o código."));
+      setError(SEND_ERROR);
       return false;
     }
     if (process.env.NODE_ENV !== "production") {
@@ -73,12 +73,12 @@ export function LoginClient({ goingToTest = false }: { goingToTest?: boolean }) 
       });
       setBusy(false);
       if (err) {
-        setError(err.message || "Código inválido.");
+        setError(VERIFY_ERROR);
         return;
       }
-    } catch (e) {
+    } catch {
       setBusy(false);
-      setError(e instanceof Error ? e.message : "Código inválido.");
+      setError("Não conseguimos confirmar o acesso agora. Tente novamente em alguns instantes.");
       return;
     }
     router.push(next);
@@ -89,33 +89,37 @@ export function LoginClient({ goingToTest = false }: { goingToTest?: boolean }) 
     <div className="mx-auto max-w-md rounded-[32px] bg-white p-8 shadow-[0_18px_40px_rgba(27,36,48,0.08)]">
       {step === "email" ? (
         <form onSubmit={onEmail} className="space-y-5">
-          <h1 className="font-display text-4xl">Entre com o e-mail</h1>
+          <h1 className="font-display text-4xl">{testNext ? "Vamos começar?" : "Acesse sua conta"}</h1>
           <p className="text-[color:var(--ink-soft)]">
             {testNext
-              ? "Depois do código, as 135 frases. Uns 15 minutos. Pode parar e voltar."
-              : "Enviamos um código de 6 dígitos. Sem senha."}
+              ? "Entre com seu e-mail para fazer o teste e acessar sua conta. Vamos enviar um código, sem precisar criar uma senha."
+              : "Entre com seu e-mail para acessar seus resultados. Vamos enviar um código, sem precisar criar uma senha."}
           </p>
           <label className="block text-sm font-medium">
-            E-mail
+            Seu e-mail
             <input
               required
               type="email"
+              name="email"
+              autoComplete="email"
+              spellCheck={false}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="mt-1 w-full rounded-2xl border border-[color:var(--line)] bg-[color:var(--paper)] px-4 py-3"
               placeholder="voce@email.com"
             />
           </label>
-          {error ? <p className="text-sm text-[color:var(--danger)]">{error}</p> : null}
+          {error ? <p role="alert" className="text-sm text-[color:var(--danger)]">{error}</p> : null}
           <button disabled={busy} className="btn-primary w-full" type="submit">
-            {busy ? "Enviando…" : "Receber código"}
+            {busy ? "Enviando…" : "Enviar código"}
           </button>
+          <p className="text-center text-sm text-[color:var(--mute)]">O teste e o resultado são gratuitos.</p>
         </form>
       ) : (
         <form onSubmit={verify} className="space-y-5">
-          <h1 className="font-display text-4xl">Digite o código</h1>
+          <h1 className="font-display text-4xl">Confira seu e-mail</h1>
           <p className="text-[color:var(--ink-soft)]">
-            Enviado para <strong>{email}</strong>
+            Enviamos um código de 6 dígitos para <strong>{email}</strong>. Digite abaixo para continuar.
           </p>
           {devCode ? (
             <p className="rounded-2xl bg-[color:var(--wash)] px-4 py-3 text-sm">
@@ -133,6 +137,7 @@ export function LoginClient({ goingToTest = false }: { goingToTest?: boolean }) 
               inputMode="numeric"
               pattern="[0-9]{6}"
               autoComplete="one-time-code"
+              name="code"
               value={otp}
               onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
               onPaste={(e) => {
@@ -142,9 +147,9 @@ export function LoginClient({ goingToTest = false }: { goingToTest?: boolean }) 
               className="mt-1 w-full rounded-2xl border border-[color:var(--line)] bg-[color:var(--paper)] px-4 py-3 text-center font-display text-3xl tracking-[0.4em]"
             />
           </label>
-          {error ? <p className="text-sm text-[color:var(--danger)]">{error}</p> : null}
+          {error ? <p role="alert" className="text-sm text-[color:var(--danger)]">{error}</p> : null}
           <button disabled={busy || otp.length < 6} className="btn-primary w-full" type="submit">
-            {busy ? "Entrando…" : "Entrar"}
+            {busy ? "Entrando…" : "Confirmar e continuar"}
           </button>
           <div className="flex flex-col gap-2 text-center text-sm">
             <button
@@ -153,7 +158,7 @@ export function LoginClient({ goingToTest = false }: { goingToTest?: boolean }) 
               className="text-[color:var(--ink-soft)] underline underline-offset-4"
               onClick={onResend}
             >
-              Reenviar código
+              Enviar outro código
             </button>
             <button
               type="button"

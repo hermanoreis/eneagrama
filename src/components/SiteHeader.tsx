@@ -2,9 +2,9 @@ import Link from "next/link";
 import { getSession } from "../lib/session";
 
 const links = [
-  { href: "/tipos", label: "Tipos" },
-  { href: "/mapa", label: "Mapa" },
-  { href: "/sintese", label: "Síntese" },
+  { href: "/tipos", label: "Os nove tipos" },
+  { href: "/mapa", label: "Como funciona" },
+  { href: "/biblioteca", label: "Materiais" },
 ];
 
 export async function SiteHeader() {
@@ -55,7 +55,7 @@ export async function SiteHeader() {
             href={loggedIn ? "/teste" : "/entrar?next=/teste"}
             className="btn-primary btn-compact"
           >
-            {loggedIn ? "Teste" : "Começar"}
+            {loggedIn ? "Meu teste" : "Fazer o teste"}
           </Link>
         </div>
       </div>
@@ -67,10 +67,11 @@ export async function SiteFooter() {
   const session = await getSession();
   const loggedIn = Boolean(session?.user);
   const foot = [
-    { href: "/tipos", label: "Tipos" },
-    { href: "/mapa", label: "Mapa" },
+    { href: "/tipos", label: "Os nove tipos" },
+    { href: "/mapa", label: "Como funciona" },
     { href: "/sintese", label: "Síntese de liderança" },
-    { href: "/biblioteca", label: "Biblioteca" },
+    { href: "/biblioteca", label: "Materiais" },
+    { href: "/sobre-o-teste", label: "Sobre o teste" },
     loggedIn
       ? { href: "/conta", label: "Conta" }
       : { href: "/entrar", label: "Entrar" },
@@ -78,7 +79,7 @@ export async function SiteFooter() {
   return (
     <footer className="mt-auto border-t border-[color:var(--line)]">
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-10 text-sm text-[color:var(--mute)] sm:flex-row sm:items-start sm:justify-between">
-        <p>Nove tipos. Um mapa para se entender, e para entender os outros.</p>
+        <p>Eneagrama gratuito, por Hermano Reis. Um ponto de partida para se observar.</p>
         <nav className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-x-5 sm:gap-y-2">
           {foot.map((l) => (
             <Link

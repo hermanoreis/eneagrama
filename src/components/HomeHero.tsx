@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { EnneagramMark } from "./EnneagramMark";
+import { PaperFamily } from "./PaperFamily";
 
 type Props = {
   testHref: string;
@@ -9,11 +9,11 @@ type Props = {
 
 export function HomeHero({ testHref, startLabel, loggedIn }: Props) {
   return (
-    <section className="-mt-8 flex min-h-[38rem] items-center sm:-mt-12">
-      <div className="grid w-full items-center gap-10 py-8 md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] md:gap-6 lg:gap-12">
+    <section className="home-hero">
+      <div className="home-hero-grid">
         <div className="max-w-xl">
           <p className="mb-4 text-sm font-medium text-[color:var(--cta)]">Teste de Eneagrama gratuito</p>
-          <h1 className="font-display text-5xl leading-[1.04] sm:text-7xl">
+          <h1 className="font-display hero-title">
             É incrível começar a se entender.
           </h1>
           <p className="mt-6 text-lg leading-relaxed text-[color:var(--ink-soft)]">
@@ -25,7 +25,7 @@ export function HomeHero({ testHref, startLabel, loggedIn }: Props) {
             <Link href={testHref} className="btn-primary">
               {startLabel}
             </Link>
-            <Link href="/tipos" className="btn-ghost">
+            <Link href="/tipos" className="hero-secondary">
               Conhecer os nove tipos
             </Link>
           </div>
@@ -35,9 +35,7 @@ export function HomeHero({ testHref, startLabel, loggedIn }: Props) {
               : "135 afirmativas. Cerca de 15 minutos. Você entra com seu e-mail e pode continuar depois neste mesmo navegador."}
           </p>
         </div>
-        <div className="mx-auto w-full max-w-[22rem] sm:max-w-[26rem] md:mx-0 md:ml-auto md:max-w-none md:w-[min(100%,28rem)]">
-          <EnneagramMark interactive size={440} className="text-[color:var(--ink)]" />
-        </div>
+        <PaperFamily />
       </div>
     </section>
   );

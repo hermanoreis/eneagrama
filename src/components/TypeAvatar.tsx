@@ -1,54 +1,35 @@
+import Image from "next/image";
+import type { CSSProperties } from "react";
 import type { TypeId } from "../data/types";
 
-const faces: Record<TypeId, string> = {
-  1: "M28 22c0-6 5-10 12-10s12 4 12 10",
-  2: "M26 24c4 6 10 8 14 8s10-2 14-8",
-  3: "M24 20h32M28 28h24",
-  4: "M30 18c6 8 14 8 20 0",
-  5: "M32 16h16v8H32z",
-  6: "M28 20c8-6 16-6 24 0",
-  7: "M26 22c6 4 10 4 16 0s10 0 16 4",
-  8: "M24 18h32M24 26h32",
-  9: "M28 24c8 4 16 4 24 0",
+// Coordinates refer to the final square artwork; the eyes are live paper layers.
+const faces: Record<TypeId, { eyes: [number, number, number, number]; width: number; height: number }> = {
+  1: { eyes: [49, 33.2, 59, 32.4], width: 2.8, height: 3.5 },
+  2: { eyes: [44, 32.5, 54, 32.5], width: 2.8, height: 3.5 },
+  3: { eyes: [40, 25, 50.5, 25], width: 2.8, height: 3.5 },
+  4: { eyes: [46, 29.5, 57, 29.5], width: 2.8, height: 3.5 },
+  5: { eyes: [55.5, 37.5, 64.5, 37.5], width: 2.8, height: 3.5 },
+  6: { eyes: [43, 32.5, 54, 32.5], width: 2.8, height: 3.5 },
+  7: { eyes: [41.5, 28, 53, 28], width: 2.8, height: 3.5 },
+  8: { eyes: [44, 34, 55, 34], width: 2.8, height: 3.5 },
+  9: { eyes: [41.5, 29, 53.5, 29], width: 2.8, height: 3.5 },
 };
 
-function numberFill(color: string) {
-  const hex = color.replace("#", "");
-  if (hex.length !== 6) return "#1c1612";
-  const r = parseInt(hex.slice(0, 2), 16) / 255;
-  const g = parseInt(hex.slice(2, 4), 16) / 255;
-  const b = parseInt(hex.slice(4, 6), 16) / 255;
-  const lin = (c: number) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
-  const L = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
-  return L > 0.35 ? "#1c1612" : "#fff7ee";
-}
-
-export function TypeAvatar({
-  id,
-  color,
-  size = 88,
-}: {
+export function TypeAvatar({ id, size = 180, className = "", eager = false }: {
   id: TypeId;
-  color: string;
   size?: number;
+  className?: string;
+  eager?: boolean;
 }) {
+  const face = faces[id];
   return (
-    <svg viewBox="0 0 80 80" width={size} height={size} aria-hidden>
-      <circle cx="40" cy="40" r="38" fill={color} />
-      <circle cx="40" cy="38" r="22" fill="#fff7ee" />
-      <circle cx="32" cy="36" r="3.2" fill="#1c1612" />
-      <circle cx="48" cy="36" r="3.2" fill="#1c1612" />
-      <path d={faces[id]} fill="none" stroke="#1c1612" strokeWidth="2.2" strokeLinecap="round" />
-      <text
-        x="40"
-        y="72"
-        textAnchor="middle"
-        fontSize="11"
-        fontFamily="var(--font-display)"
-        fill={numberFill(color)}
-      >
-        {id}
-      </text>
-    </svg>
+    <span aria-hidden="true" data-character={id} className={`paper-character ${className}`} style={{ "--character-size": `${size}px` } as CSSProperties}>
+      <Image src={`/images/characters/type-${id}.webp`} alt="" width={1024} height={1024} sizes={`${size}px`} loading={eager ? "eager" : "lazy"} className="paper-character-image" draggable={false} />
+      {[0, 2].map((offset) => (
+        <span key={offset} data-eye className="paper-eye-position" style={{ left: `${face.eyes[offset]}%`, top: `${face.eyes[offset + 1]}%`, width: `${face.width}%`, height: `${face.height}%` }}>
+          <span className="paper-eye" />
+        </span>
+      ))}
+    </span>
   );
 }

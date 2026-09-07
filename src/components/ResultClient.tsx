@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { typeById } from "../data/types";
 import { typeIntroductions } from "../data/copy";
-import { EnneagramMark } from "./EnneagramMark";
+import { TypeAvatar } from "./TypeAvatar";
+import { PaperMotion } from "./PaperMotion";
 import {
   completeAnswers, loadAnswers, answeredCount, scoreTypes, resultLeaders,
   wingOf, subscribeAnswers, serverAnswersSnapshot, type Answers,
@@ -74,12 +75,13 @@ export function ResultClient() {
       <div className={`grid gap-5 ${tied ? "sm:grid-cols-2" : "md:grid-cols-[1fr_220px]"}`}>
         {leaders.map((leader) => (
           <article key={leader.id} className="rounded-3xl border border-[color:var(--line)] p-6">
+            {tied ? <TypeAvatar id={leader.id} size={140} /> : null}
             <h2 className="font-display text-3xl">{leader.id} · {typeById[leader.id].name}</h2>
             <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">{typeIntroductions[leader.id]}</p>
             <Link href={`/tipos/${leader.id}`} className="mt-5 inline-block underline underline-offset-4">Conhecer o tipo {leader.id}</Link>
           </article>
         ))}
-        {!tied ? <EnneagramMark active={profile.id} size={220} /> : null}
+        {!tied ? <PaperMotion><TypeAvatar id={profile.id} size={220} eager /></PaperMotion> : null}
       </div>
       {wing ? (
         <section className="rounded-3xl border border-[color:var(--line)] p-6">

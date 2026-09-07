@@ -2,8 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { HomeHero } from "../components/HomeHero";
 import { getSession } from "../lib/session";
-import { types } from "../data/types";
-import { homeFaq, typeIntroductions } from "../data/copy";
+import { TypeGallery } from "../components/TypeGallery";
+import { homeFaq } from "../data/copy";
 import { publicMetadata } from "../lib/seo";
 
 export const metadata = publicMetadata(
@@ -19,8 +19,17 @@ export default async function Home() {
   const startLabel = "Fazer o teste gratuito";
 
   return (
-    <div className="space-y-16 md:space-y-24">
+    <div className="home-page space-y-16 md:space-y-20">
       <HomeHero testHref={testHref} startLabel={startLabel} loggedIn={loggedIn} />
+      <section id="nove-tipos" className="home-section scroll-mt-24">
+        <div className="section-heading">
+          <div><p className="eyebrow">Os nove tipos do Eneagrama</p><h2 className="font-display text-4xl">Nove tipos. Muitas formas de ser.</h2></div>
+          <p className="max-w-md leading-relaxed text-[color:var(--ink-soft)]">Você pode se reconhecer em mais de uma descrição. Leia com curiosidade e veja o que faz sentido na sua vida.</p>
+        </div>
+        <TypeGallery />
+        <p className="mt-5 text-sm text-[color:var(--mute)]">Os nomes ajudam a organizar as descrições. Nenhum tipo é melhor que outro, e eles não definem uma profissão.</p>
+      </section>
+
       <section className="max-w-3xl space-y-5">
         <h2 className="font-display text-4xl">O que é o Eneagrama?</h2>
         <p className="text-lg leading-relaxed text-[color:var(--ink-soft)]">O Eneagrama é um modelo que descreve nove padrões de personalidade, com diferentes motivações e formas de reagir. Aqui, você pode conhecer esses padrões, responder a um questionário e comparar as descrições com a sua experiência.</p>
@@ -35,27 +44,14 @@ export default async function Home() {
             { title: "Encontrar palavras para uma conversa", text: "Use os perfis para refletir sobre o que você precisa, o que costuma evitar e o que gostaria de explicar melhor a alguém." },
             { title: "Escolher algo para experimentar", text: "Cada perfil traz sugestões de prática. Você pode começar por uma delas e observar como reage ao longo da semana." },
           ].map((item) => (
-            <article key={item.title} className="rounded-[28px] bg-white p-7 shadow-[0_16px_40px_rgba(27,36,48,0.06)]">
+            <article key={item.title} className="editorial-column">
               <h3 className="font-display text-2xl">{item.title}</h3>
               <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">{item.text}</p>
             </article>
           ))}
         </div>
       </section>
-      <section>
-        <h2 className="font-display text-4xl">Conheça os nove tipos do Eneagrama</h2>
-        <p className="mt-4 max-w-2xl leading-relaxed text-[color:var(--ink-soft)]">Você pode se reconhecer em mais de uma descrição. Leia com curiosidade e procure situações que ajudem a entender o que faz sentido para você.</p>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {types.map((type) => (
-            <Link key={type.id} href={`/tipos/${type.id}`} className="flex flex-col rounded-3xl border border-[color:var(--line)] p-6 transition-colors hover:border-[color:var(--ink)]">
-              <h3 className="font-display text-2xl"><span className="mr-2 inline-flex h-9 w-9 items-center justify-center rounded-full text-lg" style={{ background: type.color, color: type.ink }}>{type.id}</span>{type.name}</h3>
-              <p className="mt-4 flex-1 text-sm leading-relaxed text-[color:var(--ink-soft)]">{typeIntroductions[type.id]}</p>
-              <span className="mt-5 text-sm underline underline-offset-4">Conhecer o tipo {type.id}</span>
-            </Link>
-          ))}
-        </div>
-        <p className="mt-5 text-sm text-[color:var(--mute)]">Os nomes ajudam a organizar as descrições. Nenhum tipo é melhor que outro, e eles não definem uma profissão.</p>
-      </section>
+
       <section id="como-funciona" className="scroll-mt-24">
         <h2 className="font-display text-4xl">Como funciona</h2>
         <ol className="mt-6 grid gap-4 md:grid-cols-3">
@@ -64,7 +60,7 @@ export default async function Home() {
             { title: "Responda no seu ritmo", text: "São 135 afirmativas sobre hábitos e formas de reagir. Se precisar de uma pausa, volte neste mesmo navegador para continuar." },
             { title: "Compare as descrições", text: "Ao concluir, veja quais tipos tiveram mais pontos e leia os perfis. Depois, explore as práticas ou converse com o mentor com IA." },
           ].map((step, index) => (
-            <li key={step.title} className="rounded-[28px] border border-[color:var(--line)] p-6">
+            <li key={step.title} className="editorial-column">
               <p className="font-display text-3xl text-[color:var(--accent)]">{index + 1}</p>
               <h3 className="mt-3 text-lg font-semibold">{step.title}</h3>
               <p className="mt-3 text-sm leading-relaxed text-[color:var(--ink-soft)]">{step.text}</p>
@@ -102,7 +98,7 @@ export default async function Home() {
         </div>
         <Link href="/sobre-o-teste" className="mt-5 inline-block text-sm underline underline-offset-4">Entenda o questionário, as referências e o resultado</Link>
       </section>
-      <section className="on-ink rounded-[32px] bg-[color:var(--ink)] px-8 py-12 text-white sm:px-10">
+      <section className="on-ink home-final-cta bg-[color:var(--ink)] px-8 py-12 text-white sm:px-10">
         <h2 className="font-display text-4xl">Quer começar pelo teste?</h2>
         <p className="mt-4 max-w-xl leading-relaxed text-[color:var(--ink-on-dark)]">Responda pensando em como você costuma agir. Depois, leia as descrições com calma e veja o que reconhece na sua experiência.</p>
         <Link href={testHref} className="btn-primary mt-7">{startLabel}</Link>

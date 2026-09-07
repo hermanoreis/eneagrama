@@ -1,19 +1,13 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Plus_Jakarta_Sans, Source_Serif_4 } from "next/font/google";
+import { Geist_Mono, Outfit } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SiteFooter, SiteHeader } from "../components/SiteHeader";
 import "./globals.css";
 
-const display = Source_Serif_4({
-  variable: "--font-display",
-  subsets: ["latin", "latin-ext"],
-  axes: ["opsz"],
-  display: "swap",
-});
-
-const sans = Plus_Jakarta_Sans({
-  variable: "--font-jakarta",
+const sans = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const mono = Geist_Mono({
@@ -37,7 +31,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`}
+      className={`${sans.variable} ${mono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <a href="#conteudo" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-xl focus:bg-white focus:p-4">Pular para o conteúdo</a>

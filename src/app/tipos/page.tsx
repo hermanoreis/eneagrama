@@ -1,7 +1,7 @@
 import { publicMetadata } from "../../lib/seo";
 import Link from "next/link";
-import { typeIntroductions } from "../../data/copy";
-import { centers, types } from "../../data/types";
+import { TypeGallery } from "../../components/TypeGallery";
+import { centers } from "../../data/types";
 
 export const metadata = publicMetadata("Os 9 tipos do Eneagrama: características e diferenças", "Compare os nove tipos do Eneagrama: motivações, hábitos e sugestões de reflexão. Observe o que faz sentido na sua vida.", "/tipos");
 
@@ -31,28 +31,7 @@ export default function TiposPage() {
         ))}
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {types.map((t) => (
-          <Link
-            key={t.id}
-            href={`/tipos/${t.id}`}
-            className="flex flex-col rounded-3xl border border-[color:var(--line)] p-6 transition hover:border-[color:var(--ink)] motion-reduce:transition-none"
-          >
-            <span
-              className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full font-display text-lg"
-              style={{ background: t.color, color: t.ink }}
-            >
-              {t.id}
-            </span>
-            <h2 className="font-display text-2xl">{t.name}</h2>
-            <p className="text-sm text-[color:var(--mute)]">{t.alias}</p>
-            <p className="mt-3 flex-1 text-sm leading-relaxed text-[color:var(--ink-soft)]">
-              {typeIntroductions[t.id]}
-            </p>
-            <p className="mt-4 text-sm underline underline-offset-4">Conhecer o tipo</p>
-          </Link>
-        ))}
-      </div>
+      <TypeGallery headingLevel={2} />
     </div>
   );
 }

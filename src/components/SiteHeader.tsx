@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getSession } from "../lib/session";
+import { MobileNav } from "./MobileNav";
 
 const links = [
   { href: "/tipos", label: "Os nove tipos" },
@@ -13,26 +14,27 @@ export async function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-[color:var(--line)] bg-[color:var(--paper)]/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-3">
-        <Link href="/" className="font-display text-xl leading-none">
-          Eneagrama
+        <Link href="/" className="flex shrink-0 flex-col gap-1 font-display text-xl leading-none lg:flex-row lg:items-baseline lg:gap-3">
+          Eneagrama <span className="text-[10px] font-normal tracking-normal sm:text-xs">por Hermano Reis</span>
         </Link>
-        <nav className="hidden items-center gap-2 text-sm md:flex">
+        <nav aria-label="Navegação principal" className="hidden items-center gap-2 text-sm md:flex">
           {links.map((l) => (
             <Link
               key={l.href}
               href={l.href}
-              className="rounded-full px-3 py-2 text-[color:var(--ink-soft)] hover:bg-[color:var(--wash)] hover:text-[color:var(--ink)]"
+              className="hidden rounded px-3 py-2 text-[color:var(--ink-soft)] hover:bg-[color:var(--wash)] hover:text-[color:var(--ink)] md:inline"
             >
               {l.label}
             </Link>
           ))}
         </nav>
-        <div className="flex items-center gap-2 text-sm">
+        <div className="flex items-center gap-1 text-sm sm:gap-2">
+          <MobileNav loggedIn={loggedIn} />
           {loggedIn ? (
             <>
               <Link
                 href="/mentor"
-                className="rounded-full px-3 py-2 text-[color:var(--ink-soft)] hover:bg-[color:var(--wash)] hover:text-[color:var(--ink)]"
+                className="hidden rounded px-3 py-2 text-[color:var(--ink-soft)] hover:bg-[color:var(--wash)] hover:text-[color:var(--ink)] md:inline"
               >
                 Mentor
               </Link>
@@ -46,7 +48,7 @@ export async function SiteHeader() {
           ) : (
             <Link
               href="/entrar"
-              className="rounded-full px-3 py-2 text-[color:var(--ink-soft)] hover:bg-[color:var(--wash)] hover:text-[color:var(--ink)]"
+              className="hidden rounded px-3 py-2 text-[color:var(--ink-soft)] hover:bg-[color:var(--wash)] hover:text-[color:var(--ink)] md:inline"
             >
               Entrar
             </Link>

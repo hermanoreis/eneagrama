@@ -31,7 +31,7 @@ export default async function ContaPage() {
           <div className="grid gap-4 md:grid-cols-2">
             {leaders.map((leader) => (
               <article key={leader.id} className="rounded-3xl bg-white p-6">
-                <TypeAvatar id={leader.id} color={typeById[leader.id].color} size={88} />
+                <TypeAvatar id={leader.id} size={140} />
                 <h3 className="mt-4 font-display text-3xl">{leader.id} · {typeById[leader.id].name}</h3>
                 <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">{typeIntroductions[leader.id]}</p>
                 <Link href={`/tipos/${leader.id}`} className="mt-5 inline-block underline underline-offset-4">Reler o perfil do tipo {leader.id}</Link>

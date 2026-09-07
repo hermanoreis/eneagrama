@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Outfit } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SiteFooter, SiteHeader } from "../components/SiteHeader";
+import { ICON_PAPER } from "../lib/enneagram-icon";
 import { defaultOgImage } from "../lib/seo";
 import "./globals.css";
 
@@ -29,6 +30,10 @@ export const metadata: Metadata = {
     images: [defaultOgImage],
   },
   twitter: { card: "summary_large_image", images: [defaultOgImage.url] },
+};
+
+export const viewport: Viewport = {
+  themeColor: ICON_PAPER,
 };
 
 export default function RootLayout({

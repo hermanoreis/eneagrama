@@ -2,7 +2,7 @@ import Link from "next/link";
 import { centers, types } from "../../data/types";
 
 export const metadata = {
-  title: "Os nove tipos — Eneagrama",
+  title: "Os nove tipos · Eneagrama",
 };
 
 export default function TiposPage() {

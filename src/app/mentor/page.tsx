@@ -6,7 +6,7 @@ import { getLatestResult } from "../../lib/results";
 import { getSession } from "../../lib/session";
 import { typeById } from "../../data/types";
 
-export const metadata = { title: "Mentor — Eneagrama" };
+export const metadata = { title: "Mentor · Eneagrama" };
 
 export default async function MentorPage() {
   const session = await getSession();

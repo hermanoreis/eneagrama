@@ -2,7 +2,7 @@ import Link from "next/link";
 import { types } from "../../data/types";
 
 export const metadata = {
-  title: "Síntese — Eneagrama",
+  title: "Síntese · Eneagrama",
 };
 
 export default function SintesePage() {
@@ -14,7 +14,7 @@ export default function SintesePage() {
         </p>
         <h1 className="mt-2 font-display text-5xl">Síntese de perfis</h1>
         <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">
-          Pontos fortes, aspectos a desenvolver e o paradigma de cada tipo — a
+          Pontos fortes, aspectos a desenvolver e o paradigma de cada tipo. A
           mesma estrutura da síntese da pasta, para você e para o time.
         </p>
       </header>

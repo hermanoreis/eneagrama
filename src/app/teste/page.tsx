@@ -2,7 +2,7 @@ import { QuizClient } from "../../components/QuizClient";
 import { SCALE } from "../../data/questions";
 
 export const metadata = {
-  title: "Teste — Eneagrama",
+  title: "Teste · Eneagrama",
 };
 
 export default function TestePage() {

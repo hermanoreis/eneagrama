@@ -1,7 +1,7 @@
 import { ResultClient } from "../../../components/ResultClient";
 
 export const metadata = {
-  title: "Resultado — Eneagrama",
+  title: "Resultado · Eneagrama",
 };
 
 export default function ResultadoPage() {

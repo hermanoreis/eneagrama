@@ -21,9 +21,9 @@ const mono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://eneagrama.hermano.me"),
-  title: "Eneagrama — descubra o seu tipo",
+  title: "Eneagrama, descubra o seu tipo",
   description:
-    "Um retrato claro de como você pensa, sente e age — na vida pessoal e no trabalho. Teste de 135 afirmativas, resultado salvo na sua conta.",
+    "Um retrato de como você pensa, sente e age, na vida pessoal e no trabalho. Teste de 135 afirmativas, resultado salvo na sua conta.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

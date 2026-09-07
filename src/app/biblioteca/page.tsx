@@ -1,7 +1,7 @@
 import { files, folder, folderViewUrl, kindLabel, viewUrl } from "../../data/resources";
 
 export const metadata = {
-  title: "Biblioteca — Eneagrama",
+  title: "Biblioteca · Eneagrama",
 };
 
 export default function BibliotecaPage() {

@@ -20,8 +20,8 @@ export default async function Home() {
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-[color:var(--ink-soft)]">
             O Eneagrama descreve nove jeitos de sentir, decidir e se relacionar.
-            Em um teste de 135 afirmativas, você recebe um retrato claro de como
-            opera — em casa, no amor e no trabalho.
+            Em 135 afirmativas, você recebe um retrato de como opera em casa, no
+            amor e no trabalho.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href={testHref} className="btn-primary">
@@ -49,7 +49,7 @@ export default async function Home() {
             </p>
             <h3 className="mt-2 font-display text-2xl">Relacionamentos com menos ruído</h3>
             <p className="mt-3 leading-relaxed text-[color:var(--ink-soft)]">
-              Você passa a ver o medo e o desejo por trás das reações — as suas e
+              Você passa a ver o medo e o desejo por trás das reações, as suas e
               as das pessoas próximas. Menos julgamento, mais linguagem comum
               para conversas difíceis, família e intimidade.
             </p>
@@ -133,19 +133,18 @@ export default async function Home() {
       <section id="sobre" className="scroll-mt-24 grid gap-8 md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] md:items-end">
         <div>
           <h2 className="font-display text-4xl leading-[1.05] sm:text-5xl">
-            Eu construí isto para retribuir
+            Fiz este site para devolver
           </h2>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-[color:var(--ink-soft)]">
-            O Eneagrama me ajudou bastante no autoconhecimento e nas dinâmicas
-            de trabalho — inclusive quando liderei equipes. Como forma de
-            retribuir, construí esta solução para que outras pessoas tenham
-            acesso ao Eneagrama, se conheçam melhor e usem o mapa com mais
-            clareza.
+            O Eneagrama me ajudou bastante a me conhecer. Mudou minhas dinâmicas
+            de trabalho, inclusive quando eu liderei equipes. Construí isto para
+            que outras pessoas também tenham o Eneagrama à mão e se conheçam
+            melhor.
           </p>
         </div>
         <p className="max-w-md text-sm leading-relaxed text-[color:var(--mute)] md:text-right">
-          Sou o Hermano. O teste, os perfis e o mentor estão aqui para você
-          usar — um ponto de partida, não um diagnóstico.
+          Sou o Hermano. Teste, perfis e mentor estão aqui. O resultado é um
+          começo, não um diagnóstico.
         </p>
       </section>
 

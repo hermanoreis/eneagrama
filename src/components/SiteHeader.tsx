@@ -63,7 +63,7 @@ export function SiteFooter() {
   return (
     <footer className="mt-auto border-t border-[color:var(--line)]">
       <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-8 text-sm text-[color:var(--mute)] sm:flex-row sm:justify-between">
-        <p>Nove tipos. Um mapa para se entender — e entender os outros.</p>
+        <p>Nove tipos. Um mapa para se entender, e para entender os outros.</p>
         <p>O resultado é um ponto de partida, não um diagnóstico fechado.</p>
       </div>
     </footer>

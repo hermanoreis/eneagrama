@@ -5,7 +5,7 @@ import { typeById } from "../../data/types";
 import { listResults } from "../../lib/results";
 import { getSession } from "../../lib/session";
 
-export const metadata = { title: "Sua conta — Eneagrama" };
+export const metadata = { title: "Sua conta · Eneagrama" };
 
 export default async function ContaPage() {
   const session = await getSession();

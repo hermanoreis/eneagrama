@@ -34,11 +34,11 @@ export default function TiposPage() {
           <Link
             key={t.id}
             href={`/tipos/${t.id}`}
-            className="flex flex-col rounded-3xl border border-[color:var(--line)] p-6 transition hover:border-[color:var(--ink)]"
+            className="flex flex-col rounded-3xl border border-[color:var(--line)] p-6 transition hover:border-[color:var(--ink)] motion-reduce:transition-none"
           >
             <span
-              className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full font-display text-lg text-white"
-              style={{ background: t.color }}
+              className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full font-display text-lg"
+              style={{ background: t.color, color: t.ink }}
             >
               {t.id}
             </span>

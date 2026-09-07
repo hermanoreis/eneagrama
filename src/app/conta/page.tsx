@@ -45,7 +45,7 @@ export default async function ContaPage() {
               <Link href="/mentor" className="btn-primary !py-2">
                 Conversar com o mentor
               </Link>
-              <Link href={`/tipos/${profile.id}`} className="btn-dark !py-2">
+              <Link href={`/tipos/${profile.id}`} className="btn-ghost !py-2">
                 Relêr o perfil
               </Link>
               <Link href="/teste" className="rounded-full border border-[color:var(--line)] px-4 py-2 text-sm">

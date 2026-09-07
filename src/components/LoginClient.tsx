@@ -16,6 +16,7 @@ export function LoginClient() {
   const router = useRouter();
   const search = useSearchParams();
   const next = search.get("next") || "/conta";
+  const goingToTest = next.startsWith("/teste");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"email" | "code">("email");
@@ -23,8 +24,7 @@ export function LoginClient() {
   const [busy, setBusy] = useState(false);
   const [devCode, setDevCode] = useState<string | null>(null);
 
-  async function sendCode(e: React.FormEvent) {
-    e.preventDefault();
+  async function sendCode() {
     setError("");
     setBusy(true);
     try {
@@ -35,12 +35,12 @@ export function LoginClient() {
       setBusy(false);
       if (err) {
         setError(humanAuthError(err.message, "Não foi possível enviar o código."));
-        return;
+        return false;
       }
     } catch (e) {
       setBusy(false);
       setError(humanAuthError(e instanceof Error ? e.message : "", "Não foi possível enviar o código."));
-      return;
+      return false;
     }
     if (process.env.NODE_ENV !== "production") {
       const res = await fetch(`/api/dev/otp?email=${encodeURIComponent(email)}`);
@@ -49,7 +49,16 @@ export function LoginClient() {
         setDevCode(data.otp ?? null);
       }
     }
-    setStep("code");
+    return true;
+  }
+
+  async function onEmail(e: React.FormEvent) {
+    e.preventDefault();
+    if (await sendCode()) setStep("code");
+  }
+
+  async function onResend() {
+    await sendCode();
   }
 
   async function verify(e: React.FormEvent) {
@@ -79,10 +88,12 @@ export function LoginClient() {
   return (
     <div className="mx-auto max-w-md rounded-[32px] bg-white p-8 shadow-[0_18px_40px_rgba(27,36,48,0.08)]">
       {step === "email" ? (
-        <form onSubmit={sendCode} className="space-y-5">
+        <form onSubmit={onEmail} className="space-y-5">
           <h1 className="font-display text-4xl">Entre com o e-mail</h1>
           <p className="text-[color:var(--ink-soft)]">
-            Enviamos um código de 6 dígitos. Sem senha.
+            {goingToTest
+              ? "Depois do código, as 135 frases. Uns 15 minutos. Pode parar e voltar."
+              : "Enviamos um código de 6 dígitos. Sem senha."}
           </p>
           <label className="block text-sm font-medium">
             E-mail
@@ -91,11 +102,11 @@ export function LoginClient() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full rounded-2xl border border-[color:var(--line)] bg-[color:var(--paper)] px-4 py-3 outline-none focus:border-[color:var(--accent)]"
+              className="mt-1 w-full rounded-2xl border border-[color:var(--line)] bg-[color:var(--paper)] px-4 py-3"
               placeholder="voce@email.com"
             />
           </label>
-          {error ? <p className="text-sm text-[color:var(--accent)]">{error}</p> : null}
+          {error ? <p className="text-sm text-[color:var(--danger)]">{error}</p> : null}
           <button disabled={busy} className="btn-primary w-full" type="submit">
             {busy ? "Enviando…" : "Receber código"}
           </button>
@@ -128,24 +139,35 @@ export function LoginClient() {
                 e.preventDefault();
                 setOtp(e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6));
               }}
-              className="mt-1 w-full rounded-2xl border border-[color:var(--line)] bg-[color:var(--paper)] px-4 py-3 text-center font-display text-3xl tracking-[0.4em] outline-none focus:border-[color:var(--accent)]"
+              className="mt-1 w-full rounded-2xl border border-[color:var(--line)] bg-[color:var(--paper)] px-4 py-3 text-center font-display text-3xl tracking-[0.4em]"
             />
           </label>
-          {error ? <p className="text-sm text-red-700">{error}</p> : null}
+          {error ? <p className="text-sm text-[color:var(--danger)]">{error}</p> : null}
           <button disabled={busy || otp.length < 6} className="btn-primary w-full" type="submit">
             {busy ? "Entrando…" : "Entrar"}
           </button>
-          <button
-            type="button"
-            className="w-full text-sm text-[color:var(--mute)] underline"
-            onClick={() => {
-              setStep("email");
-              setOtp("");
-              setError("");
-            }}
-          >
-            Usar outro e-mail
-          </button>
+          <div className="flex flex-col gap-2 text-center text-sm">
+            <button
+              type="button"
+              disabled={busy}
+              className="text-[color:var(--ink-soft)] underline underline-offset-4"
+              onClick={onResend}
+            >
+              Reenviar código
+            </button>
+            <button
+              type="button"
+              className="text-[color:var(--mute)] underline underline-offset-4"
+              onClick={() => {
+                setStep("email");
+                setOtp("");
+                setError("");
+                setDevCode(null);
+              }}
+            >
+              Usar outro e-mail
+            </button>
+          </div>
         </form>
       )}
     </div>

@@ -12,6 +12,17 @@ const faces: Record<TypeId, string> = {
   9: "M28 24c8 4 16 4 24 0",
 };
 
+function numberFill(color: string) {
+  const hex = color.replace("#", "");
+  if (hex.length !== 6) return "#1c1612";
+  const r = parseInt(hex.slice(0, 2), 16) / 255;
+  const g = parseInt(hex.slice(2, 4), 16) / 255;
+  const b = parseInt(hex.slice(4, 6), 16) / 255;
+  const lin = (c: number) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+  const L = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  return L > 0.35 ? "#1c1612" : "#fff7ee";
+}
+
 export function TypeAvatar({
   id,
   color,
@@ -34,7 +45,7 @@ export function TypeAvatar({
         textAnchor="middle"
         fontSize="11"
         fontFamily="var(--font-display)"
-        fill="#fff7ee"
+        fill={numberFill(color)}
       >
         {id}
       </text>

@@ -5,11 +5,12 @@
   --wash: #efe8dc;
   --ink: #1b2430;
   --ink-soft: #3d4a5c;
-  --mute: #6d7a8a;
+  --mute: #525e6c;
   --line: #ddd4c6;
   --accent: #5b4bdb;
-  --cta: #2f9e6b;
+  --cta: #1f7a52;
   --gold: #c4a35a;
+  --danger: #9b1c2c;
   --background: var(--paper);
   --foreground: var(--ink);
 }
@@ -29,7 +30,7 @@ html {
 body {
   background:
     radial-gradient(900px 420px at 8% -8%, rgba(91, 75, 219, 0.12), transparent 50%),
-    radial-gradient(800px 380px at 100% 0%, rgba(47, 158, 107, 0.1), transparent 46%),
+    radial-gradient(800px 380px at 100% 0%, rgba(31, 122, 82, 0.1), transparent 46%),
     var(--paper);
   color: var(--ink);
   font-family: var(--font-sans), "Avenir Next", "Segoe UI", sans-serif;
@@ -44,6 +45,11 @@ body {
   color: #f7f4ee;
 }
 
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -53,16 +59,33 @@ body {
   color: white;
   font-weight: 650;
   padding: 0.85rem 1.5rem;
-  box-shadow: 0 10px 24px rgba(47, 158, 107, 0.22);
+  box-shadow: 0 8px 18px rgba(27, 36, 48, 0.16);
 }
 
-.btn-dark {
+.btn-ghost {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  background: var(--ink);
-  color: white;
+  border: 1.5px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
   font-weight: 650;
-  padding: 0.85rem 1.5rem;
+  padding: 0.8rem 1.45rem;
+}
+
+.btn-primary:disabled,
+.btn-ghost:disabled {
+  opacity: 0.55;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

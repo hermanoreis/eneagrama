@@ -16,10 +16,10 @@ export default async function Home() {
   const startLabel = loggedIn ? "Continuar o teste" : "Receber código e começar";
 
   return (
-    <div className="space-y-14 md:space-y-20">
-      <section className="grid items-center gap-8 md:grid-cols-[1.15fr_0.85fr] md:gap-10">
+    <div className="space-y-16 md:space-y-24">
+      <section className="grid items-start gap-8 md:grid-cols-[1.15fr_0.85fr] md:gap-8">
         <div>
-          <h1 className="font-display text-5xl leading-[0.95] sm:text-7xl">
+          <h1 className="font-display text-5xl leading-[1.04] sm:text-7xl">
             É incrível finalmente se entender.
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-[color:var(--ink-soft)]">
@@ -43,16 +43,16 @@ export default async function Home() {
         </div>
         <Link
           href="/tipos"
-          className="mx-auto block w-[168px] sm:w-[220px] md:w-[280px]"
+          className="mx-auto block w-[168px] opacity-95 transition-opacity hover:opacity-100 motion-reduce:transition-none sm:w-[220px] md:mx-0 md:ml-auto md:w-[280px] md:pt-1"
           aria-label="Ver os nove tipos"
         >
           <EnneagramMark size={280} className="h-auto w-full text-[color:var(--ink)]" />
         </Link>
       </section>
 
-      <section id="como-ajuda" className="scroll-mt-24 space-y-6">
+      <section id="como-ajuda">
         <h2 className="font-display text-4xl">Como o Eneagrama ajuda</h2>
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="mt-5 grid gap-5 md:grid-cols-2">
           <article className="rounded-[28px] bg-white p-7 shadow-[0_16px_40px_rgba(27,36,48,0.06)]">
             <h3 className="font-display text-2xl">Relacionamentos com menos ruído</h3>
             <p className="mt-3 leading-relaxed text-[color:var(--ink-soft)]">
@@ -82,9 +82,9 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="space-y-6">
+      <section>
         <h2 className="font-display text-4xl">Como funciona</h2>
-        <ol className="grid gap-4 md:grid-cols-3">
+        <ol className="mt-5 grid gap-4 md:grid-cols-3">
           {[
             {
               n: "1",
@@ -103,8 +103,10 @@ export default async function Home() {
             },
           ].map((s) => (
             <li key={s.n} className="rounded-[28px] border border-[color:var(--line)] p-6">
-              <p className="font-display text-3xl text-[color:var(--accent)]">{s.n}</p>
-              <h3 className="mt-2 text-lg font-semibold">{s.t}</h3>
+              <p className="font-display text-3xl leading-none tabular-nums text-[color:var(--accent)]">
+                {s.n}
+              </p>
+              <h3 className="mt-3 text-lg font-semibold">{s.t}</h3>
               <p className="mt-2 text-sm leading-relaxed text-[color:var(--ink-soft)]">{s.d}</p>
             </li>
           ))}
@@ -114,11 +116,14 @@ export default async function Home() {
       <section>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <h2 className="font-display text-4xl">Três centros, nove tipos</h2>
-          <Link href="/tipos" className="text-sm font-medium underline underline-offset-4">
+          <Link
+            href="/tipos"
+            className="text-sm font-medium text-[color:var(--mute)] underline underline-offset-4 hover:text-[color:var(--ink)]"
+          >
             Ver os nove tipos
           </Link>
         </div>
-        <div className="mt-6 grid gap-4 md:grid-cols-3">
+        <div className="mt-5 grid gap-4 md:grid-cols-3">
           {Object.entries(centers).map(([key, c]) => (
             <Link
               key={key}
@@ -137,31 +142,31 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="sobre" className="scroll-mt-24 space-y-5">
-        <h2 className="font-display text-4xl leading-[1.05] sm:text-5xl">
+      <section id="sobre">
+        <h2 className="font-display text-4xl leading-[1.08] sm:text-5xl">
           Fiz este site para devolver
         </h2>
-        <p className="max-w-2xl text-lg leading-relaxed text-[color:var(--ink-soft)]">
+        <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[color:var(--ink-soft)]">
           O Eneagrama me ajudou bastante a me conhecer. Mudou minhas dinâmicas
           de trabalho, inclusive quando eu liderei equipes. Construí isto para
           que outras pessoas também tenham o Eneagrama à mão e se conheçam
           melhor.
         </p>
-        <p className="font-display text-3xl">Hermano</p>
-        <p className="max-w-xl text-[color:var(--ink-soft)]">
+        <p className="mt-8 font-display text-3xl leading-none">Hermano</p>
+        <p className="mt-3 max-w-xl text-[color:var(--ink-soft)]">
           Teste, perfis e mentor estão aqui. O mentor conversa a partir do seu
           ranking, quando você quiser.
         </p>
       </section>
 
-      <section className="rounded-[32px] bg-[color:var(--ink)] px-8 py-12 text-white">
+      <section className="on-ink rounded-[32px] bg-[color:var(--ink)] px-8 py-12 text-white sm:px-10 sm:py-14">
         <h2 className="font-display text-4xl">Pronto para o retrato?</h2>
-        <p className="mt-3 max-w-xl text-[#d8dee6]">
+        <p className="mt-4 max-w-xl text-[color:var(--ink-on-dark)]">
           {loggedIn
             ? "Continue as 135 frases. O ranking e o mentor ficam na sua conta."
             : "Um código no e-mail, depois as 135 frases. O ranking fica na conta para o mentor ler."}
         </p>
-        <Link href={testHref} className="btn-primary mt-6">
+        <Link href={testHref} className="btn-primary mt-7">
           {startLabel}
         </Link>
       </section>

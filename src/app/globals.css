@@ -1,14 +1,17 @@
 @import "tailwindcss";
 
 :root {
+  color-scheme: light;
   --paper: #f7f4ee;
   --wash: #efe8dc;
   --ink: #1b2430;
   --ink-soft: #3d4a5c;
   --mute: #525e6c;
+  --ink-on-dark: #d5dce5;
   --line: #ddd4c6;
   --accent: #5b4bdb;
   --cta: #1f7a52;
+  --cta-hover: #175f40;
   --gold: #c4a35a;
   --danger: #9b1c2c;
   --background: var(--paper);
@@ -25,6 +28,9 @@
 
 html {
   background: var(--paper);
+  scroll-padding-top: 4.75rem;
+  scrollbar-color: var(--mute) var(--wash);
+  scrollbar-width: thin;
 }
 
 body {
@@ -32,17 +38,25 @@ body {
     radial-gradient(900px 420px at 8% -8%, rgba(91, 75, 219, 0.12), transparent 50%),
     radial-gradient(800px 380px at 100% 0%, rgba(31, 122, 82, 0.1), transparent 46%),
     var(--paper);
+  caret-color: var(--ink);
   color: var(--ink);
   font-family: var(--font-sans), "Avenir Next", "Segoe UI", sans-serif;
 }
 
 .font-display {
   font-family: var(--font-display), "Playfair Display", Georgia, serif;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
 ::selection {
-  background: #5b4bdb;
-  color: #f7f4ee;
+  background: var(--accent);
+  color: var(--paper);
+}
+
+::placeholder {
+  color: var(--mute);
+  opacity: 1;
 }
 
 :focus-visible {
@@ -50,33 +64,66 @@ body {
   outline-offset: 3px;
 }
 
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  background: var(--cta);
-  color: white;
-  font-weight: 650;
-  padding: 0.85rem 1.5rem;
-  box-shadow: 0 8px 18px rgba(27, 36, 48, 0.16);
+.on-ink :focus-visible {
+  outline-color: var(--paper);
 }
 
+.btn-primary,
 .btn-ghost {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 2.75rem;
   border-radius: 999px;
+  font-weight: 650;
+  padding: 0.8rem 1.5rem;
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    transform 0.16s ease;
+}
+
+.btn-primary {
+  background: var(--cta);
+  color: white;
+  box-shadow: 0 8px 18px rgba(27, 36, 48, 0.16);
+}
+
+.btn-primary:hover {
+  background: var(--cta-hover);
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+  box-shadow: 0 4px 10px rgba(27, 36, 48, 0.14);
+}
+
+.btn-ghost {
   border: 1.5px solid var(--ink);
   background: transparent;
   color: var(--ink);
-  font-weight: 650;
-  padding: 0.8rem 1.45rem;
+}
+
+.btn-ghost:hover {
+  background: var(--wash);
+}
+
+.btn-ghost:active {
+  transform: translateY(1px);
+}
+
+.btn-compact {
+  min-height: 2.5rem;
+  padding: 0.45rem 1.05rem;
+  font-size: 0.875rem;
 }
 
 .btn-primary:disabled,
 .btn-ghost:disabled {
   opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

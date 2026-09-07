@@ -121,9 +121,13 @@ export function LoginClient() {
               required
               inputMode="numeric"
               pattern="[0-9]{6}"
-              maxLength={6}
+              autoComplete="one-time-code"
               value={otp}
               onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+              onPaste={(e) => {
+                e.preventDefault();
+                setOtp(e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6));
+              }}
               className="mt-1 w-full rounded-2xl border border-[color:var(--line)] bg-[color:var(--paper)] px-4 py-3 text-center font-display text-3xl tracking-[0.4em] outline-none focus:border-[color:var(--accent)]"
             />
           </label>

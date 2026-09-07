@@ -3,20 +3,8 @@ const SITE_URL =
 
 const MARK_SRC = `${SITE_URL}/eneagrama-mark.png`;
 
-function digitCells(otp: string) {
-  return otp
-    .replace(/\D/g, "")
-    .slice(0, 6)
-    .split("")
-    .map(
-      (d) =>
-        `<td style="width:42px;height:54px;text-align:center;vertical-align:middle;font-family:Georgia,'Times New Roman',serif;font-size:28px;line-height:54px;font-weight:600;color:#1b2430;background:#efe8dc;border:1px solid #ddd4c6;border-radius:12px;">${d}</td>`,
-    )
-    .join('<td style="width:8px;font-size:0;line-height:0;">&nbsp;</td>');
-}
-
 export function otpEmailHtml(otp: string) {
-  const digits = digitCells(otp);
+  const code = otp.replace(/\D/g, "").slice(0, 6);
 
   return `<!DOCTYPE html>
 <html lang="pt-BR">
@@ -64,10 +52,17 @@ export function otpEmailHtml(otp: string) {
                   </td>
                 </tr>
                 <tr>
-                  <td align="center" style="padding-bottom:28px;">
+                  <td align="center" style="padding-bottom:10px;">
                     <table role="presentation" cellpadding="0" cellspacing="0">
-                      <tr>${digits}</tr>
+                      <tr>
+                        <td style="background:#efe8dc;border:1px solid #ddd4c6;border-radius:16px;padding:14px 28px;font-family:Georgia,'Times New Roman',serif;font-size:36px;line-height:1.2;letter-spacing:0.12em;font-weight:600;color:#1b2430;-webkit-user-select:all;user-select:all;">${code}</td>
+                      </tr>
                     </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding-bottom:24px;font-family:'Avenir Next','Plus Jakarta Sans','Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;line-height:1.5;color:#6d7a8a;">
+                    Copie o código e cole no site.
                   </td>
                 </tr>
                 <tr>

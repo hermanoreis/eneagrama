@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { EnneagramMark } from "../../../components/EnneagramMark";
+import { arrowsByType } from "../../../data/map";
 import { typeById, types, type TypeId } from "../../../data/types";
 
 export function generateStaticParams() {
@@ -81,6 +82,39 @@ export default async function TipoPage({ params }: { params: Promise<{ id: strin
               <p className="mt-2 text-sm leading-relaxed text-[color:var(--ink-soft)]">{w.text}</p>
             </Link>
           ))}
+        </div>
+      </section>
+
+      <section>
+        <h2 className="font-display text-3xl">Flechas</h2>
+        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[color:var(--ink-soft)]">
+          Integração é o movimento de crescimento. Stress é o puxão quando a
+          defesa aperta.{" "}
+          <Link href="/mapa#flechas" className="underline underline-offset-4">
+            Ver o mapa
+          </Link>
+        </p>
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <Link
+            href={`/tipos/${arrowsByType[t.id].growth}`}
+            className="rounded-3xl border border-[color:var(--line)] p-5 hover:border-[color:var(--ink)]"
+          >
+            <p className="text-sm text-[color:var(--mute)]">Integração · tipo {arrowsByType[t.id].growth}</p>
+            <h3 className="mt-1 font-display text-xl">{arrowsByType[t.id].growthName}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-[color:var(--ink-soft)]">
+              {arrowsByType[t.id].growthText}
+            </p>
+          </Link>
+          <Link
+            href={`/tipos/${arrowsByType[t.id].stress}`}
+            className="rounded-3xl border border-[color:var(--line)] p-5 hover:border-[color:var(--ink)]"
+          >
+            <p className="text-sm text-[color:var(--mute)]">Stress · tipo {arrowsByType[t.id].stress}</p>
+            <h3 className="mt-1 font-display text-xl">{arrowsByType[t.id].stressName}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-[color:var(--ink-soft)]">
+              {arrowsByType[t.id].stressText}
+            </p>
+          </Link>
         </div>
       </section>
 

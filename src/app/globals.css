@@ -44,8 +44,9 @@ body {
 }
 
 .font-display {
-  font-family: var(--font-display), "Playfair Display", Georgia, serif;
-  letter-spacing: -0.02em;
+  font-family: var(--font-display), "Source Serif 4", "Source Serif Pro", Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   text-wrap: balance;
 }
 
@@ -66,6 +67,15 @@ body {
 
 .on-ink :focus-visible {
   outline-color: var(--paper);
+}
+
+svg a:focus-visible {
+  outline: none;
+}
+
+svg a:focus-visible circle:nth-of-type(2) {
+  stroke: var(--accent);
+  stroke-width: 1.4;
 }
 
 .btn-primary,

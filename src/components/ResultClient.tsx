@@ -1,25 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
+import { arrowsByType } from "../data/map";
 import { typeById } from "../data/types";
 import { EnneagramMark } from "./EnneagramMark";
 import {
   answeredCount,
   loadAnswers,
   scoreTypes,
-  type Answers,
+  wingOf,
   type TypeScore,
 } from "../lib/quiz";
 import { questions } from "../data/questions";
 
 export function ResultClient() {
-  const [answers, setAnswers] = useState<Answers | null>(null);
+  const answers = useSyncExternalStore(
+    () => () => undefined,
+    loadAnswers,
+    () => null,
+  );
   const [saved, setSaved] = useState(false);
-
-  useEffect(() => {
-    setAnswers(loadAnswers());
-  }, []);
 
   useEffect(() => {
     if (!answers || saved) return;
@@ -61,6 +62,13 @@ export function ResultClient() {
   const top = scores[0];
   const second = scores[1];
   const profile = typeById[top.id];
+  const wing = wingOf(top.id, scores);
+  const wingProfile = wing.id ? typeById[wing.id] : null;
+  const wingCopy = wingProfile
+    ? profile.wings.find((w) => w.id === wingProfile.id)
+    : null;
+  const secondIsWing = second.id === wing.id;
+  const arrows = arrowsByType[top.id];
 
   return (
     <div className="space-y-12">
@@ -86,10 +94,7 @@ export function ResultClient() {
 
       <div className="grid items-center gap-10 md:grid-cols-[1fr_220px]">
         <div>
-          <p className="text-xs uppercase tracking-[0.22em] text-[color:var(--mute)]">
-            Tipo mais alto
-          </p>
-          <h1 className="mt-2 font-display text-5xl leading-none text-[color:var(--ink)]">
+          <h1 className="font-display text-5xl leading-none text-[color:var(--ink)]">
             {top.id} · {profile.name}
           </h1>
           <p className="mt-3 text-lg text-[color:var(--ink-soft)]">{profile.alias}</p>
@@ -101,31 +106,64 @@ export function ResultClient() {
             >
               Abrir perfil completo
             </Link>
-            <Link href="/sintese" className="rounded-full border border-[color:var(--line)] px-5 py-2 text-sm">
-              Ver síntese de liderança
+            <Link href="/mapa" className="rounded-full border border-[color:var(--line)] px-5 py-2 text-sm">
+              Ler o mapa
             </Link>
           </div>
         </div>
         <EnneagramMark size={220} active={top.id} className="mx-auto text-[color:var(--ink)]" />
       </div>
 
-      <section>
-        <h2 className="font-display text-2xl">Pontuação por tipo</h2>
-        <p className="mt-1 text-sm text-[color:var(--mute)]">
-          Soma das 15 afirmativas de cada tipo (1 a 5). Máximo 75.
-        </p>
-        <ol className="mt-6 space-y-3">
-          {scores.map((s) => (
-            <ScoreRow key={s.id} score={s} lead={s.id === top.id} />
-          ))}
-        </ol>
+      <section className="rounded-[28px] border border-[color:var(--line)] bg-white p-7 shadow-[0_12px_32px_rgba(27,36,48,0.05)]">
+        <h2 className="font-display text-3xl">Sua asa</h2>
+        {wing.tied ? (
+          <div className="mt-4 space-y-3">
+            <p className="leading-relaxed">
+              Os dois vizinhos empataram. Asas equilibradas: {wing.left}{" "}
+              {typeById[wing.left].name} e {wing.right} {typeById[wing.right].name},
+              ambos com {wing.leftScore}.
+            </p>
+            <div className="grid gap-4 md:grid-cols-2">
+              {profile.wings.map((w) => (
+                <Link
+                  key={w.id}
+                  href={`/tipos/${w.id}`}
+                  className="rounded-2xl bg-[color:var(--wash)] p-4"
+                >
+                  <p className="font-display text-xl">
+                    {w.id} · {w.name}
+                  </p>
+                  <p className="mt-2 text-sm leading-relaxed text-[color:var(--ink-soft)]">{w.text}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        ) : wingProfile && wingCopy ? (
+          <div className="mt-4">
+            <p className="font-display text-3xl">
+              {top.id}w{wingProfile.id} · {wingCopy.name}
+            </p>
+            <p className="mt-3 max-w-2xl leading-relaxed">{wingCopy.text}</p>
+            <p className="mt-3 text-sm text-[color:var(--mute)]">
+              Entre os vizinhos {wing.left} ({wing.leftScore}) e {wing.right} ({wing.rightScore}),
+              a pontuação mais alta foi a do tipo {wingProfile.id}.{" "}
+              <Link href="/mapa#asas" className="underline underline-offset-4">
+                Como a asa é lida
+              </Link>
+            </p>
+            <Link
+              href={`/tipos/${wingProfile.id}`}
+              className="mt-4 inline-block text-sm underline underline-offset-4"
+            >
+              Ver tipo {wingProfile.id}
+            </Link>
+          </div>
+        ) : null}
       </section>
 
       <section className="grid gap-6 md:grid-cols-2">
         <article className="rounded-3xl border border-[color:var(--line)] p-6">
-          <h3 className="text-xs uppercase tracking-[0.18em] text-[color:var(--mute)]">
-            Medo · desejo
-          </h3>
+          <h3 className="font-display text-xl">Medo e desejo</h3>
           <p className="mt-3">
             <strong>Medo:</strong> {profile.fear}
           </p>
@@ -134,13 +172,29 @@ export function ResultClient() {
           </p>
         </article>
         <article className="rounded-3xl border border-[color:var(--line)] p-6">
-          <h3 className="text-xs uppercase tracking-[0.18em] text-[color:var(--mute)]">
-            Segundo mais alto
-          </h3>
+          <h3 className="font-display text-xl">Flechas deste tipo</h3>
+          <p className="mt-3 text-sm leading-relaxed">
+            <span className="font-medium">Integração {arrows.growth}.</span> {arrows.growthText}
+          </p>
+          <p className="mt-2 text-sm leading-relaxed">
+            <span className="font-medium">Stress {arrows.stress}.</span> {arrows.stressText}
+          </p>
+          <Link href="/mapa#flechas" className="mt-4 inline-block text-sm underline underline-offset-4">
+            O mapa das flechas
+          </Link>
+        </article>
+      </section>
+
+      {!secondIsWing ? (
+        <section className="rounded-3xl border border-[color:var(--line)] p-6">
+          <h2 className="font-display text-2xl">Outro traço alto</h2>
+          <p className="mt-2 text-sm text-[color:var(--mute)]">
+            Segundo no ranking, e não é vizinho. Não é a asa.
+          </p>
           <p className="mt-3 font-display text-2xl">
             {second.id} · {second.name}
           </p>
-          <p className="mt-2 text-sm leading-relaxed text-[color:var(--ink-soft)]">
+          <p className="mt-2 max-w-xl text-sm leading-relaxed text-[color:var(--ink-soft)]">
             {typeById[second.id].summary}
           </p>
           <Link
@@ -149,19 +203,45 @@ export function ResultClient() {
           >
             Ver tipo {second.id}
           </Link>
-        </article>
+        </section>
+      ) : null}
+
+      <section>
+        <h2 className="font-display text-2xl">Pontuação por tipo</h2>
+        <p className="mt-1 text-sm text-[color:var(--mute)]">
+          Soma das 15 afirmativas de cada tipo (1 a 5). Máximo 75.
+        </p>
+        <ol className="mt-6 space-y-3">
+          {scores.map((s) => (
+            <ScoreRow
+              key={s.id}
+              score={s}
+              lead={s.id === top.id}
+              wing={s.id === wing.id}
+            />
+          ))}
+        </ol>
       </section>
     </div>
   );
 }
 
-function ScoreRow({ score, lead }: { score: TypeScore; lead: boolean }) {
+function ScoreRow({
+  score,
+  lead,
+  wing,
+}: {
+  score: TypeScore;
+  lead: boolean;
+  wing: boolean;
+}) {
   return (
     <li>
       <Link href={`/tipos/${score.id}`} className="block">
         <div className="mb-1 flex items-baseline justify-between gap-3 text-sm">
-          <span className={lead ? "font-medium" : ""}>
+          <span className={lead || wing ? "font-medium" : ""}>
             {score.id} · {score.name}
+            {lead ? " · tipo" : wing ? " · asa" : ""}
           </span>
           <span className="tabular-nums text-[color:var(--mute)]">
             {score.score}/{score.max}
@@ -172,8 +252,8 @@ function ScoreRow({ score, lead }: { score: TypeScore; lead: boolean }) {
             className="h-full rounded-full"
             style={{
               width: `${score.percent}%`,
-              background: lead ? "var(--accent)" : "var(--ink)",
-              opacity: lead ? 1 : 0.45,
+              background: lead ? "var(--accent)" : wing ? "var(--cta)" : "var(--ink)",
+              opacity: lead || wing ? 1 : 0.45,
             }}
           />
         </div>

@@ -12,8 +12,12 @@ export default function TiposPage() {
         <p className="text-xs uppercase tracking-[0.22em] text-[color:var(--mute)]">Galeria</p>
         <h1 className="mt-2 font-display text-5xl">Os nove tipos</h1>
         <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">
-          Cada perfil traz medo e desejo fundamentais, asas, pontos fortes, aspectos a
-          desenvolver e o paradigma de liderança da síntese.
+          Cada perfil traz medo e desejo, asas, flechas, pontos fortes e o
+          paradigma de liderança.{" "}
+          <Link href="/mapa" className="underline underline-offset-4">
+            O mapa
+          </Link>{" "}
+          explica tríades, variantes e níveis.
         </p>
       </header>
 

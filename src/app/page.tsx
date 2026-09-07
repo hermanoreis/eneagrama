@@ -1,5 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
-import { EnneagramMark } from "../components/EnneagramMark";
+import { HomeHero } from "../components/HomeHero";
 import { getSession } from "../lib/session";
 import { centers, typeById } from "../data/types";
 
@@ -9,6 +10,25 @@ const centerBlurb = {
   pensamento: "Mente, segurança e possibilidades. A questão de fundo é o medo.",
 } as const;
 
+const milestones = [
+  {
+    place: "Tenda Construtora",
+    role: "Product Builder. Inovação e transformação digital, agentes de IA em produção.",
+  },
+  {
+    place: "Jovens Gênios",
+    role: "GenieX, preparação para o ENEM. Time de produto, centenas de milhares de pessoas na plataforma.",
+  },
+  {
+    place: "Faber-Castell",
+    role: "Inovação e o Jibbit, educação digital do zero ao piloto.",
+  },
+  {
+    place: "SECTI / Maranhão",
+    role: "Superintendente de Políticas para a Inovação. Startups, educação, universidade.",
+  },
+];
+
 export default async function Home() {
   const session = await getSession();
   const loggedIn = Boolean(session?.user);
@@ -17,38 +37,7 @@ export default async function Home() {
 
   return (
     <div className="space-y-16 md:space-y-24">
-      <section className="grid items-start gap-8 md:grid-cols-[1.15fr_0.85fr] md:gap-8">
-        <div>
-          <h1 className="font-display text-5xl leading-[1.04] sm:text-7xl">
-            É incrível finalmente se entender.
-          </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-[color:var(--ink-soft)]">
-            O retrato sai de 135 afirmativas da pasta de estudo, com ranking
-            salvo na conta. Depois o mentor conversa a partir desse ranking, não
-            de um quiz genérico.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link href={testHref} className="btn-primary">
-              {startLabel}
-            </Link>
-            <Link href="/tipos" className="btn-ghost">
-              Ver os nove tipos
-            </Link>
-          </div>
-          <p className="mt-4 max-w-xl text-sm leading-relaxed text-[color:var(--mute)]">
-            {loggedIn
-              ? "O teste fica na sua conta. Pode parar e voltar."
-              : "Primeiro um código no e-mail, sem senha. Depois 135 frases, uns 15 minutos. Pode parar e voltar."}
-          </p>
-        </div>
-        <Link
-          href="/tipos"
-          className="mx-auto block w-[168px] opacity-95 transition-opacity hover:opacity-100 motion-reduce:transition-none sm:w-[220px] md:mx-0 md:ml-auto md:w-[280px] md:pt-1"
-          aria-label="Ver os nove tipos"
-        >
-          <EnneagramMark size={280} className="h-auto w-full text-[color:var(--ink)]" />
-        </Link>
-      </section>
+      <HomeHero testHref={testHref} startLabel={startLabel} loggedIn={loggedIn} />
 
       <section id="como-ajuda">
         <h2 className="font-display text-4xl">Como o Eneagrama ajuda</h2>
@@ -117,17 +106,17 @@ export default async function Home() {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <h2 className="font-display text-4xl">Três centros, nove tipos</h2>
           <Link
-            href="/tipos"
+            href="/mapa"
             className="text-sm font-medium text-[color:var(--mute)] underline underline-offset-4 hover:text-[color:var(--ink)]"
           >
-            Ver os nove tipos
+            Ler o mapa
           </Link>
         </div>
         <div className="mt-5 grid gap-4 md:grid-cols-3">
           {Object.entries(centers).map(([key, c]) => (
             <Link
               key={key}
-              href="/tipos"
+              href="/mapa#triades"
               className="rounded-[28px] border border-[color:var(--line)] p-6 transition hover:border-[color:var(--ink)] motion-reduce:transition-none"
             >
               <h3 className="font-display text-2xl">{c.label}</h3>
@@ -143,20 +132,58 @@ export default async function Home() {
       </section>
 
       <section id="sobre">
-        <h2 className="font-display text-4xl leading-[1.08] sm:text-5xl">
-          Fiz este site para devolver
-        </h2>
-        <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[color:var(--ink-soft)]">
-          O Eneagrama me ajudou bastante a me conhecer. Mudou minhas dinâmicas
-          de trabalho, inclusive quando eu liderei equipes. Construí isto para
-          que outras pessoas também tenham o Eneagrama à mão e se conheçam
-          melhor.
-        </p>
-        <p className="mt-8 font-display text-3xl leading-none">Hermano</p>
-        <p className="mt-3 max-w-xl text-[color:var(--ink-soft)]">
-          Teste, perfis e mentor estão aqui. O mentor conversa a partir do seu
-          ranking, quando você quiser.
-        </p>
+        <div className="grid items-center gap-10 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+          <div className="relative mx-auto w-full max-w-[20rem] overflow-hidden rounded-[32px] bg-[color:var(--wash)] shadow-[0_18px_40px_rgba(27,36,48,0.1)] md:mx-0">
+            <Image
+              src="/images/hermano-papercraft.png"
+              alt="Retrato em papercraft de Hermano Reis, recortado em camadas de papel kraft."
+              width={800}
+              height={800}
+              className="h-auto w-full"
+              priority={false}
+            />
+          </div>
+          <div>
+            <h2 className="font-display text-4xl leading-[1.08] sm:text-5xl">
+              Fiz este site para devolver
+            </h2>
+            <p className="mt-5 max-w-xl text-lg leading-relaxed text-[color:var(--ink-soft)]">
+              O Eneagrama me ajudou bastante a me conhecer. Mudou minhas
+              dinâmicas de trabalho, inclusive quando eu liderei equipes.
+              Construí isto para que outras pessoas também tenham o Eneagrama à
+              mão e se conheçam melhor.
+            </p>
+            <p className="mt-6 font-display text-3xl leading-none">Hermano Reis</p>
+            <p className="mt-3 max-w-xl leading-relaxed text-[color:var(--ink-soft)]">
+              Engenheiro da computação. Hoje Product Builder na Tenda. Passei
+              pelo setor público no Maranhão, por EdTech e por inovação
+              corporativa. Em cada um desses lugares o mapa deu linguagem para
+              time, conflito e decisão.
+            </p>
+            <ul className="mt-6 space-y-3 text-sm leading-relaxed">
+              {milestones.map((m) => (
+                <li key={m.place}>
+                  <span className="font-medium">{m.place}. </span>
+                  <span className="text-[color:var(--ink-soft)]">{m.role}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+              <a
+                href="https://hermano.me"
+                className="underline underline-offset-4 hover:text-[color:var(--ink)]"
+              >
+                hermano.me
+              </a>
+              <a
+                href="https://www.linkedin.com/in/hermanoreis"
+                className="underline underline-offset-4 hover:text-[color:var(--ink)]"
+              >
+                LinkedIn
+              </a>
+            </p>
+          </div>
+        </div>
       </section>
 
       <section className="on-ink rounded-[32px] bg-[color:var(--ink)] px-8 py-12 text-white sm:px-10 sm:py-14">

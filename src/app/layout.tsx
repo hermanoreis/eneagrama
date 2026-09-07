@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
+import { Geist_Mono, Plus_Jakarta_Sans, Source_Serif_4 } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SiteFooter, SiteHeader } from "../components/SiteHeader";
 import "./globals.css";
 
-const display = Playfair_Display({
+const display = Source_Serif_4({
   variable: "--font-display",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
+  axes: ["opsz"],
   display: "swap",
 });
 
@@ -27,7 +28,11 @@ export const metadata: Metadata = {
     "Um retrato de como você pensa, sente e age, na vida pessoal e no trabalho. Teste de 135 afirmativas, resultado salvo na sua conta.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="pt-BR"

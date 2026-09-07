@@ -1,3 +1,4 @@
+import { arrowsByType } from "../../data/map";
 import { typeById, types, type TypeId } from "../../data/types";
 
 export function isTypeId(value: number): value is TypeId {
@@ -26,6 +27,7 @@ export function serializeType(id: TypeId) {
     vocations: t.vocations,
     practices: t.practices,
     wings: t.wings,
+    arrows: arrowsByType[id],
     leadership: t.leadership,
   };
 }

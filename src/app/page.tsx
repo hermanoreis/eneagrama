@@ -77,7 +77,24 @@ export default async function Home() {
         <Link href="/mentor" className="btn-ghost">Conhecer o mentor</Link>
       </section>
       <section id="sobre" className="grid items-center gap-10 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
-        <Image src="/images/hermano-papercraft-editorial.webp" alt="Ilustração papercraft de Hermano Reis, criador do site." width={1200} height={1200} sizes="(max-width: 768px) 80vw, 320px" className="mx-auto h-auto w-full max-w-xs rounded-[32px]" />
+        <figure className="author-portrait" tabIndex={0} aria-label="Retrato de Hermano Reis. Passe o cursor ou use o foco para revelar a foto original.">
+          <Image
+            src="/images/hermano-original.webp"
+            alt=""
+            aria-hidden="true"
+            fill
+            sizes="(max-width: 768px) 80vw, 320px"
+            className="author-portrait-image author-portrait-photo"
+          />
+          <Image
+            src="/images/hermano-papercraft-editorial.webp"
+            alt="Ilustração papercraft de Hermano Reis, criador do site."
+            fill
+            sizes="(max-width: 768px) 80vw, 320px"
+            className="author-portrait-image author-portrait-paper"
+          />
+          <figcaption className="sr-only">Passe o cursor sobre a ilustração para revelar a foto original.</figcaption>
+        </figure>
         <div>
           <h2 className="font-display text-4xl">O Eneagrama me ajudou. Quis compartilhar.</h2>
           <p className="mt-5 text-lg leading-relaxed text-[color:var(--ink-soft)]">O Eneagrama me ajudou a me conhecer melhor e mudou a forma como eu lidava com situações no trabalho, inclusive quando liderei equipes.</p>

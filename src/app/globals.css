@@ -156,6 +156,28 @@ svg a:focus-visible circle:nth-of-type(2) {
 .home-final-cta { border-radius: 6px; }
 .home-final-cta .btn-primary { border: 1px solid var(--ink-on-dark); }
 
+.author-portrait {
+  position: relative;
+  width: 100%;
+  max-width: 20rem;
+  aspect-ratio: 1;
+  margin-inline: auto;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 32px;
+  background: white;
+}
+.author-portrait-image { object-fit: cover; user-select: none; }
+.author-portrait-photo {
+  transform: scale(1.035);
+  transition: transform 650ms cubic-bezier(.22,1,.36,1);
+}
+.author-portrait-paper {
+  z-index: 1;
+  transform-origin: 50% 0;
+  transition: transform 650ms cubic-bezier(.65,0,.35,1), filter 650ms ease;
+}
+
 .paper-character { position: relative; display: block; flex-shrink: 0; width: var(--character-size); max-width: 100%; aspect-ratio: 1; transform-origin: 50% 88%; transition: transform 220ms ease; }
 .paper-character-image { width: 100%; height: 100%; object-fit: contain; user-select: none; }
 .paper-eye-position { position: absolute; display: block; transform: translate(-50%, -50%); pointer-events: none; }
@@ -208,6 +230,8 @@ svg a:focus-visible circle:nth-of-type(2) {
   .type-card .paper-character { width: 37%; }
 }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .author-portrait:hover .author-portrait-photo { transform: scale(1); }
+  .author-portrait:hover .author-portrait-paper { transform: translateY(-101%) rotate(-1.5deg); filter: drop-shadow(0 14px 16px rgba(51,35,30,.22)); }
   .paper-interactive:hover .paper-character, .paper-interactive:focus-visible .paper-character { transform: translateY(-4px) rotate(-2deg); }
   .paper-interactive:hover [data-character="2"], .paper-interactive:focus-visible [data-character="2"] { transform: translateY(-5px) rotate(2deg); }
   .paper-interactive:hover [data-character="5"], .paper-interactive:focus-visible [data-character="5"] { transform: translateY(-3px) rotate(3deg); }
@@ -215,7 +239,10 @@ svg a:focus-visible circle:nth-of-type(2) {
   .paper-interactive:hover [data-character="9"], .paper-interactive:focus-visible [data-character="9"] { transform: translateY(-2px) rotate(1deg); }
   .type-card:hover .type-card-link span { transform: translate(2px,-2px); }
 }
+.author-portrait:focus-visible .author-portrait-photo { transform: scale(1); }
+.author-portrait:focus-visible .author-portrait-paper { transform: translateY(-101%) rotate(-1.5deg); }
 @media (prefers-reduced-motion: reduce) {
+  .author-portrait:hover .author-portrait-paper, .author-portrait:focus-visible .author-portrait-paper { opacity: 0; }
   .paper-character, .paper-eye { transform: none !important; transition: none !important; }
 }
 

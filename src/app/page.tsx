@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { EnneagramMark } from "../components/EnneagramMark";
 import { HomeHero } from "../components/HomeHero";
 import { getSession } from "../lib/session";
 import { TypeGallery } from "../components/TypeGallery";
@@ -116,9 +117,14 @@ export default async function Home() {
         <Link href="/sobre-o-teste" className="mt-5 inline-block text-sm underline underline-offset-4">Entenda o questionário, as referências e o resultado</Link>
       </section>
       <section className="on-ink home-final-cta bg-[color:var(--ink)] px-8 py-12 text-white sm:px-10">
-        <h2 className="font-display text-4xl">Quer começar pelo teste?</h2>
-        <p className="mt-4 max-w-xl leading-relaxed text-[color:var(--ink-on-dark)]">Responda pensando em como você costuma agir. Depois, leia as descrições com calma e veja o que reconhece na sua experiência.</p>
-        <Link href={testHref} className="btn-primary mt-7">{startLabel}</Link>
+        <div className="home-final-cta-grid">
+          <div>
+            <h2 className="font-display text-4xl">Quer começar pelo teste?</h2>
+            <p className="mt-4 max-w-xl leading-relaxed text-[color:var(--ink-on-dark)]">Responda pensando em como você costuma agir. Depois, leia as descrições com calma e veja o que reconhece na sua experiência.</p>
+            <Link href={testHref} className="btn-primary mt-7">{startLabel}</Link>
+          </div>
+          <EnneagramMark interactive size={280} className="home-final-cta-mark" />
+        </div>
       </section>
     </div>
   );

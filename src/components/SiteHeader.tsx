@@ -78,7 +78,7 @@ export async function SiteFooter() {
     <footer className="mt-auto border-t border-[color:var(--line)]">
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-8 text-sm text-[color:var(--mute)] sm:flex-row sm:items-start sm:justify-between">
         <p>Nove tipos. Um mapa para se entender, e para entender os outros.</p>
-        <nav className="flex flex-wrap gap-x-4 gap-y-2">
+        <nav className="grid grid-cols-2 gap-x-4 gap-y-2 sm:flex sm:flex-wrap">
           {foot.map((l) => (
             <Link key={l.href} href={l.href} className="underline underline-offset-4">
               {l.label}

@@ -12,11 +12,11 @@ function humanAuthError(message: string | undefined, fallback: string) {
   return text || fallback;
 }
 
-export function LoginClient() {
+export function LoginClient({ goingToTest = false }: { goingToTest?: boolean }) {
   const router = useRouter();
   const search = useSearchParams();
   const next = search.get("next") || "/conta";
-  const goingToTest = next.startsWith("/teste");
+  const testNext = goingToTest || next.startsWith("/teste");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"email" | "code">("email");
@@ -91,7 +91,7 @@ export function LoginClient() {
         <form onSubmit={onEmail} className="space-y-5">
           <h1 className="font-display text-4xl">Entre com o e-mail</h1>
           <p className="text-[color:var(--ink-soft)]">
-            {goingToTest
+            {testNext
               ? "Depois do código, as 135 frases. Uns 15 minutos. Pode parar e voltar."
               : "Enviamos um código de 6 dígitos. Sem senha."}
           </p>

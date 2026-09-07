@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Outfit } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SiteFooter, SiteHeader } from "../components/SiteHeader";
+import { ICON_PAPER } from "../lib/enneagram-icon";
 import "./globals.css";
 
 const sans = Outfit({
@@ -21,6 +22,10 @@ export const metadata: Metadata = {
   authors: [{ name: "Hermano Reis", url: "https://hermano.me" }],
   description:
     "Teste gratuito e materiais em português para explorar os nove tipos do Eneagrama.",
+};
+
+export const viewport: Viewport = {
+  themeColor: ICON_PAPER,
 };
 
 export default function RootLayout({

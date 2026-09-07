@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { otpEmailHtml, otpEmailText } from "./otp-email";
 
 const lastCodes = new Map<string, { otp: string; at: number }>();
 
@@ -37,13 +38,8 @@ export async function sendOtpEmail(email: string, otp: string) {
     from,
     to: email,
     subject: `${otp} é o seu código de acesso`,
-    html: `
-      <div style="font-family:Georgia,serif;background:#f3ebe0;padding:32px">
-        <h1 style="font-size:28px;color:#1c1612">Seu código</h1>
-        <p style="color:#4a4038">Use este código para entrar no Eneagrama. Ele vale por 10 minutos.</p>
-        <p style="font-size:36px;letter-spacing:8px;font-weight:700;color:#9c3d2a">${otp}</p>
-      </div>
-    `,
+    html: otpEmailHtml(otp),
+    text: otpEmailText(otp),
   });
   if (error) {
     throw new Error(error.message || "Não foi possível enviar o e-mail.");

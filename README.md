@@ -41,7 +41,7 @@ BETTER_AUTH_URL=https://eneagrama.hermano.me
 RESEND_API_KEY
 RESEND_FROM
 OPENROUTER_API_KEY
-OPENROUTER_MODEL
+OPENROUTER_MODEL=google/gemini-3.8-flash
 ```
 
 Em produção o código só vai por e-mail. Sem `RESEND_API_KEY` o login público não envia. Sem `OPENROUTER_API_KEY` o mentor não conversa.

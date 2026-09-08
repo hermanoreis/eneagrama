@@ -1,7 +1,7 @@
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 
 export const MENTOR_MODEL =
-  process.env.OPENROUTER_MODEL ?? "anthropic/claude-haiku-4.5";
+  process.env.OPENROUTER_MODEL ?? "google/gemini-3.8-flash";
 
 export function getOpenRouter() {
   const apiKey = process.env.OPENROUTER_API_KEY;

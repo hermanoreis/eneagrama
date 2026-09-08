@@ -227,25 +227,18 @@ svg a:focus-visible circle:nth-of-type(2) {
 .paper-family-member:hover .paper-family-label, .paper-family-member:focus-visible .paper-family-label { opacity: 1; }
 .paper-family-caption { position: absolute; bottom: 0; left: 0; right: 0; text-align: center; font-size: .85rem; color: var(--mute); }
 
-.triad-grid { padding-top: 3.25rem; }
 .triad-card { isolation: isolate; }
 .triad-cast {
-  pointer-events: none;
-  position: absolute;
-  left: 50%;
-  top: 0;
-  z-index: 2;
   display: flex;
   align-items: flex-end;
-  width: max-content;
-  translate: -50% -38%;
+  justify-content: center;
+  margin: -0.35rem -0.5rem 0.35rem;
 }
-.triad-cast .paper-character { width: 6.5rem; }
-.triad-cast-member + .triad-cast-member { margin-left: -1.7rem; }
-.triad-cast-member:nth-child(1) { transform: rotate(-7deg) translateY(8px); }
+.triad-cast .paper-character { width: 5.75rem; }
+.triad-cast-member + .triad-cast-member { margin-left: -1.55rem; }
+.triad-cast-member:nth-child(1) { transform: rotate(-6deg) translateY(6px); }
 .triad-cast-member:nth-child(2) { position: relative; z-index: 1; }
-.triad-cast-member:nth-child(3) { transform: rotate(7deg) translateY(8px); }
-.triad-card:hover, .triad-card:focus-within { z-index: 3; }
+.triad-cast-member:nth-child(3) { transform: rotate(6deg) translateY(6px); }
 
 .type-resume {
   display: flex;
@@ -282,15 +275,6 @@ svg a:focus-visible circle:nth-of-type(2) {
   .paper-interactive:hover [data-character="7"], .paper-interactive:focus-visible [data-character="7"] { transform: translateY(-6px) rotate(-2deg) scale(1.025); }
   .paper-interactive:hover [data-character="9"], .paper-interactive:focus-visible [data-character="9"] { transform: translateY(-2px) rotate(1deg); }
   .type-card:hover .type-card-link span { transform: translate(2px,-2px); }
-  .triad-cast {
-    opacity: 0;
-    translate: -50% 14%;
-    transition: opacity .42s cubic-bezier(.16,1,.3,1), translate .42s cubic-bezier(.16,1,.3,1);
-  }
-  .triad-card:hover .triad-cast, .triad-card:focus-within .triad-cast {
-    opacity: 1;
-    translate: -50% -38%;
-  }
   .triad-card:hover .triad-cast-member:nth-child(1), .triad-card:focus-within .triad-cast-member:nth-child(1) { transform: rotate(-9deg) translateY(-4px); }
   .triad-card:hover .triad-cast-member:nth-child(2), .triad-card:focus-within .triad-cast-member:nth-child(2) { transform: translateY(-8px) scale(1.04); }
   .triad-card:hover .triad-cast-member:nth-child(3), .triad-card:focus-within .triad-cast-member:nth-child(3) { transform: rotate(9deg) translateY(-4px); }
@@ -300,7 +284,6 @@ svg a:focus-visible circle:nth-of-type(2) {
 @media (prefers-reduced-motion: reduce) {
   .author-portrait:hover .author-portrait-paper, .author-portrait:focus-visible .author-portrait-paper { opacity: 0; }
   .paper-character, .paper-eye { transform: none !important; transition: none !important; }
-  .triad-cast { opacity: 1; translate: -50% -38%; }
 }
 
 .mobile-nav-panel { position: absolute; top: 100%; left: 0; right: 0; padding: .75rem 1.25rem; border-bottom: 1px solid var(--line); background: var(--paper); box-shadow: 0 12px 20px #073b3310; }

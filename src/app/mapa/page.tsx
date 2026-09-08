@@ -42,7 +42,7 @@ export default function MapaPage() {
         <p className="mt-4 max-w-2xl leading-relaxed text-[color:var(--ink-soft)]">
           Os nove tipos são organizados em três grupos, também chamados de centros: instinto, sentimento e pensamento. Esses grupos ajudam a estudar as motivações descritas no Eneagrama.
         </p>
-        <PaperMotion className="triad-grid mt-8 grid gap-5 md:grid-cols-3">
+        <PaperMotion className="mt-8 grid gap-5 md:grid-cols-3">
           {Object.values(triads).map((t) => (
             <article
               key={t.id}

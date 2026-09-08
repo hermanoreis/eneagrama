@@ -1,7 +1,16 @@
-const SITE_URL =
-  process.env.BETTER_AUTH_URL || "https://eneagrama-seven.vercel.app";
+import { SITE_URL as CANONICAL_SITE_URL } from "./seo";
 
-const MARK_SRC = `${SITE_URL}/eneagrama-mark.png`;
+const SITE_URL = process.env.BETTER_AUTH_URL || CANONICAL_SITE_URL;
+
+const FONT = "Outfit, 'Avenir Next', 'Segoe UI', Helvetica, sans-serif";
+
+const paper = "#f7f3eb";
+const wash = "#eee8dc";
+const ink = "#073b33";
+const inkSoft = "#395b53";
+const mute = "#52695f";
+const line = "#d3d5c8";
+const gold = "#c4a35a";
 
 export function otpEmailHtml(otp: string) {
   const code = otp.replace(/\D/g, "").slice(0, 6);
@@ -11,82 +20,96 @@ export function otpEmailHtml(otp: string) {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="color-scheme" content="light" />
-  <meta name="supported-color-schemes" content="light" />
+  <meta name="color-scheme" content="light only" />
+  <meta name="supported-color-schemes" content="light only" />
   <title>Seu código de acesso</title>
+  <!--[if !mso]><!-->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!--<![endif]-->
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap");
+    :root { color-scheme: light only; }
+  </style>
+  <!--[if mso]>
+  <style>
+    table, td, a { font-family: 'Segoe UI', Helvetica, sans-serif !important; }
+  </style>
+  <![endif]-->
 </head>
-<body style="margin:0;padding:0;background:#f7f4ee;">
+<body style="margin:0;padding:0;background:${paper};">
   <div style="display:none;max-height:0;overflow:hidden;opacity:0;">
     Seu código de 6 dígitos. Sem senha. Vale por 10 minutos.
   </div>
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f7f4ee;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${paper};">
     <tr>
-      <td align="center" style="padding:40px 16px;background-color:#f7f4ee;background-image:radial-gradient(900px 420px at 8% -8%, rgba(91,75,219,0.12), transparent 50%), radial-gradient(800px 380px at 100% 0%, rgba(47,158,107,0.10), transparent 46%);">
+      <td align="center" style="padding:48px 20px;background:${paper};">
+        <!--[if mso]>
+        <table role="presentation" width="520" cellpadding="0" cellspacing="0"><tr><td>
+        <![endif]-->
         <table role="presentation" width="520" cellpadding="0" cellspacing="0" style="max-width:520px;width:100%;">
           <tr>
-            <td style="padding:0 8px 22px;font-family:Georgia,'Times New Roman',serif;font-size:22px;line-height:1;color:#1b2430;">
-              Eneagrama
+            <td style="padding:0 4px 8px;">
+              <p style="margin:0;font-family:${FONT};font-size:22px;line-height:1.1;font-weight:600;letter-spacing:-0.02em;color:${ink};">
+                Eneagrama
+              </p>
+              <p style="margin:8px 0 0;font-family:${FONT};font-size:12px;line-height:1.3;font-weight:400;color:${mute};">
+                por Hermano Reis
+              </p>
+              <table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:18px;">
+                <tr>
+                  <td width="40" height="2" style="width:40px;height:2px;line-height:2px;font-size:0;background:${gold};">&nbsp;</td>
+                </tr>
+              </table>
             </td>
           </tr>
           <tr>
-            <td style="background:#ffffff;border:1px solid #ddd4c6;border-radius:32px;box-shadow:0 18px 40px rgba(27,36,48,0.08);padding:36px 32px 32px;">
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            <td style="padding:36px 4px 8px;font-family:${FONT};font-size:40px;line-height:1.05;font-weight:600;letter-spacing:-0.03em;color:${ink};">
+              Seu código
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:12px 4px 28px;font-family:${FONT};font-size:16px;line-height:1.55;font-weight:400;color:${inkSoft};">
+              Enviamos um código de 6 dígitos. Sem senha.<br />Ele vale por 10 minutos.
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0 4px 12px;">
+              <table role="presentation" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td align="center" style="padding-bottom:8px;">
-                    <img src="${MARK_SRC}" width="148" height="148" alt="Símbolo do Eneagrama" style="display:block;border:0;width:148px;height:148px;" />
-                  </td>
+                  <td style="background:${wash};border:1px solid ${line};border-radius:5px;padding:16px 24px;font-family:${FONT};font-size:36px;line-height:1.2;letter-spacing:0.28em;font-weight:600;color:${ink};-webkit-user-select:all;user-select:all;">${code}</td>
                 </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0 4px 32px;font-family:${FONT};font-size:13px;line-height:1.5;color:${mute};">
+              Copie o código e cole no site.
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0 4px 36px;">
+              <table role="presentation" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td align="center" style="padding-top:8px;font-family:'Avenir Next','Plus Jakarta Sans','Segoe UI',Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;font-weight:600;color:#5b4bdb;">
-                    Código de acesso
-                  </td>
-                </tr>
-                <tr>
-                  <td align="center" style="padding:10px 0 8px;font-family:Georgia,'Times New Roman',serif;font-size:38px;line-height:1.05;color:#1b2430;">
-                    Digite o código
-                  </td>
-                </tr>
-                <tr>
-                  <td align="center" style="padding:0 8px 28px;font-family:'Avenir Next','Plus Jakarta Sans','Segoe UI',Helvetica,Arial,sans-serif;font-size:16px;line-height:1.55;color:#3d4a5c;">
-                    Enviamos um código de 6 dígitos. Sem senha.<br />Ele vale por 10 minutos.
-                  </td>
-                </tr>
-                <tr>
-                  <td align="center" style="padding-bottom:10px;">
-                    <table role="presentation" cellpadding="0" cellspacing="0">
-                      <tr>
-                        <td style="background:#efe8dc;border:1px solid #ddd4c6;border-radius:16px;padding:14px 28px;font-family:Georgia,'Times New Roman',serif;font-size:36px;line-height:1.2;letter-spacing:0.12em;font-weight:600;color:#1b2430;-webkit-user-select:all;user-select:all;">${code}</td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-                <tr>
-                  <td align="center" style="padding-bottom:24px;font-family:'Avenir Next','Plus Jakarta Sans','Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;line-height:1.5;color:#6d7a8a;">
-                    Copie o código e cole no site.
-                  </td>
-                </tr>
-                <tr>
-                  <td align="center" style="padding-bottom:8px;">
-                    <a href="${SITE_URL}/entrar" style="display:inline-block;background:#2f9e6b;color:#ffffff;font-family:'Avenir Next','Plus Jakarta Sans','Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;font-weight:650;text-decoration:none;padding:14px 28px;border-radius:999px;box-shadow:0 10px 24px rgba(47,158,107,0.22);">
+                  <td bgcolor="${ink}" style="background:${ink};border-radius:5px;">
+                    <a href="${SITE_URL}/entrar" style="display:inline-block;background:${ink};color:#ffffff;font-family:${FONT};font-size:15px;font-weight:650;text-decoration:none;padding:14px 22px;border-radius:5px;">
                       Entrar
                     </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td align="center" style="padding-top:18px;font-family:'Avenir Next','Plus Jakarta Sans','Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;line-height:1.5;color:#6d7a8a;">
-                    Confira a caixa de entrada e o spam.
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
           <tr>
-            <td style="padding:22px 12px 0;font-family:'Avenir Next','Plus Jakarta Sans','Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;line-height:1.55;color:#6d7a8a;text-align:center;">
+            <td style="padding:28px 4px 0;border-top:1px solid ${line};font-family:${FONT};font-size:13px;line-height:1.55;color:${mute};">
+              Confira a caixa de entrada e o spam.<br />
               Se você não pediu este código, pode ignorar o e-mail.<br />
               Nove tipos. Um mapa para se entender, e para entender os outros.
             </td>
           </tr>
         </table>
+        <!--[if mso]>
+        </td></tr></table>
+        <![endif]-->
       </td>
     </tr>
   </table>

@@ -1,6 +1,8 @@
 import { publicMetadata } from "../../lib/seo";
 import Link from "next/link";
 import { EnneagramMark } from "../../components/EnneagramMark";
+import { PaperMotion } from "../../components/PaperMotion";
+import { TypeAvatar } from "../../components/TypeAvatar";
 import {
   arrowsByType,
   healthLevels,
@@ -40,12 +42,17 @@ export default function MapaPage() {
         <p className="mt-4 max-w-2xl leading-relaxed text-[color:var(--ink-soft)]">
           Os nove tipos são organizados em três grupos, também chamados de centros: instinto, sentimento e pensamento. Esses grupos ajudam a estudar as motivações descritas no Eneagrama.
         </p>
-        <div className="mt-8 grid gap-5 md:grid-cols-3">
+        <PaperMotion className="mt-8 grid gap-5 md:grid-cols-3">
           {Object.values(triads).map((t) => (
             <article
               key={t.id}
-              className="rounded-[28px] border border-[color:var(--line)] bg-white p-6 shadow-[0_12px_32px_rgba(27,36,48,0.05)]"
+              className="triad-card relative rounded-[28px] border border-[color:var(--line)] bg-white p-6 shadow-[0_12px_32px_rgba(27,36,48,0.05)]"
             >
+              <div className="triad-cast" aria-hidden>
+                {t.types.map((id) => (
+                  <TypeAvatar key={id} id={id} size={112} className="triad-cast-member" />
+                ))}
+              </div>
               <h3 className="font-display text-2xl">{t.label}</h3>
               <p className="mt-3 text-sm leading-relaxed text-[color:var(--ink-soft)]">{t.text}</p>
               <p className="mt-4 text-sm">
@@ -63,7 +70,7 @@ export default function MapaPage() {
               </ul>
             </article>
           ))}
-        </div>
+        </PaperMotion>
         <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {otherTriads.map((g) => (
             <p key={g.label} className="rounded-2xl bg-[color:var(--wash)] px-4 py-3 text-sm leading-relaxed">

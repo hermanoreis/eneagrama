@@ -227,6 +227,29 @@ svg a:focus-visible circle:nth-of-type(2) {
 .paper-family-member:hover .paper-family-label, .paper-family-member:focus-visible .paper-family-label { opacity: 1; }
 .paper-family-caption { position: absolute; bottom: 0; left: 0; right: 0; text-align: center; font-size: .85rem; color: var(--mute); }
 
+.triad-card { isolation: isolate; }
+.triad-cast {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin: -0.35rem -0.5rem 0.35rem;
+}
+.triad-cast .paper-character { width: 5.75rem; }
+.triad-cast-member + .triad-cast-member { margin-left: -1.55rem; }
+.triad-cast-member:nth-child(1) { transform: rotate(-6deg) translateY(6px); }
+.triad-cast-member:nth-child(2) { position: relative; z-index: 1; }
+.triad-cast-member:nth-child(3) { transform: rotate(6deg) translateY(6px); }
+
+.type-resume {
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  padding: 1.5rem .25rem;
+  border-top: 1px solid var(--line);
+  border-radius: 3px;
+}
+.type-resume .paper-character { width: 32%; max-width: 9.5rem; }
+
 @media (min-width: 640px) {
   .type-gallery { grid-template-columns: repeat(2,minmax(0,1fr)); column-gap: 1.5rem; }
   .type-card { align-items: start; }
@@ -252,6 +275,9 @@ svg a:focus-visible circle:nth-of-type(2) {
   .paper-interactive:hover [data-character="7"], .paper-interactive:focus-visible [data-character="7"] { transform: translateY(-6px) rotate(-2deg) scale(1.025); }
   .paper-interactive:hover [data-character="9"], .paper-interactive:focus-visible [data-character="9"] { transform: translateY(-2px) rotate(1deg); }
   .type-card:hover .type-card-link span { transform: translate(2px,-2px); }
+  .triad-card:hover .triad-cast-member:nth-child(1), .triad-card:focus-within .triad-cast-member:nth-child(1) { transform: rotate(-9deg) translateY(-4px); }
+  .triad-card:hover .triad-cast-member:nth-child(2), .triad-card:focus-within .triad-cast-member:nth-child(2) { transform: translateY(-8px) scale(1.04); }
+  .triad-card:hover .triad-cast-member:nth-child(3), .triad-card:focus-within .triad-cast-member:nth-child(3) { transform: rotate(9deg) translateY(-4px); }
 }
 .author-portrait:focus-visible .author-portrait-photo { transform: scale(1); }
 .author-portrait:focus-visible .author-portrait-paper { transform: translateY(-101%) rotate(-1.5deg); }

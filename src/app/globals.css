@@ -249,6 +249,7 @@ svg a:focus-visible circle:nth-of-type(2) {
   border-radius: 3px;
 }
 .type-resume .paper-character { width: 32%; max-width: 9.5rem; }
+.sintese-type .paper-character { width: 7.5rem; }
 
 @media (min-width: 640px) {
   .type-gallery { grid-template-columns: repeat(2,minmax(0,1fr)); column-gap: 1.5rem; }
@@ -261,6 +262,7 @@ svg a:focus-visible circle:nth-of-type(2) {
   .paper-family { width: 100%; max-width: none; }
   .home-final-cta-grid { grid-template-columns: minmax(0,1.15fr) minmax(0,.85fr); gap: 1.5rem 2.5rem; }
   .home-final-cta-mark { width: min(100%, 20rem); margin-inline: auto 0; }
+  .sintese-type .paper-character { width: 100%; max-width: 10rem; }
 }
 @media (min-width: 1024px) {
   .type-gallery { grid-template-columns: repeat(3,minmax(0,1fr)); column-gap: 1.5rem; }

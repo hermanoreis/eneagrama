@@ -1,5 +1,7 @@
 import { publicMetadata } from "../../lib/seo";
 import Link from "next/link";
+import { PaperMotion } from "../../components/PaperMotion";
+import { TypeAvatar } from "../../components/TypeAvatar";
 import { types } from "../../data/types";
 
 export const metadata = publicMetadata("Eneagrama no trabalho: comunicação e colaboração", "Compare os tipos do Eneagrama em situações de cobrança, comunicação e colaboração. Reflita sobre sua participação no time.", "/sintese");
@@ -17,25 +19,28 @@ export default function SintesePage() {
         </p>
       </header>
 
-      <div className="space-y-6">
+      <PaperMotion className="space-y-6">
         {types.map((t) => (
           <article
             key={t.id}
-            className="grid gap-6 rounded-3xl border border-[color:var(--line)] p-6 md:grid-cols-[160px_1fr_1fr]"
+            className="sintese-type paper-interactive grid gap-6 rounded-3xl border border-[color:var(--line)] p-6 md:grid-cols-[10rem_1fr_1fr]"
           >
-            <div>
-              <Link href={`/tipos/${t.id}`} className="font-display text-2xl hover:text-[color:var(--accent)]">
-                {t.id} · {t.name}
-              </Link>
-              <p className="mt-3 text-sm leading-relaxed text-[color:var(--ink-soft)]">
-                {t.leadership}
-              </p>
+            <div className="flex items-start gap-4 md:block">
+              <TypeAvatar id={t.id} size={160} />
+              <div className="min-w-0">
+                <Link href={`/tipos/${t.id}`} className="font-display text-2xl hover:text-[color:var(--accent)]">
+                  {t.id} · {t.name}
+                </Link>
+                <p className="mt-3 text-sm leading-relaxed text-[color:var(--ink-soft)]">
+                  {t.leadership}
+                </p>
+              </div>
             </div>
             <Column title="Pontos fortes" items={t.strengths} />
             <Column title="A desenvolver" items={t.develop} />
           </article>
         ))}
-      </div>
+      </PaperMotion>
     </div>
   );
 }

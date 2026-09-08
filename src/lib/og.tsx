@@ -79,18 +79,56 @@ async function cardArt(profile?: EnneaType) {
 
 async function loadAssets(profile?: EnneaType) {
   const fontDir = join(process.cwd(), "src/assets/fonts");
-  const [bold, medium, art] = await Promise.all([
-    readFile(join(fontDir, "outfit-600.ttf")),
+  const [regular, medium, bold, art] = await Promise.all([
+    readFile(join(fontDir, "outfit-400.ttf")),
     readFile(join(fontDir, "outfit-500.ttf")),
+    readFile(join(fontDir, "outfit-600.ttf")),
     cardArt(profile),
   ]);
   return {
     artSrc: `data:image/png;base64,${art.toString("base64")}`,
     fonts: [
-      { name: "Outfit", data: bold, weight: 600 as const, style: "normal" as const },
+      { name: "Outfit", data: regular, weight: 400 as const, style: "normal" as const },
       { name: "Outfit", data: medium, weight: 500 as const, style: "normal" as const },
+      { name: "Outfit", data: bold, weight: 600 as const, style: "normal" as const },
     ],
   };
+}
+
+function Wordmark({ titleSize, bylineSize, gap }: { titleSize: number; bylineSize: number; gap: number }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "baseline",
+        gap,
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          fontSize: titleSize,
+          fontWeight: 600,
+          letterSpacing: -1.4,
+          lineHeight: 1,
+        }}
+      >
+        Eneagrama
+      </div>
+      <div
+        style={{
+          display: "flex",
+          fontSize: bylineSize,
+          fontWeight: 400,
+          letterSpacing: 0,
+          lineHeight: 1,
+        }}
+      >
+        por Hermano Reis
+      </div>
+    </div>
+  );
 }
 
 export async function renderOgImage(profile?: EnneaType) {
@@ -115,39 +153,61 @@ export async function renderOgImage(profile?: EnneaType) {
         alt=""
         style={{ position: "absolute", left: 0, top: 0, width: OG_SIZE.width, height: OG_SIZE.height }}
       />
-      <div
-        style={{
-          position: "absolute",
-          left: 56,
-          top: 0,
-          bottom: 0,
-          width: 400,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-        }}
-      >
+      {profile ? (
         <div
           style={{
-            fontSize: 20,
-            fontWeight: 600,
-            color: MUTE,
+            position: "absolute",
+            left: 56,
+            top: 0,
+            bottom: 0,
+            width: 400,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
           }}
         >
-          {profile ? `Tipo ${profile.id}` : "Eneagrama"}
+          <div style={{ display: "flex", fontSize: 20, fontWeight: 600, color: MUTE }}>Tipo {profile.id}</div>
+          <div
+            style={{
+              display: "flex",
+              fontSize: 58,
+              fontWeight: 600,
+              lineHeight: 1.12,
+              letterSpacing: -1.2,
+              marginTop: 10,
+            }}
+          >
+            {profile.name}
+          </div>
         </div>
+      ) : (
         <div
           style={{
-            fontSize: profile ? 58 : 46,
-            fontWeight: 600,
-            lineHeight: 1.12,
-            letterSpacing: -1.2,
-            marginTop: 10,
+            position: "absolute",
+            left: 56,
+            top: 0,
+            bottom: 0,
+            width: 520,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
           }}
         >
-          {profile ? profile.name : "É incrível começar a se entender."}
+          <Wordmark titleSize={68} bylineSize={18} gap={14} />
         </div>
-      </div>
+      )}
+      {profile ? (
+        <div
+          style={{
+            position: "absolute",
+            left: 56,
+            bottom: 44,
+            display: "flex",
+          }}
+        >
+          <Wordmark titleSize={28} bylineSize={12} gap={8} />
+        </div>
+      ) : null}
     </div>
   );
 

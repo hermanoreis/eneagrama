@@ -11,8 +11,7 @@ const PAPER = "#f7f3eb";
 const INK = "#073b33";
 const MUTE = "#52695f";
 
-const FAMILY_SIZE = 620;
-const TYPE_SIZE = 520;
+const TYPE_SIZE = 560;
 const FACES: Record<TypeId, { eyes: [number, number, number, number]; width: number; height: number }> = {
   1: { eyes: [49, 33.2, 59, 32.4], width: 2.8, height: 3.5 },
   2: { eyes: [44, 32.5, 54, 32.5], width: 2.8, height: 3.5 },
@@ -34,21 +33,17 @@ async function eyePng(width: number, height: number) {
   return sharp(Buffer.from(svg)).png().toBuffer();
 }
 
-function eyeLayers(id: TypeId, size: number, offsetX = 0, offsetY = 0) {
+function eyeLayers(id: TypeId, size: number) {
   const face = FACES[id];
   const ew = Math.max(4, Math.round((size * face.width) / 100));
   const eh = Math.max(4, Math.round((size * face.height) / 100));
   return Promise.all(
     [0, 2].map(async (start) => ({
       input: await eyePng(ew, eh),
-      left: offsetX + Math.round((size * face.eyes[start]) / 100) - Math.round(ew / 2),
-      top: offsetY + Math.round((size * face.eyes[start + 1]) / 100) - Math.round(eh / 2),
+      left: Math.round((size * face.eyes[start]) / 100) - Math.round(ew / 2),
+      top: Math.round((size * face.eyes[start + 1]) / 100) - Math.round(eh / 2),
     })),
   );
-}
-
-async function familyPng() {
-  return sharp(join(process.cwd(), "src/assets/og-family.png")).resize(FAMILY_SIZE, FAMILY_SIZE).png().toBuffer();
 }
 
 async function typePng(id: TypeId) {
@@ -59,11 +54,10 @@ async function typePng(id: TypeId) {
     .toBuffer();
 }
 
-async function cardArt(profile?: EnneaType) {
-  const artSize = profile ? TYPE_SIZE : FAMILY_SIZE;
-  const art = profile ? await typePng(profile.id) : await familyPng();
-  const left = OG_SIZE.width - artSize - 8;
-  const top = Math.max(0, Math.round((OG_SIZE.height - artSize) / 2));
+async function typeCardArt(profile: EnneaType) {
+  const art = await typePng(profile.id);
+  const left = OG_SIZE.width - TYPE_SIZE - 16;
+  const top = Math.max(0, Math.round((OG_SIZE.height - TYPE_SIZE) / 2));
   return sharp({
     create: {
       width: OG_SIZE.width,
@@ -77,13 +71,13 @@ async function cardArt(profile?: EnneaType) {
     .toBuffer();
 }
 
-async function loadAssets(profile?: EnneaType) {
+async function loadTypeAssets(profile: EnneaType) {
   const fontDir = join(process.cwd(), "src/assets/fonts");
   const [regular, medium, bold, art] = await Promise.all([
     readFile(join(fontDir, "outfit-400.ttf")),
     readFile(join(fontDir, "outfit-500.ttf")),
     readFile(join(fontDir, "outfit-600.ttf")),
-    cardArt(profile),
+    typeCardArt(profile),
   ]);
   return {
     artSrc: `data:image/png;base64,${art.toString("base64")}`,
@@ -100,8 +94,8 @@ function Wordmark({ titleSize, bylineSize, gap }: { titleSize: number; bylineSiz
     <div
       style={{
         display: "flex",
-        flexDirection: "row",
-        alignItems: "baseline",
+        flexDirection: "column",
+        alignItems: "flex-start",
         gap,
       }}
     >
@@ -110,7 +104,7 @@ function Wordmark({ titleSize, bylineSize, gap }: { titleSize: number; bylineSiz
           display: "flex",
           fontSize: titleSize,
           fontWeight: 600,
-          letterSpacing: -1.4,
+          letterSpacing: -1.2,
           lineHeight: 1,
         }}
       >
@@ -131,8 +125,15 @@ function Wordmark({ titleSize, bylineSize, gap }: { titleSize: number; bylineSiz
   );
 }
 
-export async function renderOgImage(profile?: EnneaType) {
-  const { fonts, artSrc } = await loadAssets(profile);
+export async function renderOgHome() {
+  const png = await sharp(join(process.cwd(), "src/assets/og-home.webp")).png().toBuffer();
+  return new Response(png, {
+    headers: { "Content-Type": OG_CONTENT_TYPE },
+  });
+}
+
+export async function renderOgImage(profile: EnneaType) {
+  const { fonts, artSrc } = await loadTypeAssets(profile);
 
   const body = (
     <div
@@ -153,61 +154,42 @@ export async function renderOgImage(profile?: EnneaType) {
         alt=""
         style={{ position: "absolute", left: 0, top: 0, width: OG_SIZE.width, height: OG_SIZE.height }}
       />
-      {profile ? (
+      <div
+        style={{
+          position: "absolute",
+          left: 64,
+          top: 0,
+          bottom: 0,
+          width: 420,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
+        <div style={{ display: "flex", fontSize: 20, fontWeight: 400, color: MUTE }}>Tipo {profile.id}</div>
         <div
           style={{
-            position: "absolute",
-            left: 56,
-            top: 0,
-            bottom: 0,
-            width: 400,
             display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
+            fontSize: 58,
+            fontWeight: 600,
+            lineHeight: 1.08,
+            letterSpacing: -1.4,
+            marginTop: 12,
           }}
         >
-          <div style={{ display: "flex", fontSize: 20, fontWeight: 600, color: MUTE }}>Tipo {profile.id}</div>
-          <div
-            style={{
-              display: "flex",
-              fontSize: 58,
-              fontWeight: 600,
-              lineHeight: 1.12,
-              letterSpacing: -1.2,
-              marginTop: 10,
-            }}
-          >
-            {profile.name}
-          </div>
+          {profile.name}
         </div>
-      ) : (
-        <div
-          style={{
-            position: "absolute",
-            left: 56,
-            top: 0,
-            bottom: 0,
-            width: 520,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-          }}
-        >
-          <Wordmark titleSize={68} bylineSize={18} gap={14} />
-        </div>
-      )}
-      {profile ? (
-        <div
-          style={{
-            position: "absolute",
-            left: 56,
-            bottom: 44,
-            display: "flex",
-          }}
-        >
-          <Wordmark titleSize={28} bylineSize={12} gap={8} />
-        </div>
-      ) : null}
+      </div>
+      <div
+        style={{
+          position: "absolute",
+          left: 64,
+          bottom: 48,
+          display: "flex",
+        }}
+      >
+        <Wordmark titleSize={30} bylineSize={14} gap={8} />
+      </div>
     </div>
   );
 

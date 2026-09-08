@@ -1,8 +1,7 @@
 import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import sharp, { type OverlayOptions } from "sharp";
-import { typeIntroductions } from "../data/copy";
+import sharp from "sharp";
 import type { EnneaType, TypeId } from "../data/types";
 import { OG_ALT, OG_CONTENT_TYPE, OG_IMAGE_PATH, OG_SIZE } from "./og-meta";
 
@@ -10,24 +9,10 @@ export { OG_ALT, OG_CONTENT_TYPE, OG_IMAGE_PATH, OG_SIZE };
 
 const PAPER = "#f7f3eb";
 const INK = "#073b33";
-const INK_SOFT = "#395b53";
 const MUTE = "#52695f";
-const LINE = "#d3d5c8";
 
-const STAGE_SIZE = 1254;
-const OVERLAY_H = Math.round(STAGE_SIZE * (1 - 32 / 640));
-const CHAR_W = Math.round(STAGE_SIZE * 0.29);
-const POS: [number, number][] = [
-  [18, 23],
-  [40, 23],
-  [62, 23],
-  [9, 42],
-  [37, 42],
-  [64, 42],
-  [4, 63],
-  [34, 63],
-  [65, 63],
-];
+const FAMILY_SIZE = 620;
+const TYPE_SIZE = 520;
 const FACES: Record<TypeId, { eyes: [number, number, number, number]; width: number; height: number }> = {
   1: { eyes: [49, 33.2, 59, 32.4], width: 2.8, height: 3.5 },
   2: { eyes: [44, 32.5, 54, 32.5], width: 2.8, height: 3.5 },
@@ -63,42 +48,46 @@ function eyeLayers(id: TypeId, size: number, offsetX = 0, offsetY = 0) {
 }
 
 async function familyPng() {
-  const composites: OverlayOptions[] = [];
-  for (let i = 0; i < 9; i += 1) {
-    const id = (i + 1) as TypeId;
-    const left = Math.round((STAGE_SIZE * POS[i][0]) / 100);
-    const top = Math.round((OVERLAY_H * POS[i][1]) / 100);
-    composites.push({
-      input: await sharp(characterPath(`type-${id}.webp`)).resize(CHAR_W, CHAR_W).png().toBuffer(),
-      left,
-      top,
-    });
-    composites.push(...(await eyeLayers(id, CHAR_W, left, top)));
-  }
-  const stage = await sharp(characterPath("stage.webp")).resize(STAGE_SIZE, STAGE_SIZE).png().toBuffer();
-  return sharp(stage).composite(composites).resize(900, 900).png().toBuffer();
+  return sharp(join(process.cwd(), "src/assets/og-family.png")).resize(FAMILY_SIZE, FAMILY_SIZE).png().toBuffer();
 }
 
 async function typePng(id: TypeId) {
-  const size = 900;
-  const body = await sharp(characterPath(`type-${id}.webp`)).resize(size, size).png().toBuffer();
+  const body = await sharp(characterPath(`type-${id}.webp`)).resize(TYPE_SIZE, TYPE_SIZE).png().toBuffer();
   return sharp(body)
-    .composite(await eyeLayers(id, size))
+    .composite(await eyeLayers(id, TYPE_SIZE))
+    .png()
+    .toBuffer();
+}
+
+async function cardArt(profile?: EnneaType) {
+  const artSize = profile ? TYPE_SIZE : FAMILY_SIZE;
+  const art = profile ? await typePng(profile.id) : await familyPng();
+  const left = OG_SIZE.width - artSize - 8;
+  const top = Math.max(0, Math.round((OG_SIZE.height - artSize) / 2));
+  return sharp({
+    create: {
+      width: OG_SIZE.width,
+      height: OG_SIZE.height,
+      channels: 4,
+      background: { r: 247, g: 243, b: 235, alpha: 1 },
+    },
+  })
+    .composite([{ input: art, left, top }])
     .png()
     .toBuffer();
 }
 
 async function loadAssets(profile?: EnneaType) {
   const fontDir = join(process.cwd(), "src/assets/fonts");
-  const [serifless, medium, art] = await Promise.all([
+  const [bold, medium, art] = await Promise.all([
     readFile(join(fontDir, "outfit-600.ttf")),
     readFile(join(fontDir, "outfit-500.ttf")),
-    profile ? typePng(profile.id) : familyPng(),
+    cardArt(profile),
   ]);
   return {
     artSrc: `data:image/png;base64,${art.toString("base64")}`,
     fonts: [
-      { name: "Outfit", data: serifless, weight: 600 as const, style: "normal" as const },
+      { name: "Outfit", data: bold, weight: 600 as const, style: "normal" as const },
       { name: "Outfit", data: medium, weight: 500 as const, style: "normal" as const },
     ],
   };
@@ -106,91 +95,58 @@ async function loadAssets(profile?: EnneaType) {
 
 export async function renderOgImage(profile?: EnneaType) {
   const { fonts, artSrc } = await loadAssets(profile);
-  const artSize = profile ? 460 : 500;
 
   const body = (
     <div
       style={{
-        width: "100%",
-        height: "100%",
+        width: OG_SIZE.width,
+        height: OG_SIZE.height,
         display: "flex",
+        position: "relative",
         backgroundColor: PAPER,
         color: INK,
         fontFamily: "Outfit",
       }}
     >
+      <img
+        src={artSrc}
+        width={OG_SIZE.width}
+        height={OG_SIZE.height}
+        alt=""
+        style={{ position: "absolute", left: 0, top: 0, width: OG_SIZE.width, height: OG_SIZE.height }}
+      />
       <div
         style={{
+          position: "absolute",
+          left: 56,
+          top: 0,
+          bottom: 0,
+          width: 400,
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between",
-          width: 600,
-          height: "100%",
-          padding: "52px 28px 44px 56px",
+          justifyContent: "center",
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <div
-            style={{
-              fontSize: 18,
-              fontWeight: 600,
-              color: INK,
-              letterSpacing: 1.6,
-              textTransform: "uppercase",
-            }}
-          >
-            {profile ? `Tipo ${profile.id} · ${profile.center}` : "Teste de Eneagrama gratuito"}
-          </div>
-          <div
-            style={{
-              fontSize: profile ? 64 : 56,
-              fontWeight: 600,
-              lineHeight: 1.04,
-              letterSpacing: -1.6,
-              marginTop: 16,
-            }}
-          >
-            {profile ? profile.name : "É incrível começar a se entender."}
-          </div>
-          <div
-            style={{
-              fontSize: 24,
-              lineHeight: 1.35,
-              color: INK_SOFT,
-              marginTop: 22,
-              fontWeight: 500,
-              maxWidth: 500,
-            }}
-          >
-            {profile
-              ? typeIntroductions[profile.id]
-              : "Um teste gratuito para explorar seus padrões nas relações, nas escolhas e no trabalho."}
-          </div>
+        <div
+          style={{
+            fontSize: 20,
+            fontWeight: 600,
+            color: MUTE,
+          }}
+        >
+          {profile ? `Tipo ${profile.id}` : "Eneagrama"}
         </div>
         <div
           style={{
-            display: "flex",
-            flexDirection: "column",
-            paddingTop: 22,
-            borderTop: `1.5px solid ${LINE}`,
+            fontSize: profile ? 58 : 46,
+            fontWeight: 600,
+            lineHeight: 1.12,
+            letterSpacing: -1.2,
+            marginTop: 10,
           }}
         >
-          <div style={{ fontSize: 22, fontWeight: 600, letterSpacing: -0.2 }}>Eneagrama por Hermano Reis</div>
-          <div style={{ fontSize: 18, color: MUTE, marginTop: 4, fontWeight: 500 }}>eneagrama.hermano.me</div>
-          <div style={{ fontSize: 18, color: MUTE, marginTop: 8, fontWeight: 500 }}>Nove formas de olhar para si.</div>
+          {profile ? profile.name : "É incrível começar a se entender."}
         </div>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          height: "100%",
-          paddingRight: 28,
-        }}
-      >
-        <img src={artSrc} width={artSize} height={artSize} alt="" style={{ width: artSize, height: artSize, objectFit: "contain" }} />
       </div>
     </div>
   );

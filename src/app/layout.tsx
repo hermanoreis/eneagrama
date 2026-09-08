@@ -3,6 +3,7 @@ import { Geist_Mono, Outfit } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SiteFooter, SiteHeader } from "../components/SiteHeader";
 import { ICON_PAPER } from "../lib/enneagram-icon";
+import { defaultOgImage } from "../lib/seo";
 import "./globals.css";
 
 const sans = Outfit({
@@ -22,6 +23,13 @@ export const metadata: Metadata = {
   authors: [{ name: "Hermano Reis", url: "https://hermano.me" }],
   description:
     "Teste gratuito e materiais em português para explorar os nove tipos do Eneagrama.",
+  openGraph: {
+    siteName: "Eneagrama por Hermano Reis",
+    locale: "pt_BR",
+    type: "website",
+    images: [defaultOgImage],
+  },
+  twitter: { card: "summary_large_image", images: [defaultOgImage.url] },
 };
 
 export const viewport: Viewport = {

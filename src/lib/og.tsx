@@ -1,0 +1,200 @@
+import { ImageResponse } from "next/og";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
+import sharp from "sharp";
+import type { EnneaType, TypeId } from "../data/types";
+import { OG_ALT, OG_CONTENT_TYPE, OG_IMAGE_PATH, OG_SIZE } from "./og-meta";
+
+export { OG_ALT, OG_CONTENT_TYPE, OG_IMAGE_PATH, OG_SIZE };
+
+const PAPER = "#f7f3eb";
+const INK = "#073b33";
+const MUTE = "#52695f";
+
+const TYPE_SIZE = 560;
+const FACES: Record<TypeId, { eyes: [number, number, number, number]; width: number; height: number }> = {
+  1: { eyes: [49, 33.2, 59, 32.4], width: 2.8, height: 3.5 },
+  2: { eyes: [44, 32.5, 54, 32.5], width: 2.8, height: 3.5 },
+  3: { eyes: [40, 25, 50.5, 25], width: 2.8, height: 3.5 },
+  4: { eyes: [46, 29.5, 57, 29.5], width: 2.8, height: 3.5 },
+  5: { eyes: [55.5, 37.5, 64.5, 37.5], width: 2.8, height: 3.5 },
+  6: { eyes: [43, 32.5, 54, 32.5], width: 2.8, height: 3.5 },
+  7: { eyes: [41.5, 28, 53, 28], width: 2.8, height: 3.5 },
+  8: { eyes: [44, 34, 55, 34], width: 2.8, height: 3.5 },
+  9: { eyes: [41.5, 29, 53.5, 29], width: 2.8, height: 3.5 },
+};
+
+function characterPath(file: string) {
+  return join(process.cwd(), "public/images/characters", file);
+}
+
+async function eyePng(width: number, height: number) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><ellipse cx="${width / 2}" cy="${height / 2}" rx="${width / 2}" ry="${height / 2}" fill="#332a20"/></svg>`;
+  return sharp(Buffer.from(svg)).png().toBuffer();
+}
+
+function eyeLayers(id: TypeId, size: number) {
+  const face = FACES[id];
+  const ew = Math.max(4, Math.round((size * face.width) / 100));
+  const eh = Math.max(4, Math.round((size * face.height) / 100));
+  return Promise.all(
+    [0, 2].map(async (start) => ({
+      input: await eyePng(ew, eh),
+      left: Math.round((size * face.eyes[start]) / 100) - Math.round(ew / 2),
+      top: Math.round((size * face.eyes[start + 1]) / 100) - Math.round(eh / 2),
+    })),
+  );
+}
+
+async function typePng(id: TypeId) {
+  const body = await sharp(characterPath(`type-${id}.webp`)).resize(TYPE_SIZE, TYPE_SIZE).png().toBuffer();
+  return sharp(body)
+    .composite(await eyeLayers(id, TYPE_SIZE))
+    .png()
+    .toBuffer();
+}
+
+async function typeCardArt(profile: EnneaType) {
+  const art = await typePng(profile.id);
+  const left = OG_SIZE.width - TYPE_SIZE - 16;
+  const top = Math.max(0, Math.round((OG_SIZE.height - TYPE_SIZE) / 2));
+  return sharp({
+    create: {
+      width: OG_SIZE.width,
+      height: OG_SIZE.height,
+      channels: 4,
+      background: { r: 247, g: 243, b: 235, alpha: 1 },
+    },
+  })
+    .composite([{ input: art, left, top }])
+    .png()
+    .toBuffer();
+}
+
+async function loadTypeAssets(profile: EnneaType) {
+  const fontDir = join(process.cwd(), "src/assets/fonts");
+  const [regular, medium, bold, art] = await Promise.all([
+    readFile(join(fontDir, "outfit-400.ttf")),
+    readFile(join(fontDir, "outfit-500.ttf")),
+    readFile(join(fontDir, "outfit-600.ttf")),
+    typeCardArt(profile),
+  ]);
+  return {
+    artSrc: `data:image/png;base64,${art.toString("base64")}`,
+    fonts: [
+      { name: "Outfit", data: regular, weight: 400 as const, style: "normal" as const },
+      { name: "Outfit", data: medium, weight: 500 as const, style: "normal" as const },
+      { name: "Outfit", data: bold, weight: 600 as const, style: "normal" as const },
+    ],
+  };
+}
+
+function Wordmark({ titleSize, bylineSize, gap }: { titleSize: number; bylineSize: number; gap: number }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        gap,
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          fontSize: titleSize,
+          fontWeight: 600,
+          letterSpacing: -1.2,
+          lineHeight: 1,
+        }}
+      >
+        Eneagrama
+      </div>
+      <div
+        style={{
+          display: "flex",
+          fontSize: bylineSize,
+          fontWeight: 400,
+          letterSpacing: 0,
+          lineHeight: 1,
+        }}
+      >
+        por Hermano Reis
+      </div>
+    </div>
+  );
+}
+
+export async function renderOgHome() {
+  const png = await sharp(join(process.cwd(), "src/assets/og-home.webp")).png().toBuffer();
+  return new Response(png, {
+    headers: { "Content-Type": OG_CONTENT_TYPE },
+  });
+}
+
+export async function renderOgImage(profile: EnneaType) {
+  const { fonts, artSrc } = await loadTypeAssets(profile);
+
+  const body = (
+    <div
+      style={{
+        width: OG_SIZE.width,
+        height: OG_SIZE.height,
+        display: "flex",
+        position: "relative",
+        backgroundColor: PAPER,
+        color: INK,
+        fontFamily: "Outfit",
+      }}
+    >
+      <img
+        src={artSrc}
+        width={OG_SIZE.width}
+        height={OG_SIZE.height}
+        alt=""
+        style={{ position: "absolute", left: 0, top: 0, width: OG_SIZE.width, height: OG_SIZE.height }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          left: 64,
+          top: 0,
+          bottom: 0,
+          width: 420,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
+        <div style={{ display: "flex", fontSize: 20, fontWeight: 400, color: MUTE }}>Tipo {profile.id}</div>
+        <div
+          style={{
+            display: "flex",
+            fontSize: 58,
+            fontWeight: 600,
+            lineHeight: 1.08,
+            letterSpacing: -1.4,
+            marginTop: 12,
+          }}
+        >
+          {profile.name}
+        </div>
+      </div>
+      <div
+        style={{
+          position: "absolute",
+          left: 64,
+          bottom: 48,
+          display: "flex",
+        }}
+      >
+        <Wordmark titleSize={30} bylineSize={14} gap={8} />
+      </div>
+    </div>
+  );
+
+  return new ImageResponse(body, {
+    ...OG_SIZE,
+    fonts,
+  });
+}

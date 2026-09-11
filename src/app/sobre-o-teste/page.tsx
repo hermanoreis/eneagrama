@@ -22,11 +22,11 @@ export default function SobreTestePage() {
         <h2 className="font-display text-3xl">Como a pontuação é calculada?</h2>
         <p>São 135 afirmativas, com 15 relacionadas a cada tipo, distribuídas ao longo do questionário. Cada resposta vale de 1 a 5 pontos. Ao concluir, cada tipo pode somar de 15 a 75 pontos.</p>
         <p>Uma pontuação mais alta indica maior concordância com aquelas frases. Não é uma probabilidade de você ser um tipo, nem uma medida de valor pessoal.</p>
-        <p>O resultado é apresentado depois de todas as respostas. Quando dois ou mais tipos têm a mesma pontuação mais alta, mostramos o empate para você comparar as descrições.</p>
+        <p>O resultado é apresentado depois de todas as respostas. Quando dois ou mais tipos têm a mesma pontuação mais alta, mostramos o empate — um duelo de papel entre os mascotes — e convidamos você a rever algumas das frases já respondidas desses tipos. Se as somas desempatarem, aparece um tipo principal e a asa. Se não, o empate permanece: o site não escolhe um tipo por você.</p>
       </section>
       <section className="space-y-4">
         <h2 className="font-display text-3xl">O que são as asas?</h2>
-        <p>No Eneagrama, os tipos vizinhos no círculo são chamados de asas. Quando há um único tipo com mais pontos, o site compara os dois vizinhos e mostra suas pontuações. Um empate entre eles não comprova que essas influências sejam equilibradas na sua vida.</p>
+        <p>No Eneagrama, os tipos vizinhos no círculo são chamados de asas. Quando há um único tipo com mais pontos, o resultado e a conta mostram a asa no formato 4w5 — tipo 4 com asa 5 — a partir do vizinho com mais pontos. Um empate entre os vizinhos não inventa uma asa única nem comprova que essas influências sejam equilibradas na sua vida.</p>
         <Link href="/mapa#asas" className="underline underline-offset-4">Entender o conceito de asas</Link>
       </section>
       <section className="space-y-4">

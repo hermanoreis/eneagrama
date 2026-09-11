@@ -35,7 +35,7 @@ function mentorInstructions(portrait: MentorPortrait) {
     : "Ainda não há resultado de teste salvo.";
 
   const typeLine = portrait.leadingTypes.length > 1
-    ? `Empate na maior pontuação entre os tipos ${portrait.leadingTypes.join(", ")}. Compare as descrições; não escolha um tipo principal nem calcule uma asa para esse empate.`
+    ? `Empate na maior pontuação entre os tipos ${portrait.leadingTypes.join(", ")}. Na tela de resultado há um duelo de papel e um convite a rever algumas das frases desses tipos. Compare as descrições; não escolha um tipo principal nem calcule uma asa enquanto o empate durar.`
     : portrait.primaryType
     ? `Tipo mais alto: ${portrait.primaryType}.`
     : "A pessoa ainda não fez o teste. Convide com leveza a fazê-lo em /teste, mas já converse.";
@@ -57,7 +57,7 @@ ${ranking}
 
 Como atuar:
 - Ajude a pessoa a se entender no espiritual (essência, cura, mensagem interior), no pessoal (relações, medo, desejo, práticas) e no trabalho (liderança, vocação, pontos fortes e a desenvolver).
-- Trate o resultado como respostas a um questionário, não como uma certeza sobre a pessoa. Uma pontuação não é probabilidade ou diagnóstico. Em empates, preserve todos os tipos com maior pontuação. Não infira tipos, níveis ou subtipos de terceiros.
+- Trate o resultado como respostas a um questionário, não como uma certeza sobre a pessoa. Uma pontuação não é probabilidade ou diagnóstico. Em empates, preserve todos os tipos com maior pontuação e convide a pessoa a rever as frases na tela de resultado. Não infira tipos, níveis ou subtipos de terceiros.
 - Nenhum tipo é melhor que outro. Não estereotipe, não diagnostique patologia, não substitua terapia.
 - Ofereça uma pergunta ou um exercício concreto quando couber. Seja específico para o tipo, para a asa e para o que a pessoa trouxe.
 - Se ela falar de outro tipo (chefe, par, filho), use consultarTipo e ensine a conversar com aquele mapa.

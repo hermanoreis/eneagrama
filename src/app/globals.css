@@ -198,6 +198,76 @@ svg a:focus-visible circle:nth-of-type(2) {
 .paper-interactive:focus-visible { outline-offset: 5px; }
 .profile-character { margin-inline: auto; }
 
+.versus-duel {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 1rem 0.75rem 1.1rem;
+  overflow: hidden;
+  border-radius: 28px;
+  background: #f4ece3;
+}
+.versus-side {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  justify-content: flex-end;
+  min-width: 0;
+}
+.versus-side-right { justify-content: flex-start; }
+.versus-fighter {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  max-width: 14rem;
+}
+.versus-side .versus-fighter + .versus-fighter { margin-left: -18%; }
+.versus-fighter-image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+  user-select: none;
+}
+.versus-fighter-image-flip { transform: scaleX(-1); }
+.versus-fighter-name {
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  text-align: center;
+}
+.versus-mark {
+  flex-shrink: 0;
+  align-self: center;
+  padding: 0.4rem 0.65rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 6px;
+  background: var(--paper);
+  box-shadow: 0 8px 18px rgba(7, 59, 51, 0.08);
+  color: var(--ink);
+  font-family: var(--font-outfit), "Avenir Next", "Segoe UI", sans-serif;
+  font-size: clamp(1.15rem, 3.4vw, 1.85rem);
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.versus-duel[data-count="3"] .versus-fighter,
+.versus-duel[data-count="4"] .versus-fighter,
+.versus-duel[data-count="5"] .versus-fighter,
+.versus-duel[data-count="6"] .versus-fighter,
+.versus-duel[data-count="7"] .versus-fighter,
+.versus-duel[data-count="8"] .versus-fighter,
+.versus-duel[data-count="9"] .versus-fighter {
+  max-width: 9.5rem;
+}
+@media (max-width: 639px) {
+  .versus-duel { gap: 0.15rem; padding: 0.65rem 0.4rem 0.85rem; }
+  .versus-fighter-name { font-size: 0.7rem; }
+}
+
 .type-gallery { display: grid; grid-template-columns: minmax(0,1fr); }
 .type-card { display: flex; align-items: center; gap: .65rem; padding: 1.65rem .25rem; border-top: 1px solid var(--line); border-radius: 3px; transition: background-color 180ms ease; }
 .type-card .paper-character { width: 34%; }
@@ -286,6 +356,7 @@ svg a:focus-visible circle:nth-of-type(2) {
 @media (prefers-reduced-motion: reduce) {
   .author-portrait:hover .author-portrait-paper, .author-portrait:focus-visible .author-portrait-paper { opacity: 0; }
   .paper-character, .paper-eye { transform: none !important; transition: none !important; }
+  .versus-fighter-image-flip { transform: scaleX(-1) !important; }
 }
 
 .mobile-nav-panel { position: absolute; top: 100%; left: 0; right: 0; padding: .75rem 1.25rem; border-bottom: 1px solid var(--line); background: var(--paper); box-shadow: 0 12px 20px #073b3310; }

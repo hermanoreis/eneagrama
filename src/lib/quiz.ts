@@ -1,4 +1,4 @@
-import { questions } from "../data/questions";
+import { questions, type LikertQuestion } from "../data/questions";
 import { neighborIds } from "../data/map";
 import { typeById, type TypeId } from "../data/types";
 
@@ -56,11 +56,16 @@ export function serverAnswersSnapshot(): null {
 }
 
 export function saveAnswers(answers: Answers) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(answers));
+  const raw = JSON.stringify(answers);
+  localStorage.setItem(STORAGE_KEY, raw);
+  cachedRaw = raw;
+  cachedAnswers = { ...answers };
 }
 
 export function clearAnswers() {
   localStorage.removeItem(STORAGE_KEY);
+  cachedRaw = null;
+  cachedAnswers = {};
 }
 
 export function answeredCount(answers: Answers) {
@@ -86,6 +91,45 @@ export function resultLeaders(scores: TypeScore[]): TypeScore[] {
         !Number.isInteger(s.score) || s.score < 15 || s.score > 75)) return [];
   const highest = Math.max(...scores.map((s) => s.score));
   return scores.filter((s) => s.score === highest).sort((a, b) => a.id - b.id);
+}
+
+export function uniquePrimaryType(scores: TypeScore[]): TypeId | null {
+  const leaders = resultLeaders(scores);
+  return leaders.length === 1 ? leaders[0].id : null;
+}
+
+function isTypeId(value: number): value is TypeId {
+  return Number.isInteger(value) && value >= 1 && value <= 9;
+}
+
+/** Existing items that most pushed a main-type tie, for live re-score on the result screen. */
+export function tieReviewQuestions(answers: Answers, leaderIds: TypeId[]): LikertQuestion[] {
+  const ids = [...new Set(leaderIds.filter(isTypeId))].sort((a, b) => a - b);
+  if (ids.length < 2) return [];
+  const perType = ids.length === 2 ? 4 : 3;
+  const cap = ids.length === 2 ? 8 : 9;
+
+  const rankedByType = ids.map((type) => ({
+    type,
+    items: questions
+      .filter((question) => question.type === type)
+      .sort((a, b) => (answers[b.id] ?? 0) - (answers[a.id] ?? 0) || a.id - b.id)
+      .slice(0, perType),
+  }));
+
+  const picked = rankedByType.flatMap((group) => group.items);
+  if (picked.length <= cap) return picked;
+
+  const kept: LikertQuestion[] = [];
+  const leftover: LikertQuestion[] = [];
+  for (const group of rankedByType) {
+    if (group.items[0]) kept.push(group.items[0]);
+    leftover.push(...group.items.slice(1));
+  }
+  leftover.sort((a, b) => (answers[b.id] ?? 0) - (answers[a.id] ?? 0) || a.id - b.id);
+  const extra = leftover.slice(0, Math.max(0, cap - kept.length));
+  const extraIds = new Set(extra.map((question) => question.id));
+  return rankedByType.flatMap((group) => group.items.filter((question) => question.id === group.items[0]?.id || extraIds.has(question.id)));
 }
 
 export function scoreTypes(answers: Answers): TypeScore[] {

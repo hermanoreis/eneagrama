@@ -5,7 +5,7 @@ A família visual segue os conceitos aprovados para o Eneagrama: um personagem p
 ## Uso
 
 - `public/images/characters/type-1.webp` até `type-9.webp`: esculturas individuais de frente. Olhos em branco para overlay HTML.
-- `public/images/characters/type-1-versus.webp` até `type-9-versus.webp`: a mesma família, todos inclinados à direita, 3/4, prontos para um duelo de papel. Olhos já desenhados no arquivo. Fundo de estúdio sólido — **Hermano ainda precisa recortar o alpha**.
+- `public/images/characters/type-1-versus.webp` até `type-9-versus.webp`: a mesma família, todos inclinados à direita, 3/4, prontos para um duelo de papel. Olhos já desenhados no arquivo. WebP com canal alpha (recorte do Hermano).
 - `public/images/characters/stage.webp`: cenário da abertura.
 - `TypeAvatar`: reutiliza a arte de frente na home, galeria, perfil, resultado sem empate e conta. Olhos são camadas HTML, posicionadas em porcentagem do arquivo original.
 - Empate no resultado: `VersusDuel` monta o card em CSS (esquerda na pose original, direita com `scaleX(-1)`). Não usa `TypeAvatar`.
@@ -15,7 +15,7 @@ A família visual segue os conceitos aprovados para o Eneagrama: um personagem p
 
 ## Recorte e otimização
 
-Com autorização do usuário, os fundos quadriculados das esculturas originais (de frente) foram removidos localmente por máscara de cromaticidade, preservando as cores do papel. Os arquivos finais de frente usam WebP com canal alpha. As poses versus (`type-N-versus.webp`) ainda têm fundo de estúdio sólido; o recorte alpha fica para Hermano.
+Com autorização do usuário, os fundos quadriculados das esculturas originais (de frente) foram removidos localmente por máscara de cromaticidade, preservando as cores do papel. Os arquivos finais de frente usam WebP com canal alpha. As poses versus (`type-N-versus.webp`) também usam WebP com canal alpha, recortadas pelo Hermano.
 
 ## Geração
 

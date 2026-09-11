@@ -14,11 +14,34 @@ export async function saveResult(input: {
   answers: Record<number, number>;
   primaryType: number;
 }) {
+  const scores = JSON.stringify(input.scores);
+  const answers = JSON.stringify(input.answers);
+  // Revise the latest row so tie-review and retries do not fill the 20-entry
+  // history or let an older in-flight insert become "latest" for /conta.
   const { rows } = await pool.query<{ id: string; created_at: Date }>(
-    `INSERT INTO test_results (user_id, scores, answers, primary_type)
-     VALUES ($1, $2, $3, $4)
-     RETURNING id, created_at`,
-    [input.userId, JSON.stringify(input.scores), JSON.stringify(input.answers), input.primaryType],
+    `WITH latest AS (
+       SELECT id FROM test_results
+       WHERE user_id = $1
+       ORDER BY created_at DESC
+       LIMIT 1
+     ),
+     updated AS (
+       UPDATE test_results AS t
+       SET scores = $2, answers = $3, primary_type = $4
+       FROM latest
+       WHERE t.id = latest.id
+       RETURNING t.id, t.created_at
+     ),
+     inserted AS (
+       INSERT INTO test_results (user_id, scores, answers, primary_type)
+       SELECT $1, $2, $3, $4
+       WHERE NOT EXISTS (SELECT 1 FROM updated)
+       RETURNING id, created_at
+     )
+     SELECT id, created_at FROM updated
+     UNION ALL
+     SELECT id, created_at FROM inserted`,
+    [input.userId, scores, answers, input.primaryType],
   );
   return rows[0];
 }

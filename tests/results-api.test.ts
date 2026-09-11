@@ -36,9 +36,30 @@ test("result API computes scores on the server and ignores a supplied primary ty
   const response = await POST(request({ answers, primaryType: 1, scores: [{ id: 1, score: 999 }] }));
   assert.equal(response.status, 200);
   assert.equal(query.mock.callCount(), 1);
+  const sql = String(query.mock.calls[0].arguments[0]);
+  assert.match(sql, /UPDATE test_results/i);
+  assert.match(sql, /INSERT INTO test_results/i);
+  assert.match(sql, /WHERE NOT EXISTS/i);
   const values = query.mock.calls[0].arguments[1] as unknown as [string, string, string, number];
   assert.equal(values[0], "test-user");
   assert.equal(values[3], 8);
   assert.deepEqual(JSON.parse(values[2]), answers);
   assert.equal(JSON.parse(values[1])[0].score, 75);
+});
+
+test("result API revises one row instead of inserting a second history entry", async () => {
+  mock.method(auth.api, "getSession", async () => ({ user: { id: "test-user" } }));
+  const query = mock.method(pool, "query", async () => ({ rows: [{ id: "existing-result", created_at: new Date(0) }] }));
+  const first = Object.fromEntries(questions.map((q) => [q.id, 3]));
+  const revised = { ...first, [1]: 5 };
+  assert.equal((await POST(request({ answers: first }))).status, 200);
+  assert.equal((await POST(request({ answers: revised }))).status, 200);
+  assert.equal(query.mock.callCount(), 2);
+  for (const call of query.mock.calls) {
+    const sql = String(call.arguments[0]);
+    assert.match(sql, /UPDATE test_results/i);
+    assert.match(sql, /NOT EXISTS \(SELECT 1 FROM updated\)/i);
+  }
+  const secondValues = query.mock.calls[1].arguments[1] as unknown as [string, string, string, number];
+  assert.deepEqual(JSON.parse(secondValues[2]), revised);
 });

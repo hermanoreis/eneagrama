@@ -14,6 +14,7 @@ import {
   wingOf, subscribeAnswers, serverAnswersSnapshot, saveAnswers, tieReviewQuestions,
   type Answers,
 } from "../lib/quiz";
+import { createCoalescedPersister } from "../lib/persist-result";
 import { questions } from "../data/questions";
 
 type SaveState = { answers: Answers; status: "saved" | "error" } | null;
@@ -27,27 +28,23 @@ export function ResultClient() {
   const answers = draft ?? stored ?? EMPTY_ANSWERS;
   const [saveState, setSaveState] = useState<SaveState>(null);
   const [attempt, setAttempt] = useState(0);
-  const pending = useRef<{ answers: Answers; attempt: number; request: Promise<boolean> } | null>(null);
+  const persister = useRef(createCoalescedPersister<Answers>(async (payload) => {
+    const res = await fetch("/api/results", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ answers: payload }),
+    });
+    return res.ok;
+  }));
 
   useEffect(() => {
-    if (!answers || !completeAnswers(answers)) return;
-    let active = true;
+    if (!completeAnswers(answers)) return;
     const timer = window.setTimeout(() => {
-      if (!pending.current || pending.current.answers !== answers || pending.current.attempt !== attempt) {
-        pending.current = {
-          answers, attempt,
-          request: fetch("/api/results", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ answers }),
-          }).then((res) => res.ok).catch(() => false),
-        };
-      }
-      pending.current.request.then((ok) => {
-        if (active) setSaveState({ answers, status: ok ? "saved" : "error" });
+      persister.current.enqueue(answers, (payload, ok, isLatest) => {
+        if (isLatest) setSaveState({ answers: payload, status: ok ? "saved" : "error" });
       });
     }, draft ? 450 : 0);
-    return () => { active = false; window.clearTimeout(timer); };
+    return () => window.clearTimeout(timer);
   }, [answers, attempt, draft]);
 
   const scores = scoreTypes(answers);

@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { TypeAvatar } from "../../components/TypeAvatar";
+import { WingCallout } from "../../components/WingCallout";
 import { typeById } from "../../data/types";
 import { typeIntroductions } from "../../data/copy";
 import { listResults } from "../../lib/results";
 import { getSession } from "../../lib/session";
-import { resultLeaders } from "../../lib/quiz";
+import { resultLeaders, wingOf } from "../../lib/quiz";
 import { privateMetadata } from "../../lib/seo";
 
 export const metadata = privateMetadata("Sua conta");
@@ -16,6 +17,9 @@ export default async function ContaPage() {
   const results = await listResults(session.user.id);
   const latest = results[0];
   const leaders = latest ? resultLeaders(latest.scores) : [];
+  const tied = leaders.length > 1;
+  const primary = leaders.length === 1 ? leaders[0] : null;
+  const wing = primary && latest ? wingOf(primary.id, latest.scores) : null;
 
   return (
     <div className="space-y-10">
@@ -26,8 +30,10 @@ export default async function ContaPage() {
       {leaders.length > 0 && latest ? (
         <section className="space-y-5">
           <p className="text-sm text-[color:var(--mute)]">Último resultado · {new Date(latest.createdAt).toLocaleDateString("pt-BR")}</p>
-          <h2 className="font-display text-3xl">{leaders.length > 1 ? "Seu resultado tem um empate" : "O tipo com mais pontos nas suas respostas"}</h2>
-          {leaders.length > 1 ? <p>Os tipos abaixo tiveram a mesma pontuação. Compare as descrições e suas motivações.</p> : null}
+          <h2 className="font-display text-3xl">{tied ? "Opa! Houve um empate em primeiro lugar" : primary ? `${primary.id} · ${typeById[primary.id].name}` : "O tipo com mais pontos nas suas respostas"}</h2>
+          {tied ? (
+            <p>Você é bastante versátil, hein? Os tipos abaixo tiveram a mesma pontuação. Reveja algumas frases no resultado para desempatar, se quiser mais clareza sobre o seu tipo.</p>
+          ) : null}
           <div className="grid gap-4 md:grid-cols-2">
             {leaders.map((leader) => (
               <article key={leader.id} className="rounded-3xl bg-white p-6">
@@ -38,8 +44,13 @@ export default async function ContaPage() {
               </article>
             ))}
           </div>
+          {wing && primary ? <WingCallout primary={primary.id} wing={wing} /> : null}
           <p className="text-sm text-[color:var(--mute)]">Este resultado é um ponto de partida para reflexão. Não é um diagnóstico.</p>
-          <div className="flex flex-wrap gap-3"><Link href="/mentor" className="btn-primary">Conversar com o mentor</Link><Link href="/teste" className="btn-ghost">Voltar ao teste</Link></div>
+          <div className="flex flex-wrap gap-3">
+            {tied ? <Link href="/teste/resultado" className="btn-primary">Ir ao resultado e desempatar</Link> : <Link href="/mentor" className="btn-primary">Conversar com o mentor</Link>}
+            {tied ? <Link href="/mentor" className="btn-ghost">Conversar com o mentor</Link> : null}
+            <Link href="/teste" className="btn-ghost">Voltar ao teste</Link>
+          </div>
         </section>
       ) : (
         <section className="rounded-3xl bg-white p-8">
@@ -53,10 +64,19 @@ export default async function ContaPage() {
           <ul className="mt-5 divide-y divide-[color:var(--line)]">
             {results.map((result) => {
               const group = resultLeaders(result.scores);
+              const one = group.length === 1 ? group[0] : null;
+              const savedWing = one ? wingOf(one.id, result.scores) : null;
               return <li key={result.id} className="space-y-3 py-5">
                 <p className="text-sm text-[color:var(--mute)]">{new Date(result.createdAt).toLocaleString("pt-BR")}</p>
-                <p>{group.length > 1 ? "Empate entre os tipos" : group.length === 1 ? "Tipo com mais pontos" : "Registro incompleto"}</p>
+                <p>{group.length > 1 ? "Empate entre os tipos" : one ? "Tipo com mais pontos" : "Registro incompleto"}</p>
                 <div className="flex flex-wrap gap-4">{group.map((type) => <Link key={type.id} href={`/tipos/${type.id}`} className="underline underline-offset-4">{type.id} · {typeById[type.id].name}</Link>)}</div>
+                {one && savedWing ? (
+                  <p className="text-sm text-[color:var(--ink-soft)]">
+                    {savedWing.tied || !savedWing.id
+                      ? `Asa: vizinhos ${savedWing.left} e ${savedWing.right} empatados.`
+                      : `Asa: ${one.id}w${savedWing.id} · tipo ${one.id} com asa ${savedWing.id}.`}
+                  </p>
+                ) : null}
               </li>;
             })}
           </ul>

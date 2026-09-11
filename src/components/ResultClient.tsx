@@ -1,46 +1,75 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { typeById } from "../data/types";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { typeById, type TypeId } from "../data/types";
 import { typeIntroductions } from "../data/copy";
 import { TypeAvatar } from "./TypeAvatar";
 import { PaperMotion } from "./PaperMotion";
+import { VersusDuel } from "./VersusDuel";
+import { WingCallout } from "./WingCallout";
+import { LikertEdit } from "./LikertEdit";
 import {
   completeAnswers, loadAnswers, answeredCount, scoreTypes, resultLeaders,
-  wingOf, subscribeAnswers, serverAnswersSnapshot, type Answers,
+  wingOf, subscribeAnswers, serverAnswersSnapshot, saveAnswers, tieReviewQuestions,
+  type Answers,
 } from "../lib/quiz";
+import { createCoalescedPersister } from "../lib/persist-result";
+import { loadSavedResultId, saveSavedResultId } from "../lib/saved-result-id";
 import { questions } from "../data/questions";
 
 type SaveState = { answers: Answers; status: "saved" | "error" } | null;
 
+const EMPTY_ANSWERS: Answers = {};
+
 export function ResultClient() {
-  const answers = useSyncExternalStore(subscribeAnswers, loadAnswers, serverAnswersSnapshot);
+  const stored = useSyncExternalStore(subscribeAnswers, loadAnswers, serverAnswersSnapshot);
+  const [draft, setDraft] = useState<Answers | null>(null);
+  const [storageError, setStorageError] = useState(false);
+  const answers = draft ?? stored ?? EMPTY_ANSWERS;
   const [saveState, setSaveState] = useState<SaveState>(null);
   const [attempt, setAttempt] = useState(0);
-  const pending = useRef<{ answers: Answers; attempt: number; request: Promise<boolean> } | null>(null);
+  const resultId = useRef<string | null>(loadSavedResultId());
+  const persister = useRef(createCoalescedPersister<Answers>(async (payload) => {
+    const res = await fetch("/api/results", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ answers: payload, resultId: resultId.current }),
+    });
+    if (!res.ok) return false;
+    const data: unknown = await res.json().catch(() => null);
+    const id = data && typeof data === "object" && "id" in data && typeof data.id === "string" ? data.id : null;
+    if (id) {
+      resultId.current = id;
+      saveSavedResultId(id);
+    }
+    return true;
+  }));
 
   useEffect(() => {
-    if (!answers || !completeAnswers(answers)) return;
-    let active = true;
-    // Reuse the in-flight request during Strict Mode effect replay.
-    if (!pending.current || pending.current.answers !== answers || pending.current.attempt !== attempt) {
-      pending.current = {
-        answers, attempt,
-        request: fetch("/api/results", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ answers }),
-        }).then((res) => res.ok).catch(() => false),
-      };
-    }
-    pending.current.request.then((ok) => {
-      if (active) setSaveState({ answers, status: ok ? "saved" : "error" });
-    });
-    return () => { active = false; };
-  }, [answers, attempt]);
+    if (!completeAnswers(answers)) return;
+    const timer = window.setTimeout(() => {
+      persister.current.enqueue(answers, (payload, ok, isLatest) => {
+        if (isLatest) setSaveState({ answers: payload, status: ok ? "saved" : "error" });
+      });
+    }, draft ? 450 : 0);
+    return () => window.clearTimeout(timer);
+  }, [answers, attempt, draft]);
 
-  if (!answers) return <p role="status">Lendo suas respostas…</p>;
+  const scores = scoreTypes(answers);
+  const leaders = resultLeaders(scores);
+  const tied = leaders.length > 1;
+  const leaderIds = leaders.map((leader) => leader.id);
+  const leaderKey = leaderIds.join("-");
+  const reviewItems = useMemo(() => {
+    const ids = leaderKey.split("-").map(Number).filter((id): id is TypeId => id >= 1 && id <= 9);
+    if (ids.length < 2) return [];
+    return tieReviewQuestions(answers, ids);
+    // Freeze the phrase list while the same types remain tied so items do not swap mid-edit.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [leaderKey]);
+
+  if (!stored && !draft) return <p role="status">Lendo suas respostas…</p>;
   const done = answeredCount(answers);
   if (done < questions.length) {
     return (
@@ -52,12 +81,20 @@ export function ResultClient() {
     );
   }
 
-  const scores = scoreTypes(answers);
-  const leaders = resultLeaders(scores);
-  const tied = leaders.length > 1;
   const profile = typeById[leaders[0].id];
   const wing = tied ? null : wingOf(profile.id, scores);
   const status = saveState?.answers === answers ? saveState.status : "saving";
+
+  function setAnswer(id: number, value: number) {
+    const next = { ...answers, [id]: value };
+    setDraft(next);
+    try {
+      saveAnswers(next);
+      setStorageError(false);
+    } catch {
+      setStorageError(true);
+    }
+  }
 
   return (
     <div className="space-y-10">
@@ -66,16 +103,48 @@ export function ResultClient() {
           <><p>Não conseguimos guardar este resultado na sua conta. Suas respostas continuam neste navegador.</p><button type="button" className="mt-3 underline underline-offset-4" onClick={() => { setSaveState(null); setAttempt((value) => value + 1); }}>Tentar salvar novamente</button></>
         ) : "Guardando seu resultado na conta…"}
       </div>
+      {storageError ? (
+        <p role="alert" className="rounded-xl bg-[color:var(--wash)] p-4">
+          Não foi possível guardar as notas revistas neste navegador.{" "}
+          <button
+            type="button"
+            className="underline underline-offset-4"
+            onClick={() => {
+              try {
+                saveAnswers(answers);
+                setStorageError(false);
+              } catch {
+                setStorageError(true);
+              }
+            }}
+          >
+            Tentar guardar respostas
+          </button>
+        </p>
+      ) : null}
       <header className="max-w-3xl space-y-4">
-        <p className="text-sm text-[color:var(--mute)]">{tied ? "Mais de um tipo teve a maior pontuação" : "O tipo com mais pontos nas suas respostas"}</p>
-        <h1 className="font-display text-5xl">{tied ? "Seu resultado tem um empate" : `${profile.id} · ${profile.name}`}</h1>
-        <p className="text-lg leading-relaxed text-[color:var(--ink-soft)]">{tied ? `Os tipos ${leaders.map((type) => type.id).join(", ")} tiveram a mesma pontuação. Leia as descrições e compare suas motivações.` : "Comece por esta descrição e compare com situações da sua vida. Você também pode explorar os outros tipos que pontuaram mais."}</p>
+        {tied ? (
+          <>
+            <h1 className="font-display text-5xl">Opa! Houve um empate em primeiro lugar</h1>
+            <p className="text-lg leading-relaxed text-[color:var(--ink-soft)]">
+              Você é bastante versátil, hein? Que tal rever algumas das perguntas e desempatar, para ter clareza sobre o seu tipo?
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="text-sm text-[color:var(--mute)]">O tipo com mais pontos nas suas respostas</p>
+            <h1 className="font-display text-5xl">{profile.id} · {profile.name}</h1>
+            <p className="text-lg leading-relaxed text-[color:var(--ink-soft)]">Comece por esta descrição e compare com situações da sua vida. Você também pode explorar os outros tipos que pontuaram mais.</p>
+          </>
+        )}
         <p className="text-sm text-[color:var(--mute)]">O resultado é um ponto de partida para reflexão. Não é um diagnóstico nem descreve tudo sobre você.</p>
       </header>
+      {tied ? (
+        <VersusDuel ids={leaderIds} />
+      ) : null}
       <div className={`grid gap-5 ${tied ? "sm:grid-cols-2" : "md:grid-cols-[1fr_220px]"}`}>
         {leaders.map((leader) => (
           <article key={leader.id} className="rounded-3xl border border-[color:var(--line)] p-6">
-            {tied ? <TypeAvatar id={leader.id} size={140} /> : null}
             <h2 className="font-display text-3xl">{leader.id} · {typeById[leader.id].name}</h2>
             <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">{typeIntroductions[leader.id]}</p>
             <Link href={`/tipos/${leader.id}`} className="mt-5 inline-block underline underline-offset-4">Conhecer o tipo {leader.id}</Link>
@@ -83,17 +152,38 @@ export function ResultClient() {
         ))}
         {!tied ? <PaperMotion><TypeAvatar id={profile.id} size={220} eager /></PaperMotion> : null}
       </div>
-      {wing ? (
-        <section className="rounded-3xl border border-[color:var(--line)] p-6">
-          <h2 className="font-display text-3xl">Compare também os tipos vizinhos</h2>
-          <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">No Eneagrama, os dois tipos vizinhos são chamados de asas. Suas características podem complementar a descrição que você leu.</p>
-          <p className="mt-3 text-sm">{wing.tied ? `Os vizinhos ${wing.left} e ${wing.right} tiveram a mesma pontuação. Isso não comprova que essas influências sejam equilibradas na sua vida.` : `Entre os vizinhos ${wing.left} e ${wing.right}, o tipo ${wing.id} teve mais pontos nas suas respostas.`}</p>
-          <div className="mt-4 flex flex-wrap gap-5">
-            {[wing.left, wing.right].map((id) => <Link key={id} href={`/tipos/${id}`} className="underline underline-offset-4">{id} · {typeById[id].name}</Link>)}
-            <Link href="/mapa#asas" className="underline underline-offset-4">Entender as asas</Link>
+      {tied ? (
+        <section className="space-y-6">
+          <div className="max-w-3xl space-y-3">
+            <h2 className="font-display text-3xl">Reveja algumas frases</h2>
+            <p className="leading-relaxed text-[color:var(--ink-soft)]">
+              Estas já estavam no teste: são as que mais empurraram o empate. A escala é a mesma, de 1 a 5.
+              Cada mudança recalcula na hora. Se as somas deixarem de empatar, aparece um tipo principal e a asa.
+              Se não mudar o suficiente, o empate permanece.
+            </p>
           </div>
+          {leaderIds.map((id) => {
+            const items = reviewItems.filter((question) => question.type === id);
+            if (!items.length) return null;
+            return (
+              <div key={id} className="space-y-4">
+                <h3 className="font-display text-2xl">{id} · {typeById[id].name}</h3>
+                <ol className="space-y-8">
+                  {items.map((question) => (
+                    <LikertEdit
+                      key={question.id}
+                      question={question}
+                      value={answers[question.id]}
+                      onChange={(value) => setAnswer(question.id, value)}
+                    />
+                  ))}
+                </ol>
+              </div>
+            );
+          })}
         </section>
       ) : null}
+      {wing ? <WingCallout primary={profile.id} wing={wing} /> : null}
       <section>
         <h2 className="font-display text-3xl">Como suas respostas se distribuíram</h2>
         <p className="mt-4 max-w-3xl leading-relaxed text-[color:var(--ink-soft)]">A pontuação reúne suas respostas às afirmativas de cada tipo. Uma pontuação mais alta indica maior concordância com essas frases. Não é uma porcentagem de quem você é.</p>

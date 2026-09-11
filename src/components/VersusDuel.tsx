@@ -13,6 +13,7 @@ function VersusFighter({ id, flipped }: { id: TypeId; flipped: boolean }) {
         sizes="(max-width: 640px) 42vw, 220px"
         className={`versus-fighter-image${flipped ? " versus-fighter-image-flip" : ""}`}
         draggable={false}
+        unoptimized
       />
       <figcaption className="versus-fighter-name">
         {id} · {type.name}

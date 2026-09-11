@@ -15,6 +15,7 @@ import {
   type Answers,
 } from "../lib/quiz";
 import { createCoalescedPersister } from "../lib/persist-result";
+import { loadSavedResultId, saveSavedResultId } from "../lib/saved-result-id";
 import { questions } from "../data/questions";
 
 type SaveState = { answers: Answers; status: "saved" | "error" } | null;
@@ -28,13 +29,21 @@ export function ResultClient() {
   const answers = draft ?? stored ?? EMPTY_ANSWERS;
   const [saveState, setSaveState] = useState<SaveState>(null);
   const [attempt, setAttempt] = useState(0);
+  const resultId = useRef<string | null>(loadSavedResultId());
   const persister = useRef(createCoalescedPersister<Answers>(async (payload) => {
     const res = await fetch("/api/results", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ answers: payload }),
+      body: JSON.stringify({ answers: payload, resultId: resultId.current }),
     });
-    return res.ok;
+    if (!res.ok) return false;
+    const data: unknown = await res.json().catch(() => null);
+    const id = data && typeof data === "object" && "id" in data && typeof data.id === "string" ? data.id : null;
+    if (id) {
+      resultId.current = id;
+      saveSavedResultId(id);
+    }
+    return true;
   }));
 
   useEffect(() => {

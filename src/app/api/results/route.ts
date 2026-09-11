@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "../../../lib/auth";
 import { getLatestResult, listResults, saveResult } from "../../../lib/results";
 import { completeAnswers, scoreTypes, uniquePrimaryType } from "../../../lib/quiz";
+import { parseResultId } from "../../../lib/saved-result-id";
 
 export async function GET(request: Request) {
   const session = await auth.api.getSession({ headers: request.headers });
@@ -28,6 +29,7 @@ export async function POST(request: Request) {
     userId: session.user.id,
     scores,
     answers,
+    resultId: body && typeof body === "object" ? parseResultId((body as { resultId?: unknown }).resultId) : null,
     // Unique leader when the sums untie. On a remaining tie, stored for column
     // compatibility only; UI and mentor keep every leader from scores.
     primaryType: uniquePrimaryType(scores) ?? scores[0].id,

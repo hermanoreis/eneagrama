@@ -15,6 +15,7 @@ import {
   serverAnswersSnapshot,
   type Answers,
 } from "../lib/quiz";
+import { clearSavedResultId } from "../lib/saved-result-id";
 import { questions } from "../data/questions";
 
 export function QuizClient() {
@@ -37,11 +38,12 @@ export function QuizClient() {
     const next = { ...answers, [id]: value };
     setAnswers(next);
     persist(next);
+    clearSavedResultId();
   }
 
   function reset() {
     if (!confirm("Apagar as respostas deste navegador e recomeçar?")) return;
-    try { clearAnswers(); setStorageError(false); } catch { setStorageError(true); return; }
+    try { clearAnswers(); clearSavedResultId(); setStorageError(false); } catch { setStorageError(true); return; }
     setAnswers({});
     setPage(0);
   }

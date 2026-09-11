@@ -23,7 +23,7 @@ Ferramenta integrada `image_gen`, com a prancha aprovada `output/design/nove-tip
 
 ### Poses versus
 
-Nove arquivos `type-N-versus.webp`, a partir dos mascotes de frente. Pose compartilhada: corpo inclinado à direita, 3/4, briga de papel leve. Cara creme com olhos já desenhados. Fundo de estúdio ok. Sem anatomia realista, sem marca de jogo. No card, a figura da direita é espelhada em CSS.
+Nove arquivos `type-N-versus.webp`, a partir dos mascotes de frente. Pose compartilhada: corpo inclinado à direita, 3/4, briga de papel leve. Cara creme com olhos já desenhados. Recorte alpha pelo Hermano. Sem anatomia realista, sem marca de jogo. No card, a figura da direita é espelhada em CSS.
 
 ### Prompts dos nove personagens
 

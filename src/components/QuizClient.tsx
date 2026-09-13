@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useMemo, useState, useSyncExternalStore } from "react";
-import { SCALE } from "../data/questions";
 import {
   PAGE_SIZE,
   answeredCount,
@@ -16,22 +15,30 @@ import {
   type Answers,
 } from "../lib/quiz";
 import { clearSavedResultId } from "../lib/saved-result-id";
-import { questions } from "../data/questions";
+import { interpolate } from "../i18n/format";
+import { useI18n } from "../i18n/provider";
 
 export function QuizClient() {
+  const { messages: m, pack, href, t } = useI18n();
+  const questions = pack.questions;
+  const SCALE = pack.SCALE;
   const [page, setPage] = useState(0);
   const storedAnswers = useSyncExternalStore(subscribeAnswers, loadAnswers, serverAnswersSnapshot);
   const [draft, setAnswers] = useState<Answers | null>(null);
   const answers = draft ?? storedAnswers ?? {};
   const [storageError, setStorageError] = useState(false);
-  const pages = pageCount();
-  const slice = useMemo(() => questionsForPage(page), [page]);
+  const pages = pageCount(questions);
+  const slice = useMemo(() => questionsForPage(page, questions), [page, questions]);
   const done = answeredCount(answers);
   const complete = done === questions.length;
 
   function persist(next: Answers) {
-    try { saveAnswers(next); setStorageError(false); }
-    catch { setStorageError(true); }
+    try {
+      saveAnswers(next);
+      setStorageError(false);
+    } catch {
+      setStorageError(true);
+    }
   }
 
   function setAnswer(id: number, value: number) {
@@ -42,23 +49,37 @@ export function QuizClient() {
   }
 
   function reset() {
-    if (!confirm("Apagar as respostas deste navegador e recomeçar?")) return;
-    try { clearAnswers(); clearSavedResultId(); setStorageError(false); } catch { setStorageError(true); return; }
+    if (!confirm(m.test.resetConfirm)) return;
+    try {
+      clearAnswers();
+      clearSavedResultId();
+      setStorageError(false);
+    } catch {
+      setStorageError(true);
+      return;
+    }
     setAnswers({});
     setPage(0);
   }
 
   if (storedAnswers === null) {
-    return <p className="text-[color:var(--mute)]">Carregando o questionário…</p>;
+    return <p className="text-[color:var(--mute)]">{m.test.loading}</p>;
   }
 
   return (
     <div className="space-y-8">
-      {storageError ? <p role="alert" className="rounded-xl bg-[color:var(--wash)] p-4">Não foi possível guardar suas respostas neste navegador. Mantenha esta página aberta para não perder o que respondeu. <button type="button" className="underline underline-offset-4" onClick={() => persist(answers)}>Tentar guardar respostas</button></p> : null}
+      {storageError ? (
+        <p role="alert" className="rounded-xl bg-[color:var(--wash)] p-4">
+          {m.test.storageError}{" "}
+          <button type="button" className="underline underline-offset-4" onClick={() => persist(answers)}>
+            {m.test.retrySave}
+          </button>
+        </p>
+      ) : null}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs uppercase tracking-[0.2em] text-[color:var(--mute)]">
-            {done} de {questions.length} respondidas · página {page + 1}/{pages}
+            {interpolate(m.test.progress, { done, total: questions.length, page: page + 1, pages })}
           </p>
           <div className="mt-2 h-1.5 w-full max-w-md overflow-hidden rounded-full bg-[color:var(--wash)]">
             <div
@@ -68,16 +89,12 @@ export function QuizClient() {
           </div>
         </div>
         <div className="flex gap-3 text-sm">
-          <button
-            type="button"
-            onClick={reset}
-            className="text-[color:var(--mute)] underline-offset-4 hover:underline"
-          >
-            Apagar respostas e recomeçar
+          <button type="button" onClick={reset} className="text-[color:var(--mute)] underline-offset-4 hover:underline">
+            {m.test.reset}
           </button>
           {complete && !storageError ? (
-            <Link href="/teste/resultado" className="btn-primary !px-4 !py-1.5">
-              Ver meu resultado
+            <Link href={href("result")} className="btn-primary !px-4 !py-1.5">
+              {m.test.seeResult}
             </Link>
           ) : null}
         </div>
@@ -87,16 +104,10 @@ export function QuizClient() {
         {slice.map((q, i) => (
           <li key={q.id} className="border-t border-[color:var(--line)] pt-5">
             <p className="font-display text-lg leading-snug text-[color:var(--ink)]">
-              <span className="mr-2 text-sm text-[color:var(--mute)]">
-                {page * PAGE_SIZE + i + 1}.
-              </span>
+              <span className="mr-2 text-sm text-[color:var(--mute)]">{page * PAGE_SIZE + i + 1}.</span>
               {q.text}
             </p>
-            <div
-              className="mt-4 grid grid-cols-5 gap-1.5"
-              role="radiogroup"
-              aria-label={`Afirmativa ${q.id}`}
-            >
+            <div className="mt-4 grid grid-cols-5 gap-1.5" role="radiogroup" aria-label={t(m.test.itemAria, { id: q.id })}>
               {SCALE.map((s) => {
                 const on = answers[q.id] === s.value;
                 return (
@@ -129,7 +140,7 @@ export function QuizClient() {
           onClick={() => setPage((p) => Math.max(0, p - 1))}
           className="rounded-full border border-[color:var(--line)] px-4 py-2 text-sm disabled:opacity-40"
         >
-          Anterior
+          {m.test.prev}
         </button>
         {page < pages - 1 ? (
           <button
@@ -140,12 +151,16 @@ export function QuizClient() {
             }}
             className="rounded-full bg-[color:var(--ink)] px-5 py-2 text-sm text-[color:var(--paper)]"
           >
-            Continuar
+            {m.test.continue}
           </button>
+        ) : complete && !storageError ? (
+          <Link href={href("result")} className="btn-primary !px-5 !py-2 text-sm">
+            {m.test.seeResult}
+          </Link>
         ) : (
-          complete && !storageError ? <Link href="/teste/resultado" className="btn-primary !px-5 !py-2 text-sm">
-            Ver meu resultado
-          </Link> : <p role="status" className="text-sm text-[color:var(--mute)]">{storageError ? "Guarde as respostas antes de continuar." : `Faltam ${questions.length - done} respostas. Volte às páginas anteriores para completar.`}</p>
+          <p role="status" className="text-sm text-[color:var(--mute)]">
+            {storageError ? m.test.saveFirst : t(m.test.remaining, { n: questions.length - done })}
+          </p>
         )}
       </div>
     </div>

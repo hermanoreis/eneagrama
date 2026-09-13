@@ -3,14 +3,8 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useMemo, useState } from "react";
-import type { MentorUIMessage } from "../lib/mentor/agent";
-
-const SUGGESTIONS = [
-  "Tenho dificuldade para dizer não. Por onde começo?",
-  "Me identifiquei com dois tipos. Como comparar?",
-  "Como posso receber uma crítica sem responder na hora?",
-  "Uma prática simples para hoje",
-];
+import { useI18n } from "@/i18n/provider";
+import type { MentorUIMessage } from "@/lib/mentor/agent";
 
 function textOf(message: MentorUIMessage) {
   return message.parts
@@ -28,9 +22,15 @@ export function MentorClient({
   primaryLabel: string | null;
   configured: boolean;
 }) {
+  const { locale, messages: m } = useI18n();
   const transport = useMemo(
-    () => new DefaultChatTransport({ api: "/api/mentor" }),
-    [],
+    () =>
+      new DefaultChatTransport({
+        api: "/api/mentor",
+        headers: { "x-eneagrama-locale": locale },
+        body: { locale },
+      }),
+    [locale],
   );
   const { messages, sendMessage, status, error } = useChat<MentorUIMessage>({
     messages: initialMessages,
@@ -38,6 +38,7 @@ export function MentorClient({
   });
   const [input, setInput] = useState("");
   const busy = status === "submitted" || status === "streaming";
+  const [beforeResult, afterResult] = m.mentor.withResult.split("{label}");
 
   function submit(text: string) {
     const trimmed = text.trim();
@@ -49,24 +50,26 @@ export function MentorClient({
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-3xl flex-col gap-6">
       <header>
-        <p className="text-xs uppercase tracking-[0.22em] text-[color:var(--mute)]">Mentor</p>
-        <h1 className="mt-2 font-display text-5xl">Vamos olhar para uma situação da sua vida?</h1>
+        <p className="text-xs uppercase tracking-[0.22em] text-[color:var(--mute)]">{m.mentor.eyebrow}</p>
+        <h1 className="mt-2 font-display text-5xl">{m.mentor.h1}</h1>
         <p className="mt-3 max-w-xl leading-relaxed text-[color:var(--ink-soft)]">
-          Converse com uma IA sobre o Eneagrama e seu resultado. Ela pode ajudar com perguntas e sugestões de prática.
+          {m.mentor.lead}
           {primaryLabel ? (
             <>
               {" "}
-              A conversa pode usar seu último resultado: <strong>{primaryLabel}</strong>.
+              {beforeResult}
+              <strong>{primaryLabel}</strong>
+              {afterResult}
             </>
           ) : (
-            <> Você pode conversar sobre os tipos mesmo sem ter um resultado salvo.</>
+            <> {m.mentor.withoutResult}</>
           )}
         </p>
       </header>
 
       {messages.length === 0 ? (
         <div className="grid gap-2 sm:grid-cols-2">
-          {SUGGESTIONS.map((s) => (
+          {m.mentor.suggestions.map((s) => (
             <button
               key={s}
               type="button"
@@ -96,32 +99,22 @@ export function MentorClient({
                 }`}
               >
                 {!mine && looking && !body ? (
-                  <p className="text-sm text-[color:var(--mute)]">Consultando o mapa…</p>
+                  <p className="text-sm text-[color:var(--mute)]">{m.mentor.consulting}</p>
                 ) : null}
-                {body ? (
-                  <p className="whitespace-pre-wrap leading-relaxed">{body}</p>
-                ) : null}
+                {body ? <p className="whitespace-pre-wrap leading-relaxed">{body}</p> : null}
               </li>
             );
           })}
-          {busy ? (
-            <li className="text-sm text-[color:var(--mute)]">O mentor está pensando…</li>
-          ) : null}
+          {busy ? <li className="text-sm text-[color:var(--mute)]">{m.mentor.thinking}</li> : null}
         </ol>
       )}
 
       {!configured ? (
-        <p className="rounded-2xl bg-[color:var(--wash)] px-4 py-3 text-sm">
-          O mentor está indisponível no momento. Você pode continuar explorando os perfis e exercícios.
-        </p>
+        <p className="rounded-2xl bg-[color:var(--wash)] px-4 py-3 text-sm">{m.mentor.unavailable}</p>
       ) : null}
-      {error ? (
-        <p className="rounded-2xl bg-[color:var(--wash)] px-4 py-3 text-sm">
-          Não consegui responder agora. Tente novamente em alguns instantes.
-        </p>
-      ) : null}
+      {error ? <p className="rounded-2xl bg-[color:var(--wash)] px-4 py-3 text-sm">{m.mentor.error}</p> : null}
 
-      <p className="text-sm leading-relaxed text-[color:var(--mute)]">Você está conversando com uma IA. Ela pode errar e não substitui acompanhamento profissional.</p>
+      <p className="text-sm leading-relaxed text-[color:var(--mute)]">{m.mentor.disclaimer}</p>
       <form
         className="sticky bottom-4 mt-auto flex gap-2 rounded-[28px] border border-[color:var(--line)] bg-[color:var(--paper)] p-2"
         onSubmit={(e) => {
@@ -139,16 +132,12 @@ export function MentorClient({
             }
           }}
           rows={2}
-          aria-label="Conte uma situação que você gostaria de entender melhor"
-          placeholder="Conte uma situação que você gostaria de entender melhor."
+          aria-label={m.mentor.placeholder}
+          placeholder={m.mentor.placeholder}
           className="min-h-[52px] flex-1 resize-none bg-transparent px-3 py-2 outline-none"
         />
-        <button
-          disabled={!configured || busy || !input.trim()}
-          className="btn-primary self-end !px-4 !py-2"
-          type="submit"
-        >
-          Enviar
+        <button disabled={!configured || busy || !input.trim()} className="btn-primary self-end !px-4 !py-2" type="submit">
+          {m.mentor.send}
         </button>
       </form>
     </div>

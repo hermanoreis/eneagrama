@@ -7,6 +7,8 @@ import {
 import { createMentorAgent, portraitForUser } from "../../../lib/mentor/agent";
 import { saveMentorMessages } from "../../../lib/mentor/store";
 import { auth } from "../../../lib/auth";
+import { parseLocale } from "../../../i18n/config";
+import { localeFromHeaders } from "../../../i18n/request-locale";
 
 export const maxDuration = 60;
 
@@ -17,23 +19,27 @@ export async function POST(request: Request) {
   }
   if (!process.env.OPENROUTER_API_KEY) {
     return Response.json(
-      { error: "O mentor ainda não tem a chave da OpenRouter configurada." },
+      { error: "mentor-unconfigured" },
       { status: 503 },
     );
   }
 
-  const body = (await request.json()) as { messages?: UIMessage[] };
+  const body = (await request.json()) as { messages?: UIMessage[]; locale?: string };
   const messages = body.messages;
   if (!Array.isArray(messages) || messages.length === 0) {
     return Response.json({ error: "messages" }, { status: 400 });
   }
 
-  const portrait = await portraitForUser({
-    id: session.user.id,
-    name: session.user.name,
-    email: session.user.email,
-  });
-  const agent = createMentorAgent(portrait);
+  const locale = body.locale ? parseLocale(body.locale) : localeFromHeaders(request.headers);
+  const portrait = await portraitForUser(
+    {
+      id: session.user.id,
+      name: session.user.name,
+      email: session.user.email,
+    },
+    locale,
+  );
+  const agent = createMentorAgent(portrait, locale);
   const result = await agent.stream({
     messages: await convertToModelMessages(messages),
   });

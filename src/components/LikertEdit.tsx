@@ -1,4 +1,7 @@
-import { SCALE, type LikertQuestion } from "../data/questions";
+"use client";
+
+import type { LikertQuestion } from "@/data/schema";
+import { useI18n } from "@/i18n/provider";
 
 export function LikertEdit({
   question,
@@ -9,11 +12,12 @@ export function LikertEdit({
   value: number;
   onChange: (value: number) => void;
 }) {
+  const { messages: m, pack, t } = useI18n();
   return (
     <li className="border-t border-[color:var(--line)] pt-5">
       <p className="font-display text-lg leading-snug text-[color:var(--ink)]">{question.text}</p>
-      <div className="mt-4 grid grid-cols-5 gap-1.5" role="radiogroup" aria-label={`Afirmativa ${question.id}`}>
-        {SCALE.map((option) => {
+      <div className="mt-4 grid grid-cols-5 gap-1.5" role="radiogroup" aria-label={t(m.test.itemAria, { id: question.id })}>
+        {pack.SCALE.map((option) => {
           const on = value === option.value;
           return (
             <button

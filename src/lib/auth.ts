@@ -1,6 +1,9 @@
 import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
 import { emailOTP } from "better-auth/plugins";
+import { headers } from "next/headers";
+import { defaultLocale } from "../i18n/config";
+import { localeFromHeaders } from "../i18n/request-locale";
 import { pool } from "./db";
 import { sendOtpEmail } from "./email";
 
@@ -35,7 +38,13 @@ export const auth = betterAuth({
       otpLength: 6,
       expiresIn: 600,
       async sendVerificationOTP({ email, otp }) {
-        await sendOtpEmail(email, otp);
+        let locale = defaultLocale;
+        try {
+          locale = localeFromHeaders(await headers());
+        } catch {
+          /* outside a request — keep default */
+        }
+        await sendOtpEmail(email, otp, locale);
       },
     }),
     nextCookies(),

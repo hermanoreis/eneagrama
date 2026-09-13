@@ -1,8 +1,12 @@
+"use client";
+
 import Image from "next/image";
-import { typeById, type TypeId } from "../data/types";
+import type { TypeId } from "@/data/schema";
+import { useI18n } from "@/i18n/provider";
 
 function VersusFighter({ id, flipped }: { id: TypeId; flipped: boolean }) {
-  const type = typeById[id];
+  const { pack } = useI18n();
+  const type = pack.typeById[id];
   return (
     <figure className="versus-fighter">
       <Image
@@ -23,18 +27,14 @@ function VersusFighter({ id, flipped }: { id: TypeId; flipped: boolean }) {
 }
 
 export function VersusDuel({ ids }: { ids: TypeId[] }) {
+  const { messages: m, pack, t } = useI18n();
   if (ids.length < 2) return null;
   const split = Math.ceil(ids.length / 2);
   const left = ids.slice(0, split);
   const right = ids.slice(split);
-  const names = ids.map((id) => `${id} · ${typeById[id].name}`).join(", ");
+  const names = ids.map((id) => `${id} · ${pack.typeById[id].name}`).join(", ");
   return (
-    <div
-      className="versus-duel"
-      data-count={ids.length}
-      role="group"
-      aria-label={`Duelo de papel entre ${names}`}
-    >
+    <div className="versus-duel" data-count={ids.length} role="group" aria-label={t(m.result.versusAria, { names })}>
       <div className="versus-side">
         {left.map((id) => (
           <VersusFighter key={id} id={id} flipped={false} />

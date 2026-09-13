@@ -43,6 +43,11 @@ function closeMenu(setOpen: (value: boolean) => void, openedByPointer: { current
   setOpen(false);
 }
 
+function panelLinks(panel: HTMLElement | null) {
+  if (!panel) return [] as HTMLElement[];
+  return [...panel.querySelectorAll<HTMLElement>("a[href]")];
+}
+
 export function LanguageSwitcher() {
   const { locale, messages } = useI18n();
   const pathname = usePathname() || "/";
@@ -50,7 +55,9 @@ export function LanguageSwitcher() {
   const [fineHover, setFineHover] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   const button = useRef<HTMLButtonElement>(null);
+  const panel = useRef<HTMLDivElement>(null);
   const openedByPointer = useRef(false);
+  const closeTimer = useRef(0);
   const menuId = useId();
 
   useEffect(() => {
@@ -66,11 +73,36 @@ export function LanguageSwitcher() {
   }, []);
 
   useEffect(() => {
+    return () => window.clearTimeout(closeTimer.current);
+  }, []);
+
+  useEffect(() => {
     if (!open) return;
+
+    if (!fineHover) {
+      const links = panelLinks(panel.current);
+      const current = links.find((link) => link.getAttribute("aria-current") === "page") ?? links[0];
+      current?.focus();
+    }
+
     function onKey(event: KeyboardEvent) {
-      if (event.key !== "Escape") return;
-      closeMenu(setOpen, openedByPointer);
-      button.current?.focus();
+      if (event.key === "Escape") {
+        closeMenu(setOpen, openedByPointer);
+        button.current?.focus();
+        return;
+      }
+      if (fineHover || event.key !== "Tab") return;
+      const links = panelLinks(panel.current);
+      if (links.length === 0) return;
+      const first = links[0];
+      const last = links[links.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     }
     function onPointer(event: PointerEvent) {
       if (!root.current?.contains(event.target as Node)) {
@@ -83,17 +115,23 @@ export function LanguageSwitcher() {
       document.removeEventListener("keydown", onKey);
       document.removeEventListener("pointerdown", onPointer);
     };
-  }, [open]);
+  }, [open, fineHover]);
 
   return (
     <div
       ref={root}
       className={`language-switcher${fineHover ? " is-hovercard" : " is-dialog"}`}
       onMouseEnter={() => {
-        if (fineHover) setOpen(true);
+        if (!fineHover) return;
+        window.clearTimeout(closeTimer.current);
+        setOpen(true);
       }}
       onMouseLeave={() => {
-        if (fineHover && !openedByPointer.current) setOpen(false);
+        if (!fineHover || openedByPointer.current) return;
+        window.clearTimeout(closeTimer.current);
+        closeTimer.current = window.setTimeout(() => {
+          if (!openedByPointer.current) setOpen(false);
+        }, 150);
       }}
     >
       <button
@@ -101,7 +139,7 @@ export function LanguageSwitcher() {
         type="button"
         className="language-switcher-button"
         aria-expanded={open}
-        aria-haspopup={fineHover ? "true" : "dialog"}
+        aria-haspopup={fineHover ? undefined : "dialog"}
         aria-controls={menuId}
         aria-label={messages.language}
         title={messages.language}
@@ -126,8 +164,9 @@ export function LanguageSwitcher() {
       ) : null}
       {open ? (
         <div
+          ref={panel}
           id={menuId}
-          role={fineHover ? "group" : "dialog"}
+          role={fineHover ? undefined : "dialog"}
           aria-modal={fineHover ? undefined : true}
           aria-label={messages.language}
           className="language-switcher-panel"

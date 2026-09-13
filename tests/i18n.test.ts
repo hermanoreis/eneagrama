@@ -164,3 +164,15 @@ test("English OTP mail uses /en/sign-in and keeps the six-digit code", () => {
   assert.match(text, /eneagrama\.hermano\.me\/en\/sign-in/);
   assert.match(text, /10 minutes/);
 });
+
+test("the papercraft stage caption is localized, not a leftover PT string", () => {
+  const pt = getMessages("pt-BR").home.stageCaption;
+  assert.equal(pt, "Nove formas de olhar para si.");
+  assert.equal(getMessages("en").home.stageCaption, "Nine ways of looking at yourself.");
+  assert.equal(getMessages("es").home.stageCaption, "Nueve formas de mirarte.");
+  assert.equal(getMessages("fr").home.stageCaption, "Neuf façons de se regarder.");
+  for (const locale of ["en", "es", "fr"] as const) {
+    assert.notEqual(getMessages(locale).home.stageCaption, pt);
+    assert.notEqual(getMessages(locale).home.markHint, getMessages("pt-BR").home.markHint);
+  }
+});

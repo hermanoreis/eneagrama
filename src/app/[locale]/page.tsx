@@ -31,6 +31,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       <JsonLd data={faqJsonLd(pack.homeFaq)} />
       <JsonLd data={howToJsonLd(pack.howToTest.name, pack.howToTest.steps)} />
       <HomeHero
+        locale={locale}
         testHref={testHref}
         startLabel={m.home.start}
         loggedIn={loggedIn}

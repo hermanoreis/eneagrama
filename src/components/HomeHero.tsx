@@ -1,7 +1,9 @@
 import Link from "next/link";
+import type { Locale } from "../i18n/config";
 import { PaperFamily } from "./PaperFamily";
 
 type Props = {
+  locale: Locale;
   testHref: string;
   startLabel: string;
   loggedIn: boolean;
@@ -15,6 +17,7 @@ type Props = {
 };
 
 export function HomeHero({
+  locale,
   testHref,
   startLabel,
   loggedIn,
@@ -45,7 +48,7 @@ export function HomeHero({
             {loggedIn ? loggedInHint : loggedOutHint}
           </p>
         </div>
-        <PaperFamily />
+        <PaperFamily locale={locale} />
       </div>
     </section>
   );

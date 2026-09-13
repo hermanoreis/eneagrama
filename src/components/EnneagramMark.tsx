@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { arrowsByType, neighborIds } from "../data/map";
-import { typeById, type TypeId } from "../data/types";
+import { neighborIds, type TypeId } from "../data/schema";
+import { useI18n } from "../i18n/provider";
 
 type Props = {
   size?: number;
@@ -42,6 +42,7 @@ export function EnneagramMark({
   className,
   interactive = false,
 }: Props) {
+  const { pack, href, t, messages: m } = useI18n();
   const [hovered, setHovered] = useState<TypeId | null>(null);
   const focus: TypeId | null =
     hovered ?? (typeof active === "number" && isTypeId(active) ? active : null);
@@ -50,14 +51,14 @@ export function EnneagramMark({
     const angle = -Math.PI / 2 + (i * 2 * Math.PI) / 9;
     return [cx + r * Math.cos(angle), cy + r * Math.sin(angle)] as const;
   });
-  const idx = (t: number) => SEAT_TO_TYPE.indexOf(t as TypeId);
-  const pt = (t: number) => pos[idx(t)];
+  const idx = (type: number) => SEAT_TO_TYPE.indexOf(type as TypeId);
+  const pt = (type: number) => pos[idx(type)];
   const triangle = [9, 3, 6, 9].map(pt);
   const hex = [1, 4, 2, 8, 5, 7, 1].map(pt);
 
   const wings: TypeId[] = focus ? neighborIds(focus) : [];
-  const arrows = focus ? arrowsByType[focus] : null;
-  const profile = focus ? typeById[focus] : null;
+  const arrows = focus ? pack.arrowsByType[focus] : null;
+  const profile = focus ? pack.typeById[focus] : null;
 
   const edgeStyle = (a: number, b: number) => {
     if (!focus || !arrows) {
@@ -147,8 +148,8 @@ export function EnneagramMark({
     return (
       <a
         key={type}
-        href={`/tipos/${type}`}
-        aria-label={`Tipo ${type}, ${typeById[type].name}. Abrir perfil.`}
+        href={href("type", { id: type })}
+        aria-label={t(m.home.markTypeAria, { id: type, name: pack.typeById[type].name })}
         onMouseEnter={() => setHovered(type)}
         onMouseLeave={() => setHovered(null)}
         onFocus={() => setHovered(type)}
@@ -170,8 +171,8 @@ export function EnneagramMark({
         role={interactive ? "group" : "img"}
         aria-label={
           interactive
-            ? "Símbolo do Eneagrama. Passe o mouse ou foque um número para ver asas e flechas."
-            : "Símbolo do Eneagrama"
+            ? m.home.markAriaInteractive
+            : m.home.markAriaStatic
         }
       >
         <circle
@@ -197,13 +198,18 @@ export function EnneagramMark({
               <p className="enneagram-mark-alias">{profile.alias}</p>
               {arrows ? (
                 <p className="enneagram-mark-hint">
-                  Vizinhos: {wings[0]} e {wings[1]} · Relações no mapa: {arrows.growth} e {arrows.stress}
+                  {t(m.home.markNeighbors, {
+                    left: wings[0],
+                    right: wings[1],
+                    growth: arrows.growth,
+                    stress: arrows.stress,
+                  })}
                 </p>
               ) : null}
             </div>
           ) : (
             <p className="enneagram-mark-hint">
-              Explore os números para conhecer os tipos e suas relações.
+              {m.home.markHint}
             </p>
           )}
         </figcaption>

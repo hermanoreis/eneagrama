@@ -85,10 +85,14 @@ export function LanguageSwitcher() {
       current?.focus();
     }
 
+    function dismiss() {
+      closeMenu(setOpen, openedByPointer);
+      if (!fineHover) button.current?.focus();
+    }
+
     function onKey(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        closeMenu(setOpen, openedByPointer);
-        button.current?.focus();
+        dismiss();
         return;
       }
       if (fineHover || event.key !== "Tab") return;
@@ -105,9 +109,7 @@ export function LanguageSwitcher() {
       }
     }
     function onPointer(event: PointerEvent) {
-      if (!root.current?.contains(event.target as Node)) {
-        closeMenu(setOpen, openedByPointer);
-      }
+      if (!root.current?.contains(event.target as Node)) dismiss();
     }
     document.addEventListener("keydown", onKey);
     document.addEventListener("pointerdown", onPointer);

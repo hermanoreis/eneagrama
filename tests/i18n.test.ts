@@ -241,13 +241,18 @@ test("Chinese OTP mail uses /zh/denglu and a CJK font stack", () => {
   assert.match(text, /eneagrama\.hermano\.me\/zh\/denglu/);
 });
 
-test("latin layout source does not import SC/KR/JP font modules", async () => {
+test("latin layout source does not import SC/KR/JP next/font modules", async () => {
   const { readFile } = await import("node:fs/promises");
   const { join } = await import("node:path");
   const layout = await readFile(join(process.cwd(), "src/app/[locale]/layout.tsx"), "utf8");
+  const stylesheet = await readFile(join(process.cwd(), "src/i18n/cjk-stylesheet.ts"), "utf8");
   assert.equal(layout.includes("Noto_Sans_SC"), false);
   assert.equal(layout.includes("Noto_Sans_KR"), false);
   assert.equal(layout.includes("Noto_Sans_JP"), false);
-  assert.equal(layout.includes("fonts-zh"), false);
-  assert.match(layout, /cjkFontVariable/);
+  assert.equal(layout.includes("next/font/google"), true);
+  assert.equal(layout.includes("Noto_Sans"), false);
+  assert.match(layout, /cjkStylesheet/);
+  assert.match(stylesheet, /Noto\+Sans\+SC/);
+  assert.match(stylesheet, /Noto\+Sans\+KR/);
+  assert.match(stylesheet, /Noto\+Sans\+JP/);
 });

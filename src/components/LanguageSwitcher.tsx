@@ -9,6 +9,14 @@ import { useI18n } from "../i18n/provider";
 
 const FINE_HOVER = "(hover: hover) and (pointer: fine)";
 
+function prefersHovercard() {
+  if (window.matchMedia(FINE_HOVER).matches) return true;
+  const knowsPointer =
+    window.matchMedia("(pointer: fine)").matches || window.matchMedia("(pointer: coarse)").matches;
+  if (knowsPointer) return false;
+  return window.innerWidth >= 700 && navigator.maxTouchPoints === 0;
+}
+
 function TranslateIcon() {
   return (
     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
@@ -47,10 +55,14 @@ export function LanguageSwitcher() {
 
   useEffect(() => {
     const media = window.matchMedia(FINE_HOVER);
-    const sync = () => setFineHover(media.matches);
+    const sync = () => setFineHover(prefersHovercard());
     sync();
     media.addEventListener("change", sync);
-    return () => media.removeEventListener("change", sync);
+    window.addEventListener("resize", sync);
+    return () => {
+      media.removeEventListener("change", sync);
+      window.removeEventListener("resize", sync);
+    };
   }, []);
 
   useEffect(() => {

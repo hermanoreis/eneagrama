@@ -372,7 +372,7 @@ svg a:focus-visible circle:nth-of-type(2) {
   border: 0;
   border-radius: 5px;
   background: transparent;
-  color: var(--mute);
+  color: var(--ink-soft);
   cursor: pointer;
 }
 .language-switcher-button:hover,
@@ -419,16 +419,19 @@ svg a:focus-visible circle:nth-of-type(2) {
 .language-switcher-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 29;
+  z-index: 40;
   border: 0;
   padding: 0;
-  background: #073b3322;
+  background: #073b3359;
 }
 .language-switcher.is-dialog .language-switcher-panel {
   position: fixed;
-  left: 1.25rem;
-  right: 1.25rem;
-  bottom: 1.5rem;
+  left: 50%;
+  right: auto;
+  bottom: max(2.75rem, calc(env(safe-area-inset-bottom, 0px) + 1.25rem));
+  width: min(22rem, calc(100vw - 2.5rem));
   min-width: 0;
-  z-index: 30;
+  transform: translateX(-50%);
+  z-index: 41;
+  box-shadow: 0 16px 40px #073b3340;
 }

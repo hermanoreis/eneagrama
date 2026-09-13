@@ -7,6 +7,8 @@ import { locales, type Locale } from "../i18n/config";
 import { switchLocalePath } from "../i18n/pathnames";
 import { useI18n } from "../i18n/provider";
 
+const FINE_HOVER = "(hover: hover) and (pointer: fine)";
+
 function TranslateIcon() {
   return (
     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
@@ -28,31 +30,39 @@ function TranslateIcon() {
   );
 }
 
-function canHoverOpen() {
-  return typeof window !== "undefined" && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+function closeMenu(setOpen: (value: boolean) => void, openedByPointer: { current: boolean }) {
+  openedByPointer.current = false;
+  setOpen(false);
 }
 
 export function LanguageSwitcher() {
   const { locale, messages } = useI18n();
   const pathname = usePathname() || "/";
   const [open, setOpen] = useState(false);
+  const [fineHover, setFineHover] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   const button = useRef<HTMLButtonElement>(null);
   const openedByPointer = useRef(false);
   const menuId = useId();
 
   useEffect(() => {
+    const media = window.matchMedia(FINE_HOVER);
+    const sync = () => setFineHover(media.matches);
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
+
+  useEffect(() => {
     if (!open) return;
     function onKey(event: KeyboardEvent) {
       if (event.key !== "Escape") return;
-      openedByPointer.current = false;
-      setOpen(false);
+      closeMenu(setOpen, openedByPointer);
       button.current?.focus();
     }
     function onPointer(event: PointerEvent) {
       if (!root.current?.contains(event.target as Node)) {
-        openedByPointer.current = false;
-        setOpen(false);
+        closeMenu(setOpen, openedByPointer);
       }
     }
     document.addEventListener("keydown", onKey);
@@ -66,12 +76,12 @@ export function LanguageSwitcher() {
   return (
     <div
       ref={root}
-      className="language-switcher"
+      className={`language-switcher${fineHover ? " is-hovercard" : " is-dialog"}`}
       onMouseEnter={() => {
-        if (canHoverOpen()) setOpen(true);
+        if (fineHover) setOpen(true);
       }}
       onMouseLeave={() => {
-        if (canHoverOpen() && !openedByPointer.current) setOpen(false);
+        if (fineHover && !openedByPointer.current) setOpen(false);
       }}
     >
       <button
@@ -79,7 +89,7 @@ export function LanguageSwitcher() {
         type="button"
         className="language-switcher-button"
         aria-expanded={open}
-        aria-haspopup="dialog"
+        aria-haspopup={fineHover ? "true" : "dialog"}
         aria-controls={menuId}
         aria-label={messages.language}
         title={messages.language}
@@ -93,8 +103,23 @@ export function LanguageSwitcher() {
       >
         <TranslateIcon />
       </button>
+      {open && !fineHover ? (
+        <button
+          type="button"
+          className="language-switcher-backdrop"
+          aria-label={messages.language}
+          tabIndex={-1}
+          onClick={() => closeMenu(setOpen, openedByPointer)}
+        />
+      ) : null}
       {open ? (
-        <div id={menuId} role="dialog" aria-label={messages.language} className="language-switcher-panel">
+        <div
+          id={menuId}
+          role={fineHover ? "group" : "dialog"}
+          aria-modal={fineHover ? undefined : true}
+          aria-label={messages.language}
+          className="language-switcher-panel"
+        >
           <ul className="language-switcher-list">
             {locales.map((item: Locale) => {
               const href = switchLocalePath(pathname, item);
@@ -106,10 +131,7 @@ export function LanguageSwitcher() {
                     hrefLang={item}
                     aria-current={current ? "page" : undefined}
                     className={current ? "language-switcher-option is-current" : "language-switcher-option"}
-                    onClick={() => {
-                      openedByPointer.current = false;
-                      setOpen(false);
-                    }}
+                    onClick={() => closeMenu(setOpen, openedByPointer)}
                   >
                     {messages.languages[item]}
                   </Link>

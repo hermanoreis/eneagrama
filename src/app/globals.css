@@ -369,10 +369,14 @@ svg a:focus-visible circle:nth-of-type(2) {
   justify-content: center;
   width: 2.25rem;
   height: 2.25rem;
+  border: 0;
   border-radius: 5px;
+  background: transparent;
   color: var(--mute);
+  cursor: pointer;
 }
 .language-switcher-button:hover,
+.language-switcher-button:focus-visible,
 .language-switcher-button[aria-expanded="true"] {
   background: var(--wash);
   color: var(--ink);
@@ -381,7 +385,7 @@ svg a:focus-visible circle:nth-of-type(2) {
   position: absolute;
   left: 0;
   bottom: calc(100% + 0.4rem);
-  min-width: 10.5rem;
+  min-width: 11rem;
   padding: 0.35rem;
   border: 1px solid var(--line);
   border-radius: 5px;
@@ -389,7 +393,13 @@ svg a:focus-visible circle:nth-of-type(2) {
   box-shadow: 0 12px 20px #073b3310;
   z-index: 30;
 }
-.language-switcher-list { margin: 0; padding: 0; list-style: none; }
+.language-switcher-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: min(16rem, 50vh);
+  overflow: auto;
+}
 .language-switcher-option {
   display: block;
   padding: 0.55rem 0.75rem;
@@ -405,4 +415,20 @@ svg a:focus-visible circle:nth-of-type(2) {
 .language-switcher-option.is-current {
   font-weight: 650;
   color: var(--ink);
+}
+.language-switcher-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 29;
+  border: 0;
+  padding: 0;
+  background: #073b3322;
+}
+.language-switcher.is-dialog .language-switcher-panel {
+  position: fixed;
+  left: 1.25rem;
+  right: 1.25rem;
+  bottom: 1.5rem;
+  min-width: 0;
+  z-index: 30;
 }

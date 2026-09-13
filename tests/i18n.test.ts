@@ -165,6 +165,15 @@ test("English OTP mail uses /en/sign-in and keeps the six-digit code", () => {
   assert.match(text, /10 minutes/);
 });
 
+test("every locale names all languages so a new locale is only pack plus locales", () => {
+  for (const locale of locales) {
+    const names = getMessages(locale).languages;
+    for (const item of locales) {
+      assert.ok(names[item]?.trim(), `${locale} missing label for ${item}`);
+    }
+  }
+});
+
 test("the papercraft stage caption is localized, not a leftover PT string", () => {
   const pt = getMessages("pt-BR").home.stageCaption;
   assert.equal(pt, "Nove formas de olhar para si.");

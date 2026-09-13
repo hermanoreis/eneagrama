@@ -1,4 +1,11 @@
-import { defaultLocale, isLocale, localePrefix, type Locale } from "./config";
+import {
+  defaultLocale,
+  isLocale,
+  localeFromUrlPrefix,
+  localePrefix,
+  locales,
+  type Locale,
+} from "./config";
 
 export const routeNames = [
   "home",
@@ -21,19 +28,123 @@ export const routeNames = [
 export type RouteName = (typeof routeNames)[number];
 
 export const publicSlugs = {
-  types: { "pt-BR": "tipos", en: "types", es: "tipos", fr: "types" },
-  map: { "pt-BR": "mapa", en: "map", es: "mapa", fr: "carte" },
-  synthesis: { "pt-BR": "sintese", en: "synthesis", es: "sintesis", fr: "synthese" },
-  library: { "pt-BR": "biblioteca", en: "library", es: "biblioteca", fr: "bibliotheque" },
-  readings: { "pt-BR": "leituras", en: "readings", es: "lecturas", fr: "lectures" },
-  workbook: { "pt-BR": "workbook", en: "workbook", es: "workbook", fr: "cahier" },
-  overview: { "pt-BR": "resumao", en: "overview", es: "resumen", fr: "resume" },
-  about: { "pt-BR": "sobre-o-teste", en: "about-the-test", es: "sobre-el-test", fr: "a-propos-du-test" },
-  signIn: { "pt-BR": "entrar", en: "sign-in", es: "entrar", fr: "connexion" },
-  account: { "pt-BR": "conta", en: "account", es: "cuenta", fr: "compte" },
-  test: { "pt-BR": "teste", en: "test", es: "test", fr: "test" },
-  result: { "pt-BR": "resultado", en: "result", es: "resultado", fr: "resultat" },
-  mentor: { "pt-BR": "mentor", en: "mentor", es: "mentor", fr: "mentor" },
+  types: {
+    "pt-BR": "tipos",
+    en: "types",
+    es: "tipos",
+    fr: "types",
+    "zh-Hans": "leixing",
+    ko: "yuhyeong",
+    ja: "taipu",
+  },
+  map: {
+    "pt-BR": "mapa",
+    en: "map",
+    es: "mapa",
+    fr: "carte",
+    "zh-Hans": "tupu",
+    ko: "jido",
+    ja: "mappu",
+  },
+  synthesis: {
+    "pt-BR": "sintese",
+    en: "synthesis",
+    es: "sintesis",
+    fr: "synthese",
+    "zh-Hans": "lingdaoli",
+    ko: "lideosip",
+    ja: "riidashippu",
+  },
+  library: {
+    "pt-BR": "biblioteca",
+    en: "library",
+    es: "biblioteca",
+    fr: "bibliotheque",
+    "zh-Hans": "ziliao",
+    ko: "jaryo",
+    ja: "shiryo",
+  },
+  readings: {
+    "pt-BR": "leituras",
+    en: "readings",
+    es: "lecturas",
+    fr: "lectures",
+    "zh-Hans": "yuedu",
+    ko: "dokseo",
+    ja: "sanko",
+  },
+  workbook: {
+    "pt-BR": "workbook",
+    en: "workbook",
+    es: "workbook",
+    fr: "cahier",
+    "zh-Hans": "lianxi",
+    ko: "yeonseup",
+    ja: "waaku",
+  },
+  overview: {
+    "pt-BR": "resumao",
+    en: "overview",
+    es: "resumen",
+    fr: "resume",
+    "zh-Hans": "gailan",
+    ko: "yoyak",
+    ja: "gaiyou",
+  },
+  about: {
+    "pt-BR": "sobre-o-teste",
+    en: "about-the-test",
+    es: "sobre-el-test",
+    fr: "a-propos-du-test",
+    "zh-Hans": "guanyu-ceshi",
+    ko: "teseuteu-sogae",
+    ja: "tesuto-nitsuite",
+  },
+  signIn: {
+    "pt-BR": "entrar",
+    en: "sign-in",
+    es: "entrar",
+    fr: "connexion",
+    "zh-Hans": "denglu",
+    ko: "login",
+    ja: "login",
+  },
+  account: {
+    "pt-BR": "conta",
+    en: "account",
+    es: "cuenta",
+    fr: "compte",
+    "zh-Hans": "zhanghu",
+    ko: "gyejeong",
+    ja: "akaunto",
+  },
+  test: {
+    "pt-BR": "teste",
+    en: "test",
+    es: "test",
+    fr: "test",
+    "zh-Hans": "ceshi",
+    ko: "teseuteu",
+    ja: "tesuto",
+  },
+  result: {
+    "pt-BR": "resultado",
+    en: "result",
+    es: "resultado",
+    fr: "resultat",
+    "zh-Hans": "jieguo",
+    ko: "gyeolgwa",
+    ja: "kekka",
+  },
+  mentor: {
+    "pt-BR": "mentor",
+    en: "mentor",
+    es: "mentor",
+    fr: "mentor",
+    "zh-Hans": "daoshi",
+    ko: "mento",
+    ja: "menta",
+  },
 } as const;
 
 export const internalSlugs = {
@@ -118,32 +229,23 @@ export function href(locale: Locale, route: RouteName, params: HrefParams = {}):
 }
 
 export function languageAlternates(route: RouteName, params: HrefParams = {}) {
-  const languages: Record<string, string> = {
-    "pt-BR": href("pt-BR", route, params),
-    en: href("en", route, params),
-    es: href("es", route, params),
-    fr: href("fr", route, params),
-    "x-default": href(defaultLocale, route, params),
-  };
+  const languages: Record<string, string> = { "x-default": href(defaultLocale, route, params) };
+  for (const locale of locales) {
+    languages[locale] = href(locale, route, params);
+  }
   return languages;
 }
 
 type PublicSegment = keyof typeof publicSlugs;
 
-const publicToInternal: Record<Locale, Record<string, string>> = {
-  "pt-BR": Object.fromEntries(
-    (Object.keys(publicSlugs) as PublicSegment[]).map((key) => [publicSlugs[key]["pt-BR"], internalSlugs[key]]),
-  ),
-  en: Object.fromEntries(
-    (Object.keys(publicSlugs) as PublicSegment[]).map((key) => [publicSlugs[key].en, internalSlugs[key]]),
-  ),
-  es: Object.fromEntries(
-    (Object.keys(publicSlugs) as PublicSegment[]).map((key) => [publicSlugs[key].es, internalSlugs[key]]),
-  ),
-  fr: Object.fromEntries(
-    (Object.keys(publicSlugs) as PublicSegment[]).map((key) => [publicSlugs[key].fr, internalSlugs[key]]),
-  ),
-};
+const publicToInternal = Object.fromEntries(
+  locales.map((locale) => [
+    locale,
+    Object.fromEntries(
+      (Object.keys(publicSlugs) as PublicSegment[]).map((key) => [publicSlugs[key][locale], internalSlugs[key]]),
+    ),
+  ]),
+) as Record<Locale, Record<string, string>>;
 
 export type ResolvedPath = {
   locale: Locale;
@@ -152,14 +254,22 @@ export type ResolvedPath = {
   prefixed: boolean;
 };
 
+function decodePathname(pathname: string) {
+  try {
+    return decodeURI(pathname);
+  } catch {
+    return pathname;
+  }
+}
+
 export function resolvePublicPath(pathname: string): ResolvedPath {
-  const clean = pathname.replace(/\/+$/, "") || "/";
+  const clean = decodePathname(pathname).replace(/\/+$/, "") || "/";
   const segments = clean === "/" ? [] : clean.slice(1).split("/");
   const first = segments[0];
-  const firstIsLocale = isLocale(first);
-  const locale: Locale = firstIsLocale ? first : "pt-BR";
-  const rest = firstIsLocale ? segments.slice(1) : segments;
-  const prefixed = locale !== "pt-BR";
+  const fromPrefix = localeFromUrlPrefix(first);
+  const locale: Locale = fromPrefix ?? "pt-BR";
+  const rest = fromPrefix ? segments.slice(1) : segments;
+  const prefixed = Boolean(fromPrefix);
   const mapped = rest.map((segment, index) => {
     if (index <= 1 && publicToInternal[locale][segment]) return publicToInternal[locale][segment];
     return segment;
@@ -175,9 +285,16 @@ export function resolvePublicPath(pathname: string): ResolvedPath {
 
 const protectedInternal = ["/conta", "/teste", "/mentor"];
 
+export function stripInternalLocale(internalPath: string) {
+  const segments = internalPath.split("/").filter(Boolean);
+  if (segments[0] && isLocale(segments[0])) {
+    return `/${segments.slice(1).join("/")}` || "/";
+  }
+  return internalPath || "/";
+}
+
 export function isProtectedPublicPath(pathname: string) {
-  const { internalPath } = resolvePublicPath(pathname);
-  const rest = internalPath.replace(/^\/(pt-BR|en|es|fr)/, "") || "/";
+  const rest = stripInternalLocale(resolvePublicPath(pathname).internalPath);
   return protectedInternal.some((prefix) => rest === prefix || rest.startsWith(`${prefix}/`));
 }
 
@@ -204,7 +321,7 @@ const internalToRoute: { prefix: string; route: RouteName; hasId?: boolean }[] =
 
 export function routeFromPublicPath(pathname: string): { locale: Locale; route: RouteName; params: HrefParams } {
   const { locale, internalPath } = resolvePublicPath(pathname);
-  const rest = internalPath.replace(/^\/(pt-BR|en|es|fr)/, "") || "/";
+  const rest = stripInternalLocale(internalPath);
   const [path, hash] = rest.split("#");
   if (!path || path === "/") return { locale, route: "home", params: hash ? { hash } : {} };
   for (const item of internalToRoute) {
@@ -223,4 +340,17 @@ export function switchLocalePath(pathname: string, nextLocale: Locale) {
   const { route, params } = routeFromPublicPath(pathname);
   const hash = pathname.includes("#") ? pathname.split("#")[1] : params.hash;
   return href(nextLocale, route, { ...params, hash });
+}
+
+/** Canonical public path when someone hits `/pt-BR/...` or `/zh-Hans/...`. */
+export function canonicalPublicFromLocaleCode(pathname: string): string | null {
+  const clean = decodePathname(pathname).replace(/\/+$/, "") || "/";
+  const segments = clean === "/" ? [] : clean.slice(1).split("/");
+  const code = segments[0];
+  if (!isLocale(code)) return null;
+  const expected = localePrefix[code] || "";
+  if (`/${code}` === expected) return null;
+  const rest = segments.slice(1).join("/");
+  const next = expected ? `${expected}${rest ? `/${rest}` : ""}` : rest ? `/${rest}` : "/";
+  return next;
 }

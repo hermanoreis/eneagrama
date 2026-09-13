@@ -41,10 +41,30 @@ body {
 }
 
 .font-display {
-  font-family: var(--font-outfit), "Avenir Next", "Segoe UI", sans-serif;
+  font-family: var(--font-outfit), var(--font-cjk, sans-serif), "Avenir Next", "Segoe UI", sans-serif;
   font-weight: 600;
   letter-spacing: -0.01em;
   text-wrap: balance;
+}
+
+html:lang(zh-Hans),
+html:lang(ko),
+html:lang(ja) {
+  --font-sans: var(--font-outfit), var(--font-cjk);
+}
+
+html:lang(zh-Hans) body,
+html:lang(ko) body,
+html:lang(ja) body {
+  line-height: 1.75;
+}
+
+html:lang(zh-Hans) .font-display,
+html:lang(ko) .font-display,
+html:lang(ja) .font-display {
+  font-family: var(--font-outfit), var(--font-cjk), sans-serif;
+  letter-spacing: 0;
+  line-height: 1.25;
 }
 
 ::selection {

@@ -1,12 +1,12 @@
-import { arrowsByType } from "../../data/map";
-import { typeById, types, type TypeId } from "../../data/types";
+import { getPack } from "../../data/pack";
+import { isTypeId, type TypeId } from "../../data/schema";
+import type { Locale } from "../../i18n/config";
 
-export function isTypeId(value: number): value is TypeId {
-  return Number.isInteger(value) && value >= 1 && value <= 9;
-}
+export { isTypeId };
 
-export function serializeType(id: TypeId) {
-  const t = typeById[id];
+export function serializeType(id: TypeId, locale: Locale) {
+  const pack = getPack(locale);
+  const t = pack.typeById[id];
   return {
     id: t.id,
     name: t.name,
@@ -27,11 +27,11 @@ export function serializeType(id: TypeId) {
     vocations: t.vocations,
     practices: t.practices,
     wings: t.wings,
-    arrows: arrowsByType[id],
+    arrows: pack.arrowsByType[id],
     leadership: t.leadership,
   };
 }
 
-export function listTypeNames() {
-  return types.map((t) => ({ id: t.id, name: t.name, alias: t.alias }));
+export function listTypeNames(locale: Locale) {
+  return getPack(locale).types.map((t) => ({ id: t.id, name: t.name, alias: t.alias }));
 }

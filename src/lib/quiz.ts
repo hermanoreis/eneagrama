@@ -1,4 +1,5 @@
-import { questions, type LikertQuestion } from "../data/questions";
+import { instrument } from "../data/instrument";
+import { questions as defaultQuestions, type LikertQuestion } from "../data/questions";
 import { neighborIds } from "../data/map";
 import { typeById, type TypeId } from "../data/types";
 
@@ -28,7 +29,7 @@ export function loadAnswers(): Answers {
       try { parsed = raw ? JSON.parse(raw) : {}; } catch { /* Ignore malformed local data. */ }
       cachedAnswers = {};
       if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
-        for (const q of questions) {
+        for (const q of instrument) {
           const value = (parsed as Record<string, unknown>)[q.id];
           if (typeof value === "number" && Number.isInteger(value) && value >= 1 && value <= 5) {
             cachedAnswers[q.id] = value;
@@ -69,13 +70,13 @@ export function clearAnswers() {
 }
 
 export function answeredCount(answers: Answers) {
-  return questions.filter((q) => Number.isInteger(answers[q.id]) && answers[q.id] >= 1 && answers[q.id] <= 5).length;
+  return instrument.filter((q) => Number.isInteger(answers[q.id]) && answers[q.id] >= 1 && answers[q.id] <= 5).length;
 }
 
 export function completeAnswers(value: unknown): Answers | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   const answers: Answers = {};
-  for (const q of questions) {
+  for (const q of instrument) {
     const v = (value as Record<string, unknown>)[q.id];
     if (typeof v !== "number" || !Number.isInteger(v) || v < 1 || v > 5) return null;
     answers[q.id] = v;
@@ -103,7 +104,7 @@ function isTypeId(value: number): value is TypeId {
 }
 
 /** Existing items that most pushed a main-type tie, for live re-score on the result screen. */
-export function tieReviewQuestions(answers: Answers, leaderIds: TypeId[]): LikertQuestion[] {
+export function tieReviewQuestions(answers: Answers, leaderIds: TypeId[], bank: LikertQuestion[] = defaultQuestions): LikertQuestion[] {
   const ids = [...new Set(leaderIds.filter(isTypeId))].sort((a, b) => a - b);
   if (ids.length < 2) return [];
   const perType = ids.length === 2 ? 4 : 3;
@@ -111,7 +112,7 @@ export function tieReviewQuestions(answers: Answers, leaderIds: TypeId[]): Liker
 
   const rankedByType = ids.map((type) => ({
     type,
-    items: questions
+    items: bank
       .filter((question) => question.type === type)
       .sort((a, b) => (answers[b.id] ?? 0) - (answers[a.id] ?? 0) || a.id - b.id)
       .slice(0, perType),
@@ -132,7 +133,7 @@ export function tieReviewQuestions(answers: Answers, leaderIds: TypeId[]): Liker
   return rankedByType.flatMap((group) => group.items.filter((question) => question.id === group.items[0]?.id || extraIds.has(question.id)));
 }
 
-export function scoreTypes(answers: Answers): TypeScore[] {
+export function scoreTypes(answers: Answers, names?: Record<TypeId, string>): TypeScore[] {
   const sums: Record<TypeId, number> = {
     1: 0,
     2: 0,
@@ -156,7 +157,7 @@ export function scoreTypes(answers: Answers): TypeScore[] {
     9: 0,
   };
 
-  for (const q of questions) {
+  for (const q of instrument) {
     const v = answers[q.id];
     if (Number.isInteger(v) && v >= 1 && v <= 5) {
       sums[q.type] += v;
@@ -170,7 +171,7 @@ export function scoreTypes(answers: Answers): TypeScore[] {
       const score = sums[id];
       return {
         id,
-        name: typeById[id].name,
+        name: names?.[id] ?? typeById[id].name,
         score,
         max,
         percent: max ? Math.round((score / max) * 100) : 0,
@@ -179,13 +180,13 @@ export function scoreTypes(answers: Answers): TypeScore[] {
     .sort((a, b) => b.score - a.score || a.id - b.id);
 }
 
-export function pageCount() {
-  return Math.ceil(questions.length / PAGE_SIZE);
+export function pageCount(bank: { length: number } = defaultQuestions) {
+  return Math.ceil(bank.length / PAGE_SIZE);
 }
 
-export function questionsForPage(page: number) {
+export function questionsForPage(page: number, bank: LikertQuestion[] = defaultQuestions) {
   const start = page * PAGE_SIZE;
-  return questions.slice(start, start + PAGE_SIZE);
+  return bank.slice(start, start + PAGE_SIZE);
 }
 
 export type WingResult = {

@@ -25,3 +25,9 @@ test("the plain-text access email keeps the code and the sign-in URL", () => {
   assert.match(text, /eneagrama\.hermano\.me\/entrar/);
   assert.match(text, /10 minutos/);
 });
+
+test("the default OTP template stays Portuguese when no locale is passed", () => {
+  const html = otpEmailHtml("111222");
+  assert.match(html, /lang="pt-BR"/);
+  assert.match(html, /eneagrama\.hermano\.me\/entrar/);
+});

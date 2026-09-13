@@ -159,7 +159,10 @@ export function LanguageSwitcher() {
           className="language-switcher-backdrop"
           aria-label={messages.language}
           tabIndex={-1}
-          onClick={() => closeMenu(setOpen, openedByPointer)}
+          onClick={() => {
+            closeMenu(setOpen, openedByPointer);
+            button.current?.focus();
+          }}
         />
       ) : null}
       {open ? (

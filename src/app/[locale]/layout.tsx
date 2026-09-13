@@ -8,7 +8,7 @@ import { htmlLang, isLocale, locales, type Locale } from "../../i18n/config";
 import { ICON_PAPER } from "../../lib/enneagram-icon";
 import { defaultOgImage } from "../../lib/seo";
 import { getMessages } from "../../messages";
-import { getPack } from "../../data/pack";
+import { getClientPack } from "../../data/pack";
 import "../globals.css";
 
 const sans = Outfit({
@@ -60,7 +60,7 @@ export default async function LocaleLayout({
   if (!isLocale(raw)) notFound();
   const locale: Locale = raw;
   const messages = getMessages(locale);
-  const pack = getPack(locale);
+  const pack = getClientPack(locale);
 
   return (
     <html lang={htmlLang[locale]} className={`${sans.variable} ${mono.variable} h-full antialiased`}>

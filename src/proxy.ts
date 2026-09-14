@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
 import { localeCookie } from "./i18n/config";
 import { localeFromAcceptLanguage } from "./i18n/negotiate";
-import { href, isProtectedPublicPath, resolvePublicPath } from "./i18n/pathnames";
+import { canonicalPublicFromLocaleCode, href, isProtectedPublicPath, resolvePublicPath } from "./i18n/pathnames";
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -16,10 +16,10 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const segments = pathname === "/" ? [] : pathname.replace(/\/+$/, "").slice(1).split("/");
-  if (segments[0] === "pt-BR") {
+  const canonical = canonicalPublicFromLocaleCode(pathname);
+  if (canonical) {
     const dest = request.nextUrl.clone();
-    dest.pathname = `/${segments.slice(1).join("/")}`.replace(/\/$/, "") || "/";
+    dest.pathname = canonical;
     return NextResponse.redirect(dest);
   }
 

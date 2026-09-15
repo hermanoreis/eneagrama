@@ -6,7 +6,32 @@ import { SITE_URL as CANONICAL_SITE_URL } from "./seo";
 
 const SITE_URL = process.env.BETTER_AUTH_URL || CANONICAL_SITE_URL;
 
-const FONT = "Outfit, 'Avenir Next', 'Segoe UI', Helvetica, sans-serif";
+const LATIN_FONT = "Outfit, 'Avenir Next', 'Segoe UI', Helvetica, sans-serif";
+
+function emailTypography(locale: Locale) {
+  if (locale === "zh-Hans") {
+    return {
+      family: "'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', Outfit, sans-serif",
+      href: "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap",
+    };
+  }
+  if (locale === "ko") {
+    return {
+      family: "'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', Outfit, sans-serif",
+      href: "https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap",
+    };
+  }
+  if (locale === "ja") {
+    return {
+      family: "'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', Outfit, sans-serif",
+      href: "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap",
+    };
+  }
+  return {
+    family: LATIN_FONT,
+    href: "https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap",
+  };
+}
 
 const paper = "#f7f3eb";
 const wash = "#eee8dc";
@@ -25,6 +50,7 @@ export function otpEmailHtml(otp: string, locale: Locale = defaultLocale) {
   const messages = getMessages(locale);
   const copy = messages.email;
   const url = signInUrl(locale);
+  const { family: FONT, href: fontHref } = emailTypography(locale);
 
   return `<!DOCTYPE html>
 <html lang="${htmlLang[locale]}">
@@ -35,10 +61,10 @@ export function otpEmailHtml(otp: string, locale: Locale = defaultLocale) {
   <meta name="supported-color-schemes" content="light only" />
   <title>${copy.title}</title>
   <!--[if !mso]><!-->
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="${fontHref}" rel="stylesheet" />
   <!--<![endif]-->
   <style>
-    @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap");
+    @import url("${fontHref}");
     :root { color-scheme: light only; }
   </style>
   <!--[if mso]>

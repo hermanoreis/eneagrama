@@ -9,6 +9,9 @@ export const messages: Messages = {
     en: "English",
     es: "Español",
     fr: "Français",
+    "zh-Hans": "简体中文",
+    ko: "한국어",
+    ja: "日本語",
   },
   nav: {
     types: "The nine types",

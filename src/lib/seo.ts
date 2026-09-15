@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import type { Locale } from "../i18n/config";
-import { htmlLang, ogLocale } from "../i18n/config";
+import { htmlLang, locales, ogLocale, type Locale } from "../i18n/config";
 import { href, languageAlternates, type HrefParams, type RouteName } from "../i18n/pathnames";
 import { OG_ALT, OG_IMAGE_PATH, OG_SIZE } from "./og-meta";
 
@@ -23,7 +22,7 @@ export function publicMetadata(
   params?: HrefParams,
 ): Metadata {
   const languages = route ? languageAlternates(route, params) : undefined;
-  const ogLanguages = (["en", "es", "fr", "pt-BR"] as Locale[]).filter((item) => item !== locale).map((item) => ogLocale[item]);
+  const ogLanguages = locales.filter((item) => item !== locale).map((item) => ogLocale[item]);
   return {
     title,
     description,

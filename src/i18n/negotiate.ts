@@ -9,6 +9,10 @@ export function localeFromAcceptLanguage(header: string | null | undefined): Loc
     if (tag === "en" || tag.startsWith("en-")) return "en";
     if (tag === "es" || tag.startsWith("es-")) return "es";
     if (tag === "fr" || tag.startsWith("fr-")) return "fr";
+    if (tag === "zh-hans" || tag === "zh-cn" || tag === "zh-sg") return "zh-Hans";
+    if (tag === "zh") return "zh-Hans";
+    if (tag === "ko" || tag.startsWith("ko-")) return "ko";
+    if (tag === "ja" || tag.startsWith("ja-")) return "ja";
   }
   return defaultLocale;
 }

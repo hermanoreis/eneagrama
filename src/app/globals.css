@@ -193,9 +193,12 @@ svg a:focus-visible circle:nth-of-type(2) {
 
 .home-hero {
   position: relative;
+  display: flex;
+  align-items: center;
   margin-inline: calc(50% - 50vw);
   margin-top: -2rem;
   width: 100vw;
+  min-height: calc(100svh - 3.65rem);
   padding: 1.25rem 1.25rem 2.25rem;
   background: var(--kraft);
   color: var(--fiber);
@@ -204,7 +207,7 @@ svg a:focus-visible circle:nth-of-type(2) {
   display: grid;
   align-items: end;
   gap: 1.25rem;
-  max-width: 72rem;
+  width: min(72rem, 100%);
   margin-inline: auto;
 }
 .hero-ticket {
@@ -243,6 +246,9 @@ svg a:focus-visible circle:nth-of-type(2) {
   line-height: 1.02;
   letter-spacing: -0.03em;
   font-weight: 650;
+}
+.hero-lead {
+  font-size: 1.125rem;
 }
 .hero-secondary {
   padding: 0.65rem 0;
@@ -453,6 +459,19 @@ svg a:focus-visible circle:nth-of-type(2) {
 .type-resume .paper-character { width: 32%; max-width: 9.5rem; }
 .sintese-type .paper-character { width: 7.5rem; }
 
+@media (max-width: 767px) {
+  .home-hero {
+    align-items: start;
+    min-height: calc(100svh - 3.65rem);
+    padding: 0.7rem 1rem 1.35rem;
+  }
+  .paper-family { max-width: 17.25rem; padding-bottom: 1.6rem; }
+  .paper-family-caption { font-size: 0.8rem; }
+  .hero-title { font-size: 1.9rem; letter-spacing: -0.03em; }
+  .hero-lead { margin-top: 0.7rem; font-size: 0.95rem; }
+  .hero-actions { margin-top: 0.9rem; }
+  .hero-ticket { padding: 1.05rem 1.1rem 1rem; }
+}
 @media (min-width: 640px) {
   .home-hero { margin-top: -3rem; }
   .type-gallery { grid-template-columns: repeat(2,minmax(0,1fr)); column-gap: 1.5rem; }
@@ -461,7 +480,7 @@ svg a:focus-visible circle:nth-of-type(2) {
 }
 @media (min-width: 768px) {
   .home-hero-grid { grid-template-columns: minmax(16rem, 0.82fr) minmax(0, 1.18fr); gap: 0.25rem 1.25rem; align-items: end; }
-  .home-hero { padding: 1.75rem 1.5rem 2.75rem; margin-top: -3rem; }
+  .home-hero { padding: 1.75rem 1.5rem 2.75rem; margin-top: -3rem; min-height: calc(100svh - 3.65rem); }
   .hero-ticket { order: 0; margin-bottom: 12%; }
   .paper-family { order: 0; width: 100%; max-width: none; }
   .hero-title { font-size: clamp(2.6rem, 4.4vw, 3.85rem); }

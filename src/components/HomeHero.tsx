@@ -32,8 +32,8 @@ export function HomeHero({
       <div className="home-hero-grid">
         <div className="hero-ticket">
           <h1 className="font-display hero-title">{h1}</h1>
-          <p className="mt-5 text-lg leading-relaxed text-[color:var(--ink-soft)]">{lead}</p>
-          <div className="mt-7 flex flex-wrap items-center gap-3">
+          <p className="hero-lead mt-5 leading-relaxed text-[color:var(--ink-soft)]">{lead}</p>
+          <div className="hero-actions mt-7 flex flex-wrap items-center gap-3">
             <Link href={testHref} className="btn-primary">
               {startLabel}
             </Link>

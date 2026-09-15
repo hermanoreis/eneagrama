@@ -98,8 +98,8 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
   ];
   return (
     <footer className="mt-auto border-t border-[color:var(--line)]">
-      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-10 text-sm text-[color:var(--mute)] sm:flex-row sm:items-start sm:justify-between">
-        <div className="space-y-3">
+      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-10 text-sm text-[color:var(--mute)] sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-x-1">
           <p>{m.footer.blurb}</p>
           <LanguageSwitcher />
         </div>

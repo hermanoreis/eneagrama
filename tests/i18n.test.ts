@@ -205,6 +205,15 @@ test("English OTP mail uses /en/sign-in and keeps the six-digit code", () => {
   assert.match(text, /10 minutes/);
 });
 
+test("every locale names all languages so a new locale is only pack plus locales", () => {
+  for (const locale of locales) {
+    const names = getMessages(locale).languages;
+    for (const item of locales) {
+      assert.ok(names[item]?.trim(), `${locale} missing label for ${item}`);
+    }
+  }
+});
+
 test("CJK type pages use a question-shaped H1 for AEO", () => {
   assert.equal(getMessages("zh-Hans").typePage.h1, "九型人格 {id} 号（{name}）是什么？");
   assert.match(getPack("zh-Hans").typeFaqs[1][0].question, /九型人格 1 号/);

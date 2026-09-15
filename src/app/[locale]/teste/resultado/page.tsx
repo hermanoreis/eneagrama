@@ -15,11 +15,9 @@ export default async function ResultadoPage({ params }: { params: Promise<{ loca
   const locale = await localeFromParams(params);
   const session = await getSession();
   if (!session?.user) redirect(href(locale, "signIn", { next: href(locale, "result") }));
-  const m = getMessages(locale);
 
   return (
     <div className="space-y-6">
-      <p className="text-xs uppercase tracking-[0.22em] text-[color:var(--mute)]">{m.result.eyebrow}</p>
       <ResultClient />
     </div>
   );

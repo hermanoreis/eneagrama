@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist_Mono, Outfit } from "next/font/google";
+import { Bricolage_Grotesque } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { notFound } from "next/navigation";
 import { SiteFooter, SiteHeader } from "../../components/SiteHeader";
@@ -12,15 +12,10 @@ import { getMessages } from "../../messages";
 import { getClientPack } from "../../data/pack";
 import "../globals.css";
 
-const sans = Outfit({
-  variable: "--font-outfit",
+const sans = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin", "latin-ext"],
   display: "swap",
-});
-
-const mono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin", "latin-ext"],
 });
 
 export const viewport: Viewport = {
@@ -65,11 +60,11 @@ export default async function LocaleLayout({
   const cjkHref = cjkStylesheet[locale];
 
   return (
-    <html lang={htmlLang[locale]} className={`${sans.variable} ${mono.variable} h-full antialiased`}>
+    <html lang={htmlLang[locale]} className={`${sans.variable} h-full antialiased`}>
       {cjkHref ? <link rel="stylesheet" href={cjkHref} /> : null}
       <body className="flex min-h-full flex-col">
         <I18nProvider locale={locale} messages={messages} pack={pack}>
-          <a href="#conteudo" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-xl focus:bg-white focus:p-4">
+          <a href="#conteudo" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-[color:var(--paper)] focus:p-4">
             {messages.skip}
           </a>
           <SiteHeader locale={locale} />

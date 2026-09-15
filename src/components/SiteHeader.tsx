@@ -16,7 +16,7 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
     { href: href(locale, "library"), label: m.nav.library },
   ];
   return (
-    <header className="sticky top-0 z-40 border-b border-[color:var(--line)] bg-[color:var(--paper)]/90 backdrop-blur">
+    <header className="site-header">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-3">
         <Link href={href(locale, "home")} className="flex shrink-0 flex-col gap-1 font-display text-xl leading-none lg:flex-row lg:items-baseline lg:gap-3">
           Eneagrama <span className="text-[10px] font-normal tracking-normal sm:text-xs">{m.brandBy}</span>
@@ -57,7 +57,7 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
               </Link>
               <Link
                 href={href(locale, "account")}
-                className="hidden rounded-full px-3 py-2 text-[color:var(--ink-soft)] hover:bg-[color:var(--wash)] hover:text-[color:var(--ink)] sm:inline"
+                className="hidden rounded px-3 py-2 text-[color:var(--ink-soft)] hover:bg-[color:var(--wash)] hover:text-[color:var(--ink)] sm:inline"
               >
                 {m.nav.account}
               </Link>
@@ -97,8 +97,8 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
       : { href: href(locale, "signIn"), label: m.nav.signIn },
   ];
   return (
-    <footer className="mt-auto border-t border-[color:var(--line)]">
-      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-10 text-sm text-[color:var(--mute)] sm:flex-row sm:items-start sm:justify-between">
+    <footer className="site-footer">
+      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 pb-10 pt-16 text-sm text-[color:var(--mute)] sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-3">
           <p>{m.footer.blurb}</p>
           <LanguageSwitcher />

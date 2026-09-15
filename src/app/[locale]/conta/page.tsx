@@ -36,8 +36,7 @@ export default async function ContaPage({ params }: { params: Promise<{ locale: 
     <div className="space-y-10">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm text-[color:var(--mute)]">{m.account.eyebrow}</p>
-          <h1 className="mt-2 font-display text-5xl">
+          <h1 className="font-display text-5xl">
             {interpolate(m.account.hello, { name: session.user.name || m.account.you })}
           </h1>
           <p className="mt-3 break-all text-[color:var(--ink-soft)]">{session.user.email}</p>
@@ -58,16 +57,16 @@ export default async function ContaPage({ params }: { params: Promise<{ locale: 
             {tied
               ? m.account.tieH2
               : primary
-                ? `${primary.id} · ${pack.typeById[primary.id].name}`
+                ? `${primary.id} ${pack.typeById[primary.id].name}`
                 : m.result.leadLabel}
           </h2>
           {tied ? <p>{m.account.tieP}</p> : null}
           <div className="grid gap-4 md:grid-cols-2">
             {leaders.map((leader) => (
-              <article key={leader.id} className="rounded-3xl bg-white p-6">
+              <article key={leader.id} className="paper-sheet-plain p-6">
                 <TypeAvatar id={leader.id} size={140} />
                 <h3 className="mt-4 font-display text-3xl">
-                  {leader.id} · {pack.typeById[leader.id].name}
+                  {leader.id} {pack.typeById[leader.id].name}
                 </h3>
                 <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">{pack.typeIntroductions[leader.id]}</p>
                 <Link href={href(locale, "type", { id: leader.id })} className="mt-5 inline-block underline underline-offset-4">
@@ -99,7 +98,7 @@ export default async function ContaPage({ params }: { params: Promise<{ locale: 
           </div>
         </section>
       ) : (
-        <section className="rounded-3xl bg-white p-8">
+        <section className="paper-sheet-plain p-8">
           <h2 className="font-display text-3xl">{latest ? m.account.incompleteH2 : m.account.emptyH2}</h2>
           <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">
             {latest ? m.account.incompleteP : m.account.emptyP}
@@ -124,7 +123,7 @@ export default async function ContaPage({ params }: { params: Promise<{ locale: 
                   <div className="flex flex-wrap gap-4">
                     {group.map((type) => (
                       <Link key={type.id} href={href(locale, "type", { id: type.id })} className="underline underline-offset-4">
-                        {type.id} · {pack.typeById[type.id].name}
+                        {type.id} {pack.typeById[type.id].name}
                       </Link>
                     ))}
                   </div>

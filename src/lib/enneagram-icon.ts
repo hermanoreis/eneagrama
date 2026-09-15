@@ -1,6 +1,6 @@
 /** Shared geometry for the tab favicon and the Apple touch icon. */
 
-export const ICON_PAPER = "#f7f3eb";
+export const ICON_PAPER = "#F6E7BE";
 export const ICON_INK = "#073b33";
 
 export const ICON_VIEW = 32;

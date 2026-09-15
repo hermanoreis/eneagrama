@@ -23,13 +23,12 @@ export default async function TestePage({ params }: { params: Promise<{ locale: 
   return (
     <div className="mx-auto max-w-3xl space-y-8">
       <header>
-        <p className="text-xs uppercase tracking-[0.22em] text-[color:var(--mute)]">{m.test.eyebrow}</p>
-        <h1 className="mt-2 font-display text-5xl">{m.test.h1}</h1>
+        <h1 className="font-display text-5xl">{m.test.h1}</h1>
         <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">{m.test.lead}</p>
         <p className="mt-4 text-sm text-[color:var(--mute)]">{m.test.hint}</p>
-        <ul className="mt-4 flex flex-wrap gap-2 text-xs uppercase tracking-[0.12em] text-[color:var(--mute)]">
+        <ul className="mt-4 flex flex-wrap gap-2 text-sm text-[color:var(--mute)]">
           {pack.SCALE.map((s) => (
-            <li key={s.value} className="rounded-full border border-[color:var(--line)] px-3 py-1">
+            <li key={s.value} className="rounded-[4px] border border-[color:var(--line)] px-3 py-1">
               {interpolate(m.test.scaleTrue, { value: s.value, label: s.label })}
             </li>
           ))}

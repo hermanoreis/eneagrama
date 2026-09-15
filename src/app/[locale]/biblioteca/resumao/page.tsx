@@ -49,7 +49,7 @@ export default async function ResumaoPage({ params }: { params: Promise<{ locale
               <TypeAvatar id={t.id} size={160} />
               <div className="min-w-0 flex-1">
                 <h3 className="font-display text-2xl">
-                  {t.id} · {t.name}
+                  {t.id} {t.name}
                 </h3>
                 <p className="mt-1 text-sm text-[color:var(--mute)]">{t.alias}</p>
                 <p className="mt-3 leading-relaxed">{t.summary}</p>

@@ -45,7 +45,7 @@ export default async function MapaPage({ params }: { params: Promise<{ locale: s
           {Object.values(pack.triads).map((t) => (
             <article
               key={t.id}
-              className="triad-card relative rounded-[28px] border border-[color:var(--line)] bg-white p-6 shadow-[0_12px_32px_rgba(27,36,48,0.05)]"
+              className="triad-card paper-sheet relative"
             >
               <div className="triad-cast" aria-hidden>
                 {t.types.map((id) => (
@@ -72,7 +72,7 @@ export default async function MapaPage({ params }: { params: Promise<{ locale: s
         </PaperMotion>
         <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {pack.otherTriads.map((g) => (
-            <p key={g.label} className="rounded-2xl bg-[color:var(--wash)] px-4 py-3 text-sm leading-relaxed">
+            <p key={g.label} className="paper-sheet text-sm leading-relaxed">
               <span className="font-medium">{g.label}. </span>
               <span className="text-[color:var(--ink-soft)]">
                 {interpolate(m.mapPage.otherTypes, { list: g.types.join(", "), text: g.text })}
@@ -87,10 +87,10 @@ export default async function MapaPage({ params }: { params: Promise<{ locale: s
         <p className="mt-4 max-w-2xl leading-relaxed text-[color:var(--ink-soft)]">{m.mapPage.variantsLead}</p>
         <div className="mt-8 grid gap-5 md:grid-cols-3">
           {pack.variants.map((v) => (
-            <article key={v.id} className="rounded-[28px] border border-[color:var(--line)] p-6">
+            <article key={v.id} className="paper-sheet">
               <h3 className="font-display text-2xl">{v.label}</h3>
               <p className="mt-1 text-sm text-[color:var(--mute)]">
-                {v.also} · {v.figure} · {v.focus}
+                {v.also}, {v.figure}, {v.focus}
               </p>
               <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">{v.summary}</p>
               <p className="mt-4 text-sm leading-relaxed text-[color:var(--mute)]">{v.palmer}</p>
@@ -104,7 +104,7 @@ export default async function MapaPage({ params }: { params: Promise<{ locale: s
         <p className="mt-4 max-w-2xl leading-relaxed text-[color:var(--ink-soft)]">{pack.healthLevels.intro}</p>
         <div className="mt-8 grid gap-5 md:grid-cols-3">
           {pack.healthLevels.bands.map((band) => (
-            <article key={band.id} className="rounded-[28px] bg-white p-6 shadow-[0_12px_32px_rgba(27,36,48,0.05)]">
+            <article key={band.id} className="paper-sheet-plain p-6">
               <h3 className="font-display text-2xl">{band.label}</h3>
               <ol className="mt-5 space-y-4">
                 {band.levels.map((lv) => (
@@ -126,12 +126,12 @@ export default async function MapaPage({ params }: { params: Promise<{ locale: s
         <p className="mt-4 max-w-2xl leading-relaxed text-[color:var(--ink-soft)]">{m.mapPage.wingsLead}</p>
         <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {pack.types.map((t) => (
-            <li key={t.id} className="rounded-2xl border border-[color:var(--line)] p-4">
+            <li key={t.id} className="paper-sheet">
               <Link href={href(locale, "type", { id: t.id })} className="font-display text-xl">
                 {t.id} {t.name}
               </Link>
               <p className="mt-2 text-sm text-[color:var(--ink-soft)]">
-                {t.wings.map((w) => `${w.id} ${w.name}`).join(" · ")}
+                {t.wings.map((w) => `${w.id} ${w.name}`).join(", ")}
               </p>
             </li>
           ))}
@@ -147,7 +147,7 @@ export default async function MapaPage({ params }: { params: Promise<{ locale: s
             return (
               <li
                 key={id}
-                className="rounded-[24px] border border-[color:var(--line)] p-5 md:grid md:grid-cols-[8rem_1fr_1fr] md:gap-6"
+                className="paper-sheet md:grid md:grid-cols-[8rem_1fr_1fr] md:gap-6"
               >
                 <p className="font-display text-xl">
                   {id} {pack.typeById[id].name}

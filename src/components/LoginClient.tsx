@@ -94,7 +94,7 @@ export function LoginClient({ goingToTest = false }: { goingToTest?: boolean }) 
   const [sentBefore, sentAfter] = m.login.sentTo.split("{email}");
 
   return (
-    <div className="mx-auto max-w-md rounded-[32px] bg-white p-8 shadow-[0_18px_40px_rgba(27,36,48,0.08)]">
+    <div className="mx-auto max-w-md paper-sheet paper-sheet-plain p-8">
       {step === "email" ? (
         <form onSubmit={onEmail} className="space-y-5">
           <h1 className="font-display text-4xl">{testNext ? m.login.startH1 : m.login.accountH1}</h1>
@@ -109,7 +109,7 @@ export function LoginClient({ goingToTest = false }: { goingToTest?: boolean }) 
               spellCheck={false}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full rounded-2xl border border-[color:var(--line)] bg-[color:var(--paper)] px-4 py-3"
+              className="mt-1 w-full rounded-[4px] border border-[color:var(--line)] bg-[color:var(--paper)] px-4 py-3"
               placeholder={m.login.placeholder}
             />
           </label>
@@ -132,7 +132,7 @@ export function LoginClient({ goingToTest = false }: { goingToTest?: boolean }) 
             {sentAfter}
           </p>
           {devCode ? (
-            <p className="rounded-2xl bg-[color:var(--wash)] px-4 py-3 text-sm">
+            <p className="paper-sheet text-sm">
               {m.login.dev} <strong className="tracking-[0.3em]">{devCode}</strong>
             </p>
           ) : (
@@ -152,7 +152,7 @@ export function LoginClient({ goingToTest = false }: { goingToTest?: boolean }) 
                 e.preventDefault();
                 setOtp(e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6));
               }}
-              className="mt-1 w-full rounded-2xl border border-[color:var(--line)] bg-[color:var(--paper)] px-4 py-3 text-center font-display text-3xl tracking-[0.4em]"
+              className="mt-1 w-full rounded-[4px] border border-[color:var(--line)] bg-[color:var(--paper)] px-4 py-3 text-center font-display text-3xl tracking-[0.2em]"
             />
           </label>
           {error ? (

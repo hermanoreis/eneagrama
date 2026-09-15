@@ -21,8 +21,7 @@ export default async function SintesePage({ params }: { params: Promise<{ locale
   return (
     <div className="space-y-12">
       <header className="max-w-2xl">
-        <p className="text-xs uppercase tracking-[0.22em] text-[color:var(--mute)]">{m.synthesis.eyebrow}</p>
-        <h1 className="mt-2 font-display text-5xl">{m.synthesis.h1}</h1>
+        <h1 className="font-display text-5xl">{m.synthesis.h1}</h1>
         <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">{m.synthesis.lead}</p>
       </header>
 
@@ -30,13 +29,13 @@ export default async function SintesePage({ params }: { params: Promise<{ locale
         {pack.types.map((t) => (
           <article
             key={t.id}
-            className="sintese-type paper-interactive grid gap-6 rounded-3xl border border-[color:var(--line)] p-6 md:grid-cols-[10rem_1fr_1fr]"
+            className="sintese-type paper-interactive paper-sheet grid gap-6 md:grid-cols-[10rem_1fr_1fr]"
           >
             <div className="flex items-start gap-4 md:block">
               <TypeAvatar id={t.id} size={160} />
               <div className="min-w-0">
                 <Link href={href(locale, "type", { id: t.id })} className="font-display text-2xl hover:text-[color:var(--accent)]">
-                  {t.id} · {t.name}
+                  {t.id} {t.name}
                 </Link>
                 <p className="mt-3 text-sm leading-relaxed text-[color:var(--ink-soft)]">{t.leadership}</p>
               </div>
@@ -53,10 +52,10 @@ export default async function SintesePage({ params }: { params: Promise<{ locale
 function Column({ title, items }: { title: string; items: string[] }) {
   return (
     <div>
-      <h3 className="text-xs uppercase tracking-[0.16em] text-[color:var(--mute)]">{title}</h3>
+      <h3 className="font-display text-lg">{title}</h3>
       <ul className="mt-2 space-y-1 text-sm leading-relaxed">
         {items.map((item) => (
-          <li key={item}>· {item}</li>
+          <li key={item}>{item}</li>
         ))}
       </ul>
     </div>

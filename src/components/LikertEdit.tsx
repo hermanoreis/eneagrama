@@ -26,7 +26,7 @@ export function LikertEdit({
               role="radio"
               aria-checked={on}
               onClick={() => onChange(option.value)}
-              className={`rounded-xl border px-1 py-2.5 text-center text-[11px] leading-tight sm:text-xs ${
+              className={`rounded-[4px] border px-1 py-2.5 text-center text-[11px] leading-tight sm:text-xs ${
                 on
                   ? "border-[color:var(--ink)] bg-[color:var(--ink)] text-[color:var(--paper)]"
                   : "border-[color:var(--line)] bg-[color:var(--paper)] text-[color:var(--ink-soft)] hover:border-[color:var(--ink)]"

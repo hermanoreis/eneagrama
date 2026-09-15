@@ -7,7 +7,7 @@ import { OG_ALT, OG_CONTENT_TYPE, OG_IMAGE_PATH, OG_SIZE } from "./og-meta";
 
 export { OG_ALT, OG_CONTENT_TYPE, OG_IMAGE_PATH, OG_SIZE };
 
-const PAPER = "#f7f3eb";
+const PAPER = "#f6e7be";
 const INK = "#073b33";
 const MUTE = "#52695f";
 
@@ -63,7 +63,7 @@ async function typeCardArt(profile: EnneaType) {
       width: OG_SIZE.width,
       height: OG_SIZE.height,
       channels: 4,
-      background: { r: 247, g: 243, b: 235, alpha: 1 },
+      background: { r: 246, g: 231, b: 190, alpha: 1 },
     },
   })
     .composite([{ input: art, left, top }])

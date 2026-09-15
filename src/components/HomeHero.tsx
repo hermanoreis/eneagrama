@@ -7,7 +7,6 @@ type Props = {
   testHref: string;
   startLabel: string;
   loggedIn: boolean;
-  eyebrow: string;
   h1: string;
   lead: string;
   meetTypes: string;
@@ -21,7 +20,6 @@ export function HomeHero({
   testHref,
   startLabel,
   loggedIn,
-  eyebrow,
   h1,
   lead,
   meetTypes,
@@ -32,11 +30,10 @@ export function HomeHero({
   return (
     <section className="home-hero">
       <div className="home-hero-grid">
-        <div className="max-w-xl">
-          <p className="mb-4 text-sm font-medium text-[color:var(--cta)]">{eyebrow}</p>
+        <div className="hero-ticket">
           <h1 className="font-display hero-title">{h1}</h1>
-          <p className="mt-6 text-lg leading-relaxed text-[color:var(--ink-soft)]">{lead}</p>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
+          <p className="mt-5 text-lg leading-relaxed text-[color:var(--ink-soft)]">{lead}</p>
+          <div className="mt-7 flex flex-wrap items-center gap-3">
             <Link href={testHref} className="btn-primary">
               {startLabel}
             </Link>

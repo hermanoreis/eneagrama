@@ -50,8 +50,7 @@ export function MentorClient({
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-3xl flex-col gap-6">
       <header>
-        <p className="text-xs uppercase tracking-[0.22em] text-[color:var(--mute)]">{m.mentor.eyebrow}</p>
-        <h1 className="mt-2 font-display text-5xl">{m.mentor.h1}</h1>
+        <h1 className="font-display text-5xl">{m.mentor.h1}</h1>
         <p className="mt-3 max-w-xl leading-relaxed text-[color:var(--ink-soft)]">
           {m.mentor.lead}
           {primaryLabel ? (
@@ -74,7 +73,7 @@ export function MentorClient({
               key={s}
               type="button"
               onClick={() => submit(s)}
-              className="rounded-3xl border border-[color:var(--line)] bg-white px-4 py-4 text-left text-sm leading-relaxed hover:border-[color:var(--ink)]"
+              className="paper-sheet-plain px-4 py-4 text-left text-sm leading-relaxed hover:bg-[color:var(--paper)]"
             >
               {s}
             </button>
@@ -92,10 +91,10 @@ export function MentorClient({
             return (
               <li
                 key={message.id}
-                className={`max-w-[92%] rounded-[28px] px-5 py-4 ${
+                className={`max-w-[92%] rounded-[4px] px-5 py-4 ${
                   mine
                     ? "ml-auto bg-[color:var(--ink)] text-[color:var(--paper)]"
-                    : "bg-white shadow-[0_12px_28px_rgba(27,36,48,0.06)]"
+                    : "bg-[color:var(--wash)]"
                 }`}
               >
                 {!mine && looking && !body ? (
@@ -110,13 +109,13 @@ export function MentorClient({
       )}
 
       {!configured ? (
-        <p className="rounded-2xl bg-[color:var(--wash)] px-4 py-3 text-sm">{m.mentor.unavailable}</p>
+        <p className="paper-sheet text-sm">{m.mentor.unavailable}</p>
       ) : null}
-      {error ? <p className="rounded-2xl bg-[color:var(--wash)] px-4 py-3 text-sm">{m.mentor.error}</p> : null}
+      {error ? <p className="paper-sheet text-sm">{m.mentor.error}</p> : null}
 
       <p className="text-sm leading-relaxed text-[color:var(--mute)]">{m.mentor.disclaimer}</p>
       <form
-        className="sticky bottom-4 mt-auto flex gap-2 rounded-[28px] border border-[color:var(--line)] bg-[color:var(--paper)] p-2"
+        className="sticky bottom-4 mt-auto flex gap-2 rounded-[4px] border border-[color:var(--line)] bg-[color:var(--paper)] p-2"
         onSubmit={(e) => {
           e.preventDefault();
           submit(input);

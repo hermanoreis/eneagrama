@@ -12,7 +12,7 @@ export function WingCallout({ primary, wing }: { primary: TypeId; wing: WingResu
   const wingId = wing.id;
   const wingType = wingId ? typeById[wingId] : null;
   return (
-    <section className="rounded-3xl border border-[color:var(--line)] p-6">
+    <section className="paper-sheet">
       <h2 className="font-display text-3xl">{m.wing.title}</h2>
       {wing.tied || !wingType || !wingId ? (
         <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">
@@ -44,7 +44,7 @@ export function WingCallout({ primary, wing }: { primary: TypeId; wing: WingResu
           <Link key={id} href={href("type", { id })} className="block">
             <TypeAvatar id={id} size={96} />
             <span className="mt-2 inline-block underline underline-offset-4">
-              {id} · {typeById[id].name}
+              {id} {typeById[id].name}
             </span>
           </Link>
         ))}

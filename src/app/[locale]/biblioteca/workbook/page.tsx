@@ -31,8 +31,8 @@ export default async function WorkbookPage({ params }: { params: Promise<{ local
         <h2 className="font-display text-3xl">{m.workbook.innerH2}</h2>
         <p className="leading-relaxed text-[color:var(--ink-soft)]">{m.workbook.innerP}</p>
         <ol className="space-y-3">
-          <li className="rounded-2xl bg-[color:var(--wash)] px-5 py-4 leading-relaxed">{m.workbook.like}</li>
-          <li className="rounded-2xl bg-[color:var(--wash)] px-5 py-4 leading-relaxed">{m.workbook.dislike}</li>
+          <li className="paper-sheet leading-relaxed">{m.workbook.like}</li>
+          <li className="paper-sheet leading-relaxed">{m.workbook.dislike}</li>
         </ol>
       </section>
 
@@ -41,9 +41,9 @@ export default async function WorkbookPage({ params }: { params: Promise<{ local
         <p className="leading-relaxed text-[color:var(--ink-soft)]">{m.workbook.ninesLead}</p>
         <ul className="space-y-3">
           {m.workbook.nines.map((n) => (
-            <li key={n.id} className="rounded-2xl border border-[color:var(--line)] p-4">
+            <li key={n.id} className="paper-sheet">
               <p className="font-display text-xl">
-                {n.id} · {n.p}
+                {n.id} {n.p}
               </p>
               <p className="mt-2 text-sm leading-relaxed text-[color:var(--ink-soft)]">{n.q}</p>
               <Link href={href(locale, "type", { id: n.id })} className="mt-2 inline-block text-sm underline underline-offset-4">

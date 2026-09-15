@@ -35,7 +35,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         testHref={testHref}
         startLabel={m.home.start}
         loggedIn={loggedIn}
-        eyebrow={m.home.eyebrow}
         h1={m.home.h1}
         lead={m.home.lead}
         meetTypes={m.home.meetTypes}
@@ -46,7 +45,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       <section id="nove-tipos" className="home-section scroll-mt-24">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">{m.home.nineEyebrow}</p>
             <h2 className="font-display text-4xl">{m.home.nineH2}</h2>
           </div>
           <p className="max-w-md leading-relaxed text-[color:var(--ink-soft)]">{m.home.nineLead}</p>
@@ -77,12 +75,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
       <section id="como-funciona" className="scroll-mt-24">
         <h2 className="font-display text-4xl">{m.home.howH2}</h2>
-        <ol className="mt-6 grid gap-4 md:grid-cols-3">
-          {m.home.howSteps.map((step, index) => (
-            <li key={step.title} className="editorial-column">
-              <p className="font-display text-3xl text-[color:var(--accent)]">{index + 1}</p>
-              <h3 className="mt-3 text-lg font-semibold">{step.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-[color:var(--ink-soft)]">{step.text}</p>
+        <ol className="how-steps">
+          {m.home.howSteps.map((step) => (
+            <li key={step.title}>
+              <h3 className="font-display text-2xl">{step.title}</h3>
+              <p className="mt-3 leading-relaxed text-[color:var(--ink-soft)]">{step.text}</p>
             </li>
           ))}
         </ol>
@@ -93,7 +90,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       <section className="max-w-3xl space-y-5">
         <h2 className="font-display text-4xl">{m.home.mentorH2}</h2>
         <p className="leading-relaxed text-[color:var(--ink-soft)]">{m.home.mentorP}</p>
-        <p className="rounded-2xl bg-[color:var(--wash)] p-5">{m.home.mentorQuote}</p>
+        <p className="paper-sheet">{m.home.mentorQuote}</p>
         <p className="text-sm leading-relaxed text-[color:var(--mute)]">{m.home.mentorNote}</p>
         <Link href={href(locale, "mentor")} className="btn-ghost">
           {m.home.mentorCta}
@@ -145,11 +142,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           {m.home.faqLink}
         </Link>
       </section>
-      <section className="on-ink home-final-cta bg-[color:var(--ink)] px-8 py-12 text-white sm:px-10">
-        <div className="home-final-cta-grid">
-          <div>
+      <section className="home-final-cta">
+        <div className="home-final-cta-inner">
+          <div className="home-final-cta-copy">
             <h2 className="font-display text-4xl">{m.home.ctaH2}</h2>
-            <p className="mt-4 max-w-xl leading-relaxed text-[color:var(--ink-on-dark)]">{m.home.ctaP}</p>
+            <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">{m.home.ctaP}</p>
             <Link href={testHref} className="btn-primary mt-7">
               {m.home.start}
             </Link>

@@ -193,7 +193,7 @@ export function EnneagramMark({
           {profile && focus ? (
             <div>
               <p className="font-display text-2xl leading-none">
-                {focus} · {profile.name}
+                {focus} {profile.name}
               </p>
               <p className="enneagram-mark-alias">{profile.alias}</p>
               {arrows ? (

@@ -21,7 +21,7 @@ export function TypeGallery({ locale, headingLevel = 3 }: { locale: Locale; head
             <Heading className="font-display text-2xl">{type.name}</Heading>
             <p className="mt-3 text-sm leading-relaxed text-[color:var(--ink-soft)]">{pack.typeIntroductions[type.id]}</p>
             <span className="type-card-link">
-              {m.home.galleryLink} <span aria-hidden="true">↗</span>
+              {m.home.galleryLink}
             </span>
           </div>
         </Link>

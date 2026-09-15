@@ -78,10 +78,10 @@ export function QuizClient() {
       ) : null}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-[color:var(--mute)]">
+          <p className="text-sm text-[color:var(--mute)]">
             {interpolate(m.test.progress, { done, total: questions.length, page: page + 1, pages })}
           </p>
-          <div className="mt-2 h-1.5 w-full max-w-md overflow-hidden rounded-full bg-[color:var(--wash)]">
+          <div className="mt-2 h-1.5 w-full max-w-md overflow-hidden rounded-[2px] bg-[color:var(--wash)]">
             <div
               className="h-full bg-[color:var(--accent)] transition-[width] motion-reduce:transition-none"
               style={{ width: `${(done / questions.length) * 100}%` }}
@@ -117,7 +117,7 @@ export function QuizClient() {
                     role="radio"
                     aria-checked={on}
                     onClick={() => setAnswer(q.id, s.value)}
-                    className={`rounded-xl border px-1 py-2.5 text-center text-[11px] leading-tight sm:text-xs ${
+                    className={`rounded-[4px] border px-1 py-2.5 text-center text-[11px] leading-tight sm:text-xs ${
                       on
                         ? "border-[color:var(--ink)] bg-[color:var(--ink)] text-[color:var(--paper)]"
                         : "border-[color:var(--line)] bg-[color:var(--paper)] text-[color:var(--ink-soft)] hover:border-[color:var(--ink)]"
@@ -138,7 +138,7 @@ export function QuizClient() {
           type="button"
           disabled={page === 0}
           onClick={() => setPage((p) => Math.max(0, p - 1))}
-          className="rounded-full border border-[color:var(--line)] px-4 py-2 text-sm disabled:opacity-40"
+          className="rounded-[4px] border border-[color:var(--line)] px-4 py-2 text-sm disabled:opacity-40"
         >
           {m.test.prev}
         </button>
@@ -149,7 +149,7 @@ export function QuizClient() {
               setPage((p) => Math.min(pages - 1, p + 1));
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
-            className="rounded-full bg-[color:var(--ink)] px-5 py-2 text-sm text-[color:var(--paper)]"
+            className="rounded-[4px] bg-[color:var(--ink)] px-5 py-2 text-sm text-[color:var(--paper)]"
           >
             {m.test.continue}
           </button>

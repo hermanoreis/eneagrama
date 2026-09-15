@@ -20,7 +20,7 @@ function VersusFighter({ id, flipped }: { id: TypeId; flipped: boolean }) {
         unoptimized
       />
       <figcaption className="versus-fighter-name">
-        {id} · {type.name}
+        {id} {type.name}
       </figcaption>
     </figure>
   );
@@ -32,7 +32,7 @@ export function VersusDuel({ ids }: { ids: TypeId[] }) {
   const split = Math.ceil(ids.length / 2);
   const left = ids.slice(0, split);
   const right = ids.slice(split);
-  const names = ids.map((id) => `${id} · ${pack.typeById[id].name}`).join(", ");
+  const names = ids.map((id) => `${id} ${pack.typeById[id].name}`).join(", ");
   return (
     <div className="versus-duel" data-count={ids.length} role="group" aria-label={t(m.result.versusAria, { names })}>
       <div className="versus-side">

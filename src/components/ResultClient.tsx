@@ -121,7 +121,7 @@ export function ResultClient() {
 
   return (
     <div className="space-y-10">
-      <div role="status" className="rounded-2xl bg-[color:var(--wash)] px-5 py-4 text-sm">
+      <div role="status" className="paper-sheet text-sm">
         {status === "saved" ? (
           <>
             {m.result.saved}{" "}
@@ -176,7 +176,7 @@ export function ResultClient() {
           <>
             <p className="text-sm text-[color:var(--mute)]">{m.result.leadLabel}</p>
             <h1 className="font-display text-5xl">
-              {profile.id} · {profile.name}
+              {profile.id} {profile.name}
             </h1>
             <p className="text-lg leading-relaxed text-[color:var(--ink-soft)]">{m.result.uniqueLead}</p>
           </>
@@ -186,9 +186,9 @@ export function ResultClient() {
       {tied ? <VersusDuel ids={leaderIds} /> : null}
       <div className={`grid gap-5 ${tied ? "sm:grid-cols-2" : "md:grid-cols-[1fr_220px]"}`}>
         {leaders.map((leader) => (
-          <article key={leader.id} className="rounded-3xl border border-[color:var(--line)] p-6">
+          <article key={leader.id} className="paper-sheet">
             <h2 className="font-display text-3xl">
-              {leader.id} · {typeById[leader.id].name}
+              {leader.id} {typeById[leader.id].name}
             </h2>
             <p className="mt-4 leading-relaxed text-[color:var(--ink-soft)]">{pack.typeIntroductions[leader.id]}</p>
             <Link href={href("type", { id: leader.id })} className="mt-5 inline-block underline underline-offset-4">
@@ -214,7 +214,7 @@ export function ResultClient() {
             return (
               <div key={id} className="space-y-4">
                 <h3 className="font-display text-2xl">
-                  {id} · {typeById[id].name}
+                  {id} {typeById[id].name}
                 </h3>
                 <ol className="space-y-8">
                   {items.map((question) => (
@@ -244,14 +244,14 @@ export function ResultClient() {
                 <Link href={href("type", { id: score.id })} className="block rounded-sm">
                   <div className="mb-2 flex justify-between gap-4 text-sm">
                     <span className={lead ? "font-semibold" : ""}>
-                      {score.id} · {score.name}
-                      {lead ? ` · ${m.result.highest}` : ""}
+                      {score.id} {score.name}
+                      {lead ? ` (${m.result.highest})` : ""}
                     </span>
                     <span className="shrink-0 tabular-nums">{score.score}/75</span>
                   </div>
-                  <div aria-hidden className="h-2 rounded-full bg-[color:var(--wash)]">
+                  <div aria-hidden className="h-2 overflow-hidden rounded-[2px] bg-[color:var(--wash)]">
                     <div
-                      className="h-full rounded-full"
+                      className="h-full"
                       style={{ width: `${score.percent}%`, background: lead ? "var(--accent)" : "var(--ink)", opacity: lead ? 1 : 0.45 }}
                     />
                   </div>

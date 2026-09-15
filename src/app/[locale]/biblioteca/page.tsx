@@ -35,7 +35,7 @@ export default async function BibliotecaPage({ params }: { params: Promise<{ loc
         {items.map((item) => (
           <li key={item.slug}>
             <Link href={item.href} className="grid gap-2 py-4 sm:grid-cols-[88px_1fr] sm:items-baseline">
-              <span className="text-xs uppercase tracking-[0.16em] text-[color:var(--mute)]">{kinds[item.kind]}</span>
+              <span className="text-sm text-[color:var(--mute)]">{kinds[item.kind]}</span>
               <span>
                 <span className="font-display text-xl">{item.title}</span>
                 <span className="mt-1 block text-sm text-[color:var(--ink-soft)]">{item.note}</span>
